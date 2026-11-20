@@ -151,7 +151,7 @@ export default function NavigationDock() {
       {/* 1. Desktop & Tablet Floating Dock */}
       <nav
         aria-label="Main Navigation"
-        className="fixed bottom-6 left-1/2 z-40 hidden -translate-x-1/2 items-center gap-1.5 rounded-full border border-[#6B6458]/20 bg-[#EDE4D3]/95 backdrop-blur-md px-3 py-1.5 md:flex shadow-[0_8px_32px_rgba(27,26,23,0.12),0_18px_48px_rgba(227,194,122,0.22)]"
+        className="fixed bottom-6 left-1/2 z-40 hidden -translate-x-1/2 items-center gap-1.5 rounded-full border border-paper-muted/20 bg-paper-card/95 backdrop-blur-md px-3 py-1.5 md:flex shadow-[0_8px_32px_rgba(27,26,23,0.12),0_18px_48px_rgba(227,194,122,0.22)]"
         style={{
           bottom: "max(1.5rem, calc(env(safe-area-inset-bottom) + 0.75rem))",
         }}
@@ -166,8 +166,8 @@ export default function NavigationDock() {
               href={item.href}
               className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200 ${
                 isActive
-                  ? "bg-[#B5532F]/15 text-[#B5532F] ring-1.5 ring-[#B5532F]/50 shadow-xs font-semibold"
-                  : "text-[#6B6458] hover:bg-[#1B1A17]/5 hover:text-[#1B1A17]"
+                  ? "bg-terracotta/15 text-terracotta ring-1.5 ring-[#B5532F]/50 shadow-xs font-semibold"
+                  : "text-paper-muted hover:bg-paper-text/5 hover:text-paper-text"
               }`}
               aria-label={item.name}
               aria-current={isActive ? "page" : undefined}
@@ -175,18 +175,18 @@ export default function NavigationDock() {
               <Icon
                 size={20}
                 aria-hidden="true"
-                className={isActive ? "text-[#B5532F] stroke-[2.25]" : ""}
+                className={isActive ? "text-terracotta stroke-[2.25]" : ""}
               />
 
               {isActive && (
                 <span
-                  className="absolute bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#B5532F] shadow-[0_0_8px_#B5532F]"
+                  className="absolute bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-terracotta shadow-[0_0_8px_#B5532F]"
                   aria-hidden="true"
                 />
               )}
 
               {/* Native Tailwind Tooltip */}
-              <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded-full border border-[#6B6458]/20 bg-[#F6F1E6] px-2.5 py-1 text-[11px] font-medium tracking-normal text-[#1B1A17] shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 whitespace-nowrap z-50">
+              <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-medium tracking-normal text-paper-text shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 whitespace-nowrap z-50">
                 {item.name}
               </span>
             </Link>
@@ -194,29 +194,29 @@ export default function NavigationDock() {
         })}
 
         {/* Divider */}
-        <div className="mx-1 h-5 w-px bg-[#6B6458]/25" aria-hidden="true" />
+        <div className="mx-1 h-5 w-px bg-paper-muted/25" aria-hidden="true" />
 
         {/* Sign in / Sign out */}
         {isAuthenticated ? (
           <button
             type="button"
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="group relative flex h-10 w-10 items-center justify-center rounded-full text-[#6B6458] transition-all hover:bg-[#B5532F]/10 hover:text-[#B5532F] cursor-pointer"
+            className="group relative flex h-10 w-10 items-center justify-center rounded-full text-paper-muted transition-all hover:bg-terracotta/10 hover:text-terracotta cursor-pointer"
             aria-label={SIGN_OUT.name}
           >
             <SIGN_OUT.icon size={20} aria-hidden="true" />
-            <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded-full border border-[#6B6458]/20 bg-[#F6F1E6] px-2.5 py-1 text-[11px] font-medium tracking-normal text-[#1B1A17] shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 whitespace-nowrap z-50">
+            <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-medium tracking-normal text-paper-text shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 whitespace-nowrap z-50">
               {SIGN_OUT.name}
             </span>
           </button>
         ) : (
           <Link
             href="/auth"
-            className="group relative flex h-10 w-10 items-center justify-center rounded-full text-[#6B6458] transition-all hover:bg-[#B5532F]/10 hover:text-[#B5532F]"
+            className="group relative flex h-10 w-10 items-center justify-center rounded-full text-paper-muted transition-all hover:bg-terracotta/10 hover:text-terracotta"
             aria-label={SIGN_IN.name}
           >
             <SIGN_IN.icon size={20} aria-hidden="true" />
-            <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded-full border border-[#6B6458]/20 bg-[#F6F1E6] px-2.5 py-1 text-[11px] font-medium tracking-normal text-[#1B1A17] shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 whitespace-nowrap z-50">
+            <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-medium tracking-normal text-paper-text shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 whitespace-nowrap z-50">
               {SIGN_IN.name}
             </span>
           </Link>
@@ -228,7 +228,7 @@ export default function NavigationDock() {
         ref={menuButtonRef}
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-[#6B6458]/20 bg-[#EDE4D3] text-[#1B1A17] shadow-[0_2px_10px_rgba(27,26,23,0.08)] transition-all duration-200 hover:text-[#B5532F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B5532F] md:hidden cursor-pointer"
+        className="fixed top-4 left-4 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-paper-muted/20 bg-paper-card text-paper-text shadow-[0_2px_10px_rgba(27,26,23,0.08)] transition-all duration-200 hover:text-terracotta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B5532F] md:hidden cursor-pointer"
         style={{
           top: "max(1rem, env(safe-area-inset-top))",
           left: "max(1rem, env(safe-area-inset-left))",
@@ -246,7 +246,7 @@ export default function NavigationDock() {
       {/* Dimmed Background Scrim */}
       <div
         onClick={closeSidebar}
-        className={`fixed inset-0 z-40 bg-[#1B1A17]/35 backdrop-blur-[2px] transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-40 bg-paper-text/35 backdrop-blur-[2px] transition-opacity duration-300 md:hidden ${
           isOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
@@ -262,7 +262,7 @@ export default function NavigationDock() {
         onTouchEnd={handleTouchEnd}
         aria-label="Mobile Navigation Menu"
         aria-hidden={!isOpen}
-        className={`fixed inset-y-0 left-0 z-40 flex w-[80vw] max-w-[320px] flex-col justify-between border-r border-[#6B6458]/20 bg-[#EDE4D3] px-5 shadow-2xl transition-transform duration-300 ease-out md:hidden ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-[80vw] max-w-[320px] flex-col justify-between border-r border-paper-muted/20 bg-paper-card px-5 shadow-2xl transition-transform duration-300 ease-out md:hidden ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{
@@ -272,7 +272,7 @@ export default function NavigationDock() {
       >
         <nav aria-label="Mobile Destinations" className="flex flex-col gap-1.5">
           <span
-            className="mb-2 px-3.5 text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-[#B5532F]"
+            className="mb-2 px-3.5 text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-terracotta"
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
           >
             Navigation
@@ -290,15 +290,15 @@ export default function NavigationDock() {
                     onClick={closeSidebar}
                     className={`flex items-center gap-3.5 rounded-xl px-4 py-3 transition-colors duration-200 ${
                       isActive
-                        ? "border-l-4 border-[#B5532F] bg-[#B5532F]/15 font-semibold text-[#B5532F] shadow-xs"
-                        : "border-l-4 border-transparent text-[#6B6458] hover:bg-[#1B1A17]/5 hover:text-[#1B1A17]"
+                        ? "border-l-4 border-terracotta bg-terracotta/15 font-semibold text-terracotta shadow-xs"
+                        : "border-l-4 border-transparent text-paper-muted hover:bg-paper-text/5 hover:text-paper-text"
                     }`}
                     aria-current={isActive ? "page" : undefined}
                   >
                     <Icon
                       size={20}
                       aria-hidden="true"
-                      className={isActive ? "text-[#B5532F]" : ""}
+                      className={isActive ? "text-terracotta" : ""}
                     />
                     <span
                       className="text-base tracking-normal"
@@ -316,7 +316,7 @@ export default function NavigationDock() {
         </nav>
 
         {/* Bottom Session Row */}
-        <div className="mt-auto border-t border-[#6B6458]/15 pt-4">
+        <div className="mt-auto border-t border-paper-muted/15 pt-4">
           {isAuthenticated ? (
             <button
               type="button"
@@ -324,7 +324,7 @@ export default function NavigationDock() {
                 closeSidebar();
                 signOut({ callbackUrl: "/" });
               }}
-              className="flex w-full items-center gap-3.5 rounded-xl px-3.5 py-3 text-[#6B6458] transition-colors duration-200 hover:bg-[#1B1A17]/5 hover:text-[#B5532F] cursor-pointer"
+              className="flex w-full items-center gap-3.5 rounded-xl px-3.5 py-3 text-paper-muted transition-colors duration-200 hover:bg-paper-text/5 hover:text-terracotta cursor-pointer"
             >
               <SIGN_OUT.icon size={20} aria-hidden="true" />
               <span
@@ -338,7 +338,7 @@ export default function NavigationDock() {
             <Link
               href="/auth"
               onClick={closeSidebar}
-              className="flex w-full items-center gap-3.5 rounded-xl px-3.5 py-3 text-[#6B6458] transition-colors duration-200 hover:bg-[#1B1A17]/5 hover:text-[#B5532F]"
+              className="flex w-full items-center gap-3.5 rounded-xl px-3.5 py-3 text-paper-muted transition-colors duration-200 hover:bg-paper-text/5 hover:text-terracotta"
             >
               <SIGN_IN.icon size={20} aria-hidden="true" />
               <span
