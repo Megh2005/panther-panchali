@@ -2,213 +2,216 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
-import { LuFileText, LuGitFork, LuLoaderCircle, LuRoute } from "react-icons/lu";
-import type { JourneyThread } from "@/lib/models/journey";
+import {
+  LuCalendar,
+  LuClock,
+  LuImagePlus,
+  LuLoaderCircle,
+  LuMapPin,
+  LuSparkles,
+} from "react-icons/lu";
+import OpenStreetMapModal from "@/components/open-street-map-modal";
+import type { KolkataPost } from "@/lib/models/post";
 
-export default function JourneysPage() {
-  const [threads, setThreads] = useState<JourneyThread[]>([]);
+export default function MyArchivePage() {
+  const { data: session } = useSession();
+  const [myPosts, setMyPosts] = useState<KolkataPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [forkingId, setForkingId] = useState<string | null>(null);
+  const [activeMapPost, setActiveMapPost] = useState<KolkataPost | null>(null);
 
-  const fetchThreads = useCallback(async () => {
+  const fetchPosts = useCallback(async () => {
     try {
-      const res = await fetch("/api/threads");
+      const res = await fetch("/api/posts");
       const data = await res.json();
-      if (data.threads) {
-        setThreads(data.threads);
+      if (data.posts) {
+        const userEmail = session?.user?.email?.toLowerCase();
+        // Show user's posts, or all recent if few
+        const filtered = userEmail
+          ? data.posts.filter(
+              (p: KolkataPost) => p.userEmail?.toLowerCase() === userEmail,
+            )
+          : data.posts;
+        setMyPosts(filtered.length > 0 ? filtered : data.posts);
       }
     } catch (err) {
-      console.error("Failed to load threads:", err);
+      console.error("Failed to fetch user archive:", err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [session?.user?.email]);
 
   useEffect(() => {
-    void fetchThreads();
-  }, [fetchThreads]);
-
-  const handleFork = async (threadId: string) => {
-    setForkingId(threadId);
-    try {
-      const res = await fetch("/api/threads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          forkThreadId: threadId,
-          reviewerName: "Explorer",
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        await fetchThreads();
-      }
-    } catch (err) {
-      console.error("Forking failed:", err);
-    } finally {
-      setForkingId(null);
-    }
-  };
+    void fetchPosts();
+  }, [fetchPosts]);
 
   return (
-    <main className="min-h-screen bg-[#F6F1E6] text-[#1B1A17] pt-12 pb-28 px-4">
-      <div className="max-w-[80vw] mx-auto flex flex-col items-center text-center">
+    <main className="min-h-screen bg-paper-bg text-paper-text pt-12 pb-28 px-4">
+      <div className="max-w-3xl mx-auto flex flex-col items-center text-center mb-8">
         <span
-          className="text-xs font-semibold uppercase tracking-[0.2em] text-[#B5532F]"
+          className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta"
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         >
-          Archived Journey Threads
+          Personal Chronicle
         </span>
         <h1
-          className="mt-3 text-4xl sm:text-6xl font-light tracking-normal text-[#1B1A17]"
+          className="mt-2 text-3xl sm:text-5xl font-light tracking-normal text-paper-text"
           style={{
             fontFamily: "var(--font-fraunces), serif",
             fontVariationSettings: '"opsz" 72, "SOFT" 85, "WONK" 1',
           }}
         >
-          My Journeys
+          My Kolkata Archive
         </h1>
         <p
-          className="mt-3 text-lg italic text-[#6B6458] max-w-[560px]"
+          className="mt-2 text-base italic text-paper-muted max-w-lg"
           style={{ fontFamily: "var(--font-newsreader), serif" }}
         >
-          Every chapter, sensory impression, and transformed scene is preserved
-          in your chronicle. Fork another path to explore alternative narrative
-          branches.
+          All your revamping moments, heritage landmarks, and sensory snapshots
+          preserved across the seasons of the city.
         </p>
 
-        {loading ? (
-          <div className="mt-16 flex flex-col items-center gap-3">
-            <LuLoaderCircle size={24} className="animate-spin text-[#B5532F]" />
-            <p
-              className="text-sm italic text-[#6B6458]"
-              style={{ fontFamily: "var(--font-newsreader), serif" }}
-            >
-              Retrieving your journeys…
-            </p>
-          </div>
-        ) : threads.length === 0 ? (
-          <div className="mt-16 rounded-2xl border border-[#6B6458]/20 bg-[#EDE4D3] p-10 max-w-[480px]">
-            <LuRoute size={32} className="mx-auto text-[#B5532F]" />
-            <h2
-              className="mt-4 text-2xl font-light text-[#1B1A17]"
-              style={{ fontFamily: "var(--font-fraunces), serif" }}
-            >
-              No Journeys Recorded Yet
-            </h2>
-            <p
-              className="mt-2 text-sm italic text-[#6B6458]"
-              style={{ fontFamily: "var(--font-newsreader), serif" }}
-            >
-              Calibrate the step-by-step compass to create your first Kolkata
-              chapter.
-            </p>
-            <Link
-              href="/canvas"
-              className="mt-6 inline-flex rounded-full bg-[#B5532F] px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-[#FFFFFF] shadow-sm transition-all hover:bg-[#1B1A17]"
-              style={{ fontFamily: "var(--font-instrument), sans-serif" }}
-            >
-              Start First Journey
-            </Link>
-          </div>
-        ) : (
-          <div className="mt-12 grid w-full max-w-[860px] grid-cols-1 gap-5 text-left">
-            {threads.map((thread) => (
-              <article
-                key={thread.id}
-                className="rounded-2xl border border-[#6B6458]/20 bg-[#EDE4D3] p-6 sm:p-8 shadow-sm transition-all hover:shadow-md"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#6B6458]/15 pb-4">
-                  <div>
-                    <span
-                      className="text-xs font-semibold uppercase tracking-[0.2em] text-[#B5532F]"
-                      style={{
-                        fontFamily: "var(--font-instrument), sans-serif",
-                      }}
-                    >
-                      Thread · {thread.id}
-                    </span>
-                    <h2
-                      className="mt-1 text-2xl font-light text-[#1B1A17]"
-                      style={{ fontFamily: "var(--font-fraunces), serif" }}
-                    >
-                      {thread.title}
-                    </h2>
-                  </div>
+        <Link
+          href="/canvas"
+          className="mt-5 inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-xs hover:bg-paper-text transition-colors"
+          style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+        >
+          <LuImagePlus size={15} />
+          <span>Create New Post</span>
+        </Link>
+      </div>
 
-                  <div className="flex items-center gap-2">
-                    <a
-                      href={`/thread/${thread.id}/export`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-full border border-[#6B6458]/25 bg-[#F6F1E6] px-3.5 py-1.5 text-xs text-[#1B1A17] hover:border-[#B5532F] transition-colors"
-                      style={{
-                        fontFamily: "var(--font-instrument), sans-serif",
-                      }}
-                    >
-                      <LuFileText size={14} className="text-[#B5532F]" />
-                      <span>PDF Storybook</span>
-                    </a>
+      {loading ? (
+        <div className="mt-16 flex flex-col items-center justify-center gap-3">
+          <LuLoaderCircle size={28} className="animate-spin text-terracotta" />
+          <p
+            className="text-sm italic text-paper-muted"
+            style={{ fontFamily: "var(--font-newsreader), serif" }}
+          >
+            Loading your archive…
+          </p>
+        </div>
+      ) : myPosts.length === 0 ? (
+        <div className="mt-12 max-w-md mx-auto rounded-2xl border border-paper-muted/20 bg-paper-card p-8 text-center shadow-sm">
+          <LuMapPin size={32} className="mx-auto text-terracotta" />
+          <h2
+            className="mt-3 text-2xl font-light text-paper-text"
+            style={{ fontFamily: "var(--font-fraunces), serif" }}
+          >
+            No Archive Posts Yet
+          </h2>
+          <p
+            className="mt-1.5 text-sm italic text-paper-muted"
+            style={{ fontFamily: "var(--font-newsreader), serif" }}
+          >
+            Upload your photo to craft your first Kolkata moment.
+          </p>
+          <Link
+            href="/canvas"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-white hover:bg-paper-text transition-colors"
+            style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+          >
+            <span>Create Post</span>
+          </Link>
+        </div>
+      ) : (
+        <div className="max-w-2xl mx-auto flex flex-col gap-6">
+          {myPosts.map((post) => (
+            <article
+              key={post.id}
+              className="overflow-hidden rounded-2xl border border-paper-muted/20 bg-paper-card shadow-xs transition-shadow hover:shadow-sm p-5"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-paper-muted/15">
+                <div className="flex items-center gap-2">
+                  <LuMapPin size={16} className="text-terracotta shrink-0" />
+                  <span
+                    className="text-base font-light text-paper-text"
+                    style={{ fontFamily: "var(--font-fraunces), serif" }}
+                  >
+                    {post.placeName}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-paper-bg px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-terracotta border border-paper-muted/20">
+                    <LuCalendar size={10} />
+                    <span>{post.yearSpan}</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setActiveMapPost(post)}
+                    className="inline-flex items-center gap-1 rounded-full border border-paper-muted/25 bg-paper-bg px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-paper-text hover:border-terracotta hover:text-terracotta transition-colors cursor-pointer"
+                  >
+                    <LuMapPin size={10} />
+                    <span>Map</span>
+                  </button>
+                </div>
+              </div>
 
-                    <button
-                      type="button"
-                      disabled={forkingId === thread.id}
-                      onClick={() => handleFork(thread.id)}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-[#6B6458]/25 bg-[#F6F1E6] px-3.5 py-1.5 text-xs text-[#1B1A17] hover:border-[#B5532F] disabled:opacity-50 transition-colors cursor-pointer"
-                      style={{
-                        fontFamily: "var(--font-instrument), sans-serif",
-                      }}
-                    >
-                      <LuGitFork size={14} className="text-[#B5532F]" />
-                      <span>
-                        {forkingId === thread.id
-                          ? "Forking…"
-                          : `Fork (${thread.forkCount || 0})`}
-                      </span>
-                    </button>
-                  </div>
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
+                <div className="relative aspect-video sm:aspect-square rounded-xl overflow-hidden bg-paper-bg border border-paper-muted/20">
+                  <Image
+                    src={post.revampedImageUrl || post.originalImageUrl}
+                    alt={post.placeName}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
 
-                {/* Chapters Snippet */}
-                <div className="mt-4 space-y-3">
+                <div className="sm:col-span-2 flex flex-col justify-between h-full">
                   <p
-                    className="text-sm italic text-[#6B6458]"
+                    className="text-sm italic text-paper-text leading-relaxed line-clamp-4"
                     style={{ fontFamily: "var(--font-newsreader), serif" }}
                   >
-                    Recorded by {thread.userName || "Explorer"} on{" "}
-                    {new Date(thread.createdAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}{" "}
-                    · {thread.chapters?.length || 0} chapter(s)
+                    {post.caption}
                   </p>
 
-                  {thread.chapters?.[0]?.currentImageUrl && (
-                    <div className="overflow-hidden rounded-xl border border-[#6B6458]/18">
-                      <Image
-                        src={thread.chapters[0].currentImageUrl}
-                        alt={thread.title}
-                        width={860}
-                        height={176}
-                        className="w-full h-44 object-cover"
-                      />
+                  <div className="mt-3 flex flex-wrap gap-1">
+                    {post.hashtags?.slice(0, 4).map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-[11px] text-terracotta font-medium"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Colors */}
+                  {Array.isArray(post.extractedColors) && (
+                    <div className="mt-3 pt-3 border-t border-paper-muted/15 flex items-center gap-2">
+                      <span className="text-[10px] uppercase tracking-wider text-paper-muted">
+                        Palette:
+                      </span>
+                      <div className="flex items-center gap-1">
+                        {post.extractedColors.slice(0, 5).map((c) => (
+                          <div
+                            key={c}
+                            className="h-3.5 w-3.5 rounded-full border border-paper-text/20"
+                            style={{ backgroundColor: c }}
+                            title={c}
+                          />
+                        ))}
+                      </div>
                     </div>
                   )}
-
-                  <p
-                    className="text-sm italic text-[#1B1A17] line-clamp-3"
-                    style={{ fontFamily: "var(--font-newsreader), serif" }}
-                  >
-                    {thread.chapters?.[0]?.storyProse}
-                  </p>
                 </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+
+      {/* Map Modal */}
+      {activeMapPost && (
+        <OpenStreetMapModal
+          isOpen={!!activeMapPost}
+          onClose={() => setActiveMapPost(null)}
+          placeName={activeMapPost.placeName}
+          lat={activeMapPost.placeCoords?.lat || 22.5726}
+          lng={activeMapPost.placeCoords?.lng || 88.3639}
+        />
+      )}
     </main>
   );
 }
