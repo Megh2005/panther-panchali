@@ -290,7 +290,7 @@ export async function createKolkataCompositeMemory(params: {
       },
       { effect: "contrast:10" },
       {
-        overlay: userUpload.public_id.replace(/\//g, ":"),
+        overlay: userUpload.publicId.replace(/\//g, ":"),
         width: 720,
         height: 720,
         crop: "fill",
