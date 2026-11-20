@@ -25,7 +25,6 @@ export type PostVibe =
 export interface KolkataPlace {
   id: string;
   name: string;
-  bengaliName: string;
   tagline: string;
   description: string;
   lat: number;
