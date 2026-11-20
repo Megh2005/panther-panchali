@@ -24,7 +24,7 @@ export async function generateKolkataPostCaption(params: {
     apiVersion: "v1beta",
   });
 
-  const prompt = `You are an authentic voice of Kolkata capturing moments for a cultural social feed ("Facebook of Kolkata").
+  const prompt = `You are an authentic voice of Kolkata capturing moments for a cultural social feed ("Pather Panchali").
 Generate a poetic, atmospheric, and culturally grounded social feed post caption and relevant hashtags for an image.
 Details:
 - Location / Landmark: ${placeName}

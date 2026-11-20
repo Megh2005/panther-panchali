@@ -95,7 +95,7 @@ export async function sendPostPublishedEmail(
     <tr>
       <td style="padding:28px 32px 18px 32px;border-bottom:1px solid rgba(107,100,88,0.2);text-align:center;">
         <span style="font-family:sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.2em;color:#B5532F;">
-          Facebook of Kolkata · Living Chronicle
+          Pather Panchali · Living Chronicle
         </span>
         <h1 style="margin:8px 0 0 0;font-size:28px;font-weight:300;color:#1B1A17;letter-spacing:-0.02em;">
           Your Memory is Published
@@ -164,7 +164,7 @@ export async function sendPostPublishedEmail(
     <!-- Footer -->
     <tr>
       <td style="padding:18px 32px;background-color:#E2D6C0;border-top:1px solid rgba(107,100,88,0.2);text-align:center;font-family:sans-serif;font-size:11px;color:#6B6458;">
-        Pather Panchali · The Facebook of Kolkata<br />
+        Pather Panchali · The Living Canvas<br />
         Every lane, every season, every living memory.
       </td>
     </tr>
@@ -175,9 +175,9 @@ export async function sendPostPublishedEmail(
 
   try {
     await transporter.sendMail({
-      from: `"Facebook of Kolkata" <${process.env.SMTP_USER}>`,
+      from: `"Pather Panchali" <${process.env.SMTP_USER}>`,
       to,
-      subject: `Your Kolkata Memory is Published: ${placeName} | Facebook of Kolkata`,
+      subject: `Your Kolkata Memory is Published: ${placeName} | Pather Panchali`,
       text: `${caption}\n\nView on the feed: ${postUrl}`,
       html,
     });

@@ -8,12 +8,12 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# Pather Panchali: Facebook of Kolkata — Agent Guidelines & Architecture
+# Pather Panchali: The Living Canvas — Agent Guidelines & Architecture
 
 ## 1. Project Overview & Core Concept
-"Pather Panchali: Facebook of Kolkata" is a Next.js (App Router), TypeScript, and Tailwind CSS community platform where visitors and citizens celebrate the living memory of Kolkata.
+"Pather Panchali: The Living Canvas" is a Next.js (App Router), TypeScript, and Tailwind CSS community platform where visitors and citizens celebrate the living memory of Kolkata.
 
-Visitors upload their own photographs, choose an iconic Kolkata landmark (with exact OpenStreetMap coordinates), select the time of day, span of the year (including Poila Baisakh, Durga Pooja, and Deepavali), and choose a vibe (default: Aesthetic). The uploaded photo is revamping through atmospheric visual transformations and color-analyzed. A poetic plain-text caption with curated hashtags is synthesized. Users can edit all post details before publishing directly to the community feed, where posts feature interactive OpenStreetMap views and extracted color palettes.
+Users choose an iconic Kolkata landmark (with exact OpenStreetMap coordinates), select the time of day, span of the year (including Poila Baisakh, Durga Pooja, and Deepavali), choose an atmospheric vibe (default: Aesthetic), and optionally provide personal memory details. Stability AI generates an authentic 1:1 square photograph from scratch using its base model (SD 3.5 Medium) with Core fallback. Cloudinary extracts dominant colors into a 5-color palette, and Gemini synthesizes an evocative plain-text poetic caption with curated hashtags. Users review and edit details before publishing directly to the community feed, where posts feature interactive OpenStreetMap views, like toggle, comment discussions, and share capabilities.
 
 ---
 
@@ -26,15 +26,15 @@ panther-panchali/
 │   │   ├── auth/[...nextauth]/route.ts  # NextAuth Auth.js v5 route handler
 │   │   └── posts/
 │   │       ├── route.ts                 # Feed retrieval (GET) & publishing (POST)
-│   │       ├── generate/route.ts        # Image revamp & caption synthesis
+│   │       ├── generate/route.ts        # Stability AI image synthesis & Gemini prose
 │   │       └── [id]/
 │   │           ├── route.ts             # Single post retrieval (GET)
 │   │           ├── like/route.ts        # Like toggle (POST)
 │   │           ├── comments/route.ts    # Comments retrieval (GET) & addition (POST)
 │   │           └── share/route.ts       # Share counter increment (POST)
 │   ├── auth/page.tsx                 # Single-purpose Google OAuth screen
-│   ├── canvas/page.tsx               # Create Post Studio (Upload, Select, Revamp, Edit, Publish)
-│   ├── explore/page.tsx              # Facebook of Kolkata Feed with OpenStreetMap
+│   ├── canvas/page.tsx               # Create Post Studio (Landmark, Light, Season, Vibe, Review, Publish)
+│   ├── explore/page.tsx              # Pather Panchali Feed with OpenStreetMap
 │   ├── journeys/page.tsx             # My Archive of published Kolkata posts
 │   ├── posts/[id]/page.tsx           # Dedicated single post & share target view
 │   ├── profile/page.tsx              # Minimal Account Profile (avatar, name, email, user ID)
@@ -44,7 +44,7 @@ panther-panchali/
 │
 ├── components/                       # Shared & feature UI components (Root level)
 │   ├── auth-provider.tsx             # NextAuth SessionProvider wrapper
-│   ├── create-post-studio.tsx        # Upload, place selection, revamp, and plain-text editor
+│   ├── create-post-studio.tsx        # Post synthesis studio & review editor
 │   ├── open-street-map-modal.tsx     # High-visibility interactive OpenStreetMap modal
 │   └── navigation-dock.tsx           # State-dependent dual-form navigation dock
 │
@@ -58,9 +58,10 @@ panther-panchali/
 │   │   ├── post.ts                   # KolkataPost, KolkataPlace, TimeOfDay, YearSpan, PostVibe
 │   │   └── user.ts                   # User domain model
 │   └── services/
-│       ├── cloudinary.ts             # Color extraction, media storage & atmospheric revamp
+│       ├── cloudinary.ts             # Media storage & dominant color palette extraction
 │       ├── gemini.ts                 # Plain text poetic caption & hashtag synthesizer
-│       └── mailer.ts                 # Post publication email dispatch service
+│       ├── mailer.ts                 # Post publication email dispatch service
+│       └── stability.ts              # Stability AI base model (SD 3.5 Medium) image synthesis
 │
 ├── auth.config.ts                    # Edge-compatible Auth.js v5 route protection config
 ├── auth.ts                           # NextAuth Auth.js v5 handlers, session and Google OAuth config
@@ -90,10 +91,10 @@ panther-panchali/
   - Terracotta Accent: `#B5532F` (`text-terracotta`, `bg-terracotta`)
   - Soft Gold Glow: `#E3C27A` (`bg-gold-glow`)
 - **Tailwind CSS Utility Classes**:
-  - All styling must use standard Tailwind CSS utility classes (`mt-`, `pt-`, `p-`, `flex`, `grid`, etc.).
+  - All styling must use standard Tailwind CSS utility classes (`bg-paper-bg`, `bg-paper-card`, `text-paper-text`, `text-paper-muted`, `bg-terracotta`, `text-terracotta`, `bg-gold-glow`).
   - `globals.css` is reserved strictly for `@import "tailwindcss";`, `@theme` definitions, and minimal base rules. No custom vanilla CSS classes.
 - **Typography**:
-  - `Fraunces` (variable serif, light weight 300, optical size display) for headings and titles.
+  - `Fraunces` (variable serif, light weight 300, optical size display) with `fontVariationSettings: '"opsz" 72, "SOFT" 85, "WONK" 1'` for headings and titles.
   - `Newsreader` (editorial serif, italic) for narrative descriptions, reflections, and literary prose.
   - `Instrument Sans` (sans-serif) for small uppercase labels, buttons, and telemetry metrics.
 
@@ -108,6 +109,6 @@ panther-panchali/
 - The navigation dock is dynamic and state-reactive:
   - **Unauthenticated state**: Displays only public destinations (`Home` and `Sign in`).
   - **Authenticated state**: Displays the full suite (`Home`, `Create Post`, `Kolkata Feed`, `My Archive`, `Profile`, and `Sign out`).
-  - **Route tracking**: Automatically marks the current active destination based on `pathname` with soft gold glow `#E3C27A` and an active indicator dot.
+  - **Route tracking**: Automatically marks the current active destination based on `pathname` with soft gold glow `bg-gold-glow`, dark text `text-paper-text`, ring `ring-terracotta/30`, and terracotta active indicator dot.
   - **Auth Screen Isolation**: Completely hidden on `/auth` to ensure an uncluttered sign-in experience.
   - **Dual-Form Responsive Design**: Floating bottom pill with tooltips on desktop/tablet; foldable sidebar drawer on mobile.
