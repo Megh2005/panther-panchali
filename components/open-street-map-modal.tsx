@@ -7,7 +7,6 @@ interface OpenStreetMapModalProps {
   isOpen: boolean;
   onClose: () => void;
   placeName: string;
-  bengaliName?: string;
   area?: string;
   lat: number;
   lng: number;
@@ -17,7 +16,6 @@ export default function OpenStreetMapModal({
   isOpen,
   onClose,
   placeName,
-  bengaliName,
   area,
   lat,
   lng,
@@ -35,7 +33,7 @@ export default function OpenStreetMapModal({
 
   if (!isOpen) return null;
 
-  // Bounding box delta for a well-visible street level view
+  // Bounding box delta for efficient and clear street-level centering
   const deltaLng = 0.0065;
   const deltaLat = 0.0045;
   const minLng = (lng - deltaLng).toFixed(5);
@@ -51,7 +49,7 @@ export default function OpenStreetMapModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="osm-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-paper-text/45 backdrop-blur-[3px] animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-paper-text/50 backdrop-blur-[3px] animate-fadeIn"
     >
       <div className="relative flex flex-col w-full max-w-2xl overflow-hidden rounded-2xl border border-paper-muted/20 bg-paper-card shadow-[0_16px_48px_-8px_rgba(27,26,23,0.35)] animate-scaleUp">
         {/* Header Bar */}
@@ -61,25 +59,15 @@ export default function OpenStreetMapModal({
               <LuMapPin size={20} />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span
-                  className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta"
-                  style={{ fontFamily: "var(--font-instrument), sans-serif" }}
-                >
-                  {area || "Kolkata, West Bengal"}
-                </span>
-                {bengaliName && (
-                  <span
-                    className="text-xs text-paper-muted"
-                    style={{ fontFamily: "var(--font-newsreader), serif" }}
-                  >
-                    · {bengaliName}
-                  </span>
-                )}
-              </div>
+              <span
+                className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta block"
+                style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+              >
+                {area || "Kolkata, West Bengal"}
+              </span>
               <h3
                 id="osm-modal-title"
-                className="text-xl sm:text-2xl font-light tracking-normal text-paper-text"
+                className="text-xl sm:text-2xl font-light tracking-normal text-paper-text mt-0.5"
                 style={{ fontFamily: "var(--font-fraunces), serif" }}
               >
                 {placeName}
@@ -97,7 +85,7 @@ export default function OpenStreetMapModal({
           </button>
         </div>
 
-        {/* Prominent OpenStreetMap Embed */}
+        {/* OpenStreetMap Interactive Embed */}
         <div className="relative w-full h-80 sm:h-96 bg-paper-bg">
           <iframe
             title={`OpenStreetMap for ${placeName}`}
@@ -107,17 +95,14 @@ export default function OpenStreetMapModal({
           />
         </div>
 
-        {/* Footer with Coordinates and External View */}
+        {/* Footer */}
         <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-paper-card border-t border-paper-muted/15">
-          <div
-            className="text-xs text-paper-muted flex items-center gap-1.5"
+          <span
+            className="text-xs text-paper-muted"
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
           >
-            <span>Coordinates:</span>
-            <span className="font-mono text-paper-text">
-              {lat.toFixed(4)}° N, {lng.toFixed(4)}° E
-            </span>
-          </div>
+            OpenStreetMap Heritage Locator
+          </span>
 
           <a
             href={directOsmUrl}
