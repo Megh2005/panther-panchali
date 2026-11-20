@@ -4,18 +4,24 @@ import CreatePostStudio from "@/components/create-post-studio";
 export const metadata: Metadata = {
   title: "Create Post — Pather Panchali",
   description:
-    "Upload your photo, set the landmark, festival, and vibe to publish to the Kolkata Feed.",
+    "Choose a landmark, season, and vibe to synthesize a memory and publish to the Kolkata Feed.",
 };
 
 export default function CanvasPage() {
   return (
-    <main className="min-h-screen bg-paper-bg text-paper-text pt-12 pb-28 px-4">
-      <div className="max-w-4xl mx-auto flex flex-col items-center text-center mb-6">
+    <main className="relative min-h-screen bg-paper-bg text-paper-text pt-12 pb-28 px-4 sm:px-6 overflow-hidden">
+      {/* Warm ambient background glow consistent with Homepage */}
+      <div
+        className="pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 h-[60vw] max-h-[600px] w-[60vw] max-w-[800px] rounded-full bg-radial from-[#E3C27A]/20 via-[#E3C27A]/5 to-transparent blur-3xl opacity-75"
+        aria-hidden="true"
+      />
+
+      <div className="relative z-10 w-full max-w-[92vw] lg:max-w-[70vw] mx-auto flex flex-col items-center text-center mb-6">
         <span
-          className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta"
+          className="text-xs font-semibold uppercase tracking-[0.2em] text-[#B5532F]"
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         >
-          Facebook of Kolkata · Post Studio
+          Pather Panchali · Post Studio
         </span>
 
         <h1
@@ -28,12 +34,12 @@ export default function CanvasPage() {
           Create a Kolkata Post
         </h1>
         <p
-          className="mt-2 text-base sm:text-lg italic text-paper-muted max-w-xl"
+          className="mt-2 text-base sm:text-lg italic text-paper-muted max-w-2xl leading-relaxed"
           style={{ fontFamily: "var(--font-newsreader), serif" }}
         >
-          Upload your photo, choose a landmark, span of the year, and vibe.
-          Your post will be revamping with authentic atmospheric color palettes
-          and poetic captions.
+          Choose an iconic landmark, season, and atmospheric vibe. Your memory
+          will be synthesized with authentic photography, color palettes,
+          and poetic reflections.
         </p>
       </div>
 

@@ -40,6 +40,37 @@
   }
 }
 
+/* Explicit fallback utilities guaranteeing brand kit contrast */
+.bg-paper-bg {
+  background-color: #f6f1e6 !important;
+}
+.bg-paper-card {
+  background-color: #ede4d3 !important;
+}
+.bg-terracotta {
+  background-color: #b5532f !important;
+}
+.bg-gold-glow {
+  background-color: #e3c27a !important;
+}
+
+.text-paper-text {
+  color: #1b1a17 !important;
+}
+.text-paper-muted {
+  color: #6b6458 !important;
+}
+.text-terracotta {
+  color: #b5532f !important;
+}
+.text-gold-glow {
+  color: #e3c27a !important;
+}
+
+.border-terracotta {
+  border-color: #b5532f !important;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
