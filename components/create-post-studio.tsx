@@ -751,8 +751,8 @@ export default function CreatePostStudio() {
                   className="w-full rounded-xl border border-[#6B6458]/25 bg-[#F6F1E6] px-3 py-2 text-xs text-[#1B1A17] cursor-pointer"
                 >
                   {POST_VIBES.map((v) => (
-                    <option key={v.vibe} value={v.vibe}>
-                      {v.vibe}
+                    <option key={v} value={v}>
+                      {v}
                     </option>
                   ))}
                 </select>
