@@ -27,13 +27,13 @@ export default function MyArchivePage() {
       const data = await res.json();
       if (data.posts) {
         const userEmail = session?.user?.email?.toLowerCase();
-        // Show user's posts, or all recent if few
+        // Show only the user's authentic posts
         const filtered = userEmail
           ? data.posts.filter(
               (p: KolkataPost) => p.userEmail?.toLowerCase() === userEmail,
             )
-          : data.posts;
-        setMyPosts(filtered.length > 0 ? filtered : data.posts);
+          : [];
+        setMyPosts(filtered);
       }
     } catch (err) {
       console.error("Failed to fetch user archive:", err);
@@ -149,7 +149,7 @@ export default function MyArchivePage() {
               </div>
 
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
-                <div className="relative aspect-video sm:aspect-square rounded-xl overflow-hidden bg-paper-bg border border-paper-muted/20">
+                <div className="relative aspect-square rounded-xl overflow-hidden bg-paper-bg border border-paper-muted/20">
                   <Image
                     src={post.revampedImageUrl || post.originalImageUrl}
                     alt={post.placeName}

@@ -207,7 +207,7 @@ export default function CreatePostStudio() {
 
             <div className="mt-5">
               {imagePreview ? (
-                <div className="relative overflow-hidden rounded-2xl border border-[#6B6458]/30 bg-[#F6F1E6] max-w-lg mx-auto aspect-video shadow-sm">
+                <div className="relative overflow-hidden rounded-2xl border border-[#6B6458]/30 bg-[#F6F1E6] max-w-md mx-auto aspect-square shadow-sm">
                   <Image
                     src={imagePreview}
                     alt="Upload preview"
@@ -568,8 +568,8 @@ export default function CreatePostStudio() {
           </div>
 
           {/* 1. Revamped Image (Fixed, non-editable) */}
-          <div className="relative overflow-hidden rounded-2xl border border-[#6B6458]/25 bg-[#F6F1E6] shadow-sm">
-            <div className="relative w-full aspect-video sm:aspect-16/10">
+          <div className="relative overflow-hidden rounded-2xl border border-[#6B6458]/25 bg-[#F6F1E6] shadow-sm max-w-md mx-auto w-full">
+            <div className="relative w-full aspect-square">
               <Image
                 src={revampedImageUrl || originalImageUrl}
                 alt={selectedPlace.name}
