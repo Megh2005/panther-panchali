@@ -1,6 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
 import type { PostVibe, TimeOfDay, YearSpan } from "@/lib/models/post";
-import type { TransformationType } from "@/lib/models/journey";
 
 const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
 const apiKey = process.env.CLOUDINARY_API_KEY;
@@ -75,7 +74,6 @@ export async function uploadPostImageWithColors(
       }
     }
 
-    // Fallback palette in case colors array is sparse
     if (extractedColors.length === 0) {
       extractedColors.push("#B5532F", "#EDE4D3", "#1B1A17", "#E3C27A");
     }
@@ -161,58 +159,5 @@ export function revampKolkataImageAtmosphere(
   }
 
   const transformClause = transforms.join(",");
-  return `${parts[0]}/upload/${transformClause}/${parts[1]}`;
-}
-
-export function buildCloudinaryTransformationUrl(
-  baseCloudinaryUrl: string,
-  type: TransformationType,
-  prompt?: string,
-): string {
-  if (!baseCloudinaryUrl.includes("res.cloudinary.com")) {
-    throw new Error(
-      "Target image must be a valid Cloudinary asset to apply transformations.",
-    );
-  }
-
-  const parts = baseCloudinaryUrl.split("/upload/");
-  if (parts.length !== 2) {
-    throw new Error("Invalid Cloudinary asset URL structure.");
-  }
-
-  let transformClause = "";
-
-  switch (type) {
-    case "gen_fill":
-      transformClause = prompt
-        ? `c_pad,ar_21:9,b_gen_fill:${encodeURIComponent(prompt)}`
-        : "c_pad,ar_21:9,b_gen_fill:extend historic North Kolkata mossy alley with wrought iron balconies";
-      break;
-
-    case "gen_replace":
-      transformClause = prompt
-        ? `e_gen_replace:${encodeURIComponent(prompt)}`
-        : "e_gen_replace:from_empty street;to_vibrant Durga Puja festival with vermilion powder and ceremonial umbrellas";
-      break;
-
-    case "celluloid":
-      transformClause =
-        "e_art:film_grain,co_rgb:1B1A17,e_tint:60:F6F1E6:EDE4D3";
-      break;
-
-    case "monsoon_overlay":
-      transformClause =
-        "e_contrast:30,e_vignette:40,co_rgb:6B6458,e_tint:30:F6F1E6";
-      break;
-
-    case "smart_crop":
-      transformClause = "c_fill,g_auto,w_900,h_900,q_auto";
-      break;
-
-    default:
-      transformClause = "q_auto,f_auto";
-      break;
-  }
-
   return `${parts[0]}/upload/${transformClause}/${parts[1]}`;
 }
