@@ -212,6 +212,7 @@ export default function CreatePostStudio() {
                     src={imagePreview}
                     alt="Upload preview"
                     fill
+                    sizes="(max-width: 640px) 100vw, 448px"
                     className="object-cover"
                   />
                   <label
@@ -574,6 +575,7 @@ export default function CreatePostStudio() {
                 src={revampedImageUrl || originalImageUrl}
                 alt={selectedPlace.name}
                 fill
+                sizes="(max-width: 640px) 100vw, 448px"
                 className="object-cover"
               />
             </div>
