@@ -34,6 +34,14 @@ export interface CloudinaryUploadResult {
   colors: string[];
 }
 
+export interface KolkataAtmosphereParams {
+  placeName: string;
+  vibe: PostVibe;
+  yearSpan: YearSpan;
+  timeOfDay: TimeOfDay;
+  userPromptNotes?: string;
+}
+
 function normalizeHexColor(raw: unknown): string | null {
   if (typeof raw !== "string") return null;
   const trimmed = raw.trim();
@@ -184,13 +192,21 @@ export async function uploadPostImageWithColors(
 }
 
 /**
- * Revamps an image with atmospheric Kolkata tones, strictly locked to a 1:1 square aspect ratio.
+ * Creates an authentic Kolkata memory image using Cloudinary's native image creation
+ * and Generative AI background composition.
+ *
+ * Integrates:
+ * 1. True 1:1 Square aspect ratio crop centered on the subject.
+ * 2. Generative background replacement depicting the chosen landmark, festival, time of day, and mood.
+ * 3. Atmospheric color grading and lighting filter nuances.
  */
 export function revampKolkataImageAtmosphere(
   baseCloudinaryUrl: string,
-  vibe: PostVibe = "Aesthetic",
-  yearSpan: YearSpan = "Pooja",
-  timeOfDay: TimeOfDay = "Twilight",
+  paramsOrVibe: PostVibe | KolkataAtmosphereParams = "Aesthetic",
+  optionalYearSpan?: YearSpan,
+  optionalTimeOfDay?: TimeOfDay,
+  optionalPlaceName?: string,
+  optionalUserNotes?: string,
 ): string {
   if (!baseCloudinaryUrl.includes("res.cloudinary.com")) {
     return baseCloudinaryUrl;
@@ -201,58 +217,142 @@ export function revampKolkataImageAtmosphere(
     return baseCloudinaryUrl;
   }
 
-  // Enforce true 1:1 square crop with smart auto gravity
-  const transforms: string[] = ["c_fill,ar_1:1,g_auto", "q_auto", "f_auto"];
+  // Parse parameters whether passed as object or individual arguments
+  const params: KolkataAtmosphereParams =
+    typeof paramsOrVibe === "object"
+      ? paramsOrVibe
+      : {
+          vibe: paramsOrVibe,
+          yearSpan: optionalYearSpan || "Pooja",
+          timeOfDay: optionalTimeOfDay || "Twilight",
+          placeName: optionalPlaceName || "Kolkata",
+          userPromptNotes: optionalUserNotes,
+        };
 
-  // 1. Atmosphere based on vibe
-  switch (vibe) {
-    case "Aesthetic":
-      transforms.push("e_art:film_grain,co_rgb:1B1A17,e_tint:50:F6F1E6:EDE4D3");
-      break;
-    case "Melancholy":
-      transforms.push("e_contrast:25,e_vignette:40,co_rgb:6B6458,e_tint:30:F6F1E6");
-      break;
-    case "Dazzling":
-      transforms.push("e_vibrance:40,e_contrast:20,e_saturation:25");
-      break;
-    case "Party":
-      transforms.push("e_saturation:35,e_vibrance:30,e_tint:20:B5532F:E3C27A");
-      break;
-    case "Sad":
-      transforms.push("e_grayscale,e_contrast:15,e_tint:30:EDE4D3:1B1A17");
-      break;
-    case "Happy":
-      transforms.push("e_contrast:10,e_saturation:20,e_vibrance:25");
-      break;
-  }
+  const { placeName, vibe, yearSpan, timeOfDay, userPromptNotes } = params;
 
-  // 2. Festival / Season lighting nuances
+  // 1. Festival / Season scene description
+  let seasonPhrase = "during Durga Puja festival with traditional pandal lanterns";
   switch (yearSpan) {
     case "Pooja":
-      transforms.push("co_rgb:B5532F,e_tint:15:FFFFFF");
+      seasonPhrase =
+        "during Durga Puja festival with traditional pandal lanterns and celebratory lights";
       break;
     case "Deepavali":
-      transforms.push("co_rgb:E3C27A,e_tint:20:1B1A17");
+      seasonPhrase =
+        "during Deepavali and Kali Puja festival illuminated with golden earthen diyas";
       break;
     case "Poila Baisakh":
-      transforms.push("co_rgb:E3C27A,e_tint:10:F6F1E6");
+      seasonPhrase =
+        "during Poila Baisakh Bengali New Year with festive garlands and celebration";
+      break;
+    case "Winter Season":
+      seasonPhrase =
+        "in Calcutta winter morning mist and golden sunlight";
       break;
     case "Monsoon Rain":
-      transforms.push("e_contrast:20,e_vignette:30");
+      seasonPhrase =
+        "in dramatic Kolkata monsoon rain with glossy street reflections";
       break;
-    default:
+    case "Spring Breeze":
+      seasonPhrase =
+        "in spring season with blossoming krishnachura trees and gentle breeze";
       break;
   }
 
-  // 3. Time of day ambient adjustment
+  // 2. Time of day ambient lighting
+  let timePhrase = "at atmospheric twilight dusk";
+  switch (timeOfDay) {
+    case "Dawn":
+      timePhrase = "at soft golden dawn sunrise";
+      break;
+    case "Morning":
+      timePhrase = "in crisp morning sunlight";
+      break;
+    case "Afternoon":
+      timePhrase = "in warm afternoon light";
+      break;
+    case "Twilight":
+      timePhrase = "at atmospheric twilight dusk";
+      break;
+    case "Evening":
+      timePhrase = "in glowing evening with vintage streetlamps";
+      break;
+    case "Midnight":
+      timePhrase = "at midnight with moody cinematic night lights";
+      break;
+  }
+
+  // 3. Vibe description
+  let vibePhrase = "cinematic vintage aesthetic mood";
+  switch (vibe) {
+    case "Aesthetic":
+      vibePhrase = "artistic cinematic film grain and nostalgic Kolkata aesthetic";
+      break;
+    case "Melancholy":
+      vibePhrase = "moody atmospheric shadows and contemplative sepia nostalgia";
+      break;
+    case "Dazzling":
+      vibePhrase = "radiant golden illumination and sparkling celebration";
+      break;
+    case "Party":
+      vibePhrase = "joyous festive celebration and vibrant colorful carnival lights";
+      break;
+    case "Sad":
+      vibePhrase = "poetic vintage film tones and quiet nostalgic shadows";
+      break;
+    case "Happy":
+      vibePhrase = "bright warm joyful colors and cheerful Kolkata city life";
+      break;
+  }
+
+  // Sanitize scene prompt for Cloudinary Generative AI
+  const cleanPrompt = `${placeName} Kolkata ${seasonPhrase} ${timePhrase} ${vibePhrase} ${userPromptNotes || ""}`
+    .trim()
+    .replace(/[^a-zA-Z0-9\s]/g, "")
+    .replace(/\s+/g, "_");
+
+  // Step 1: Lock to true 1:1 square crop with content-aware framing
+  // Step 2: Generative background replacement blending the landmark, season, and time
+  // Step 3: Atmospheric color grading tailored to the vibe
+  const transformSteps: string[] = [
+    "ar_1:1,c_fill,g_auto",
+    `e_gen_background_replace:prompt_${cleanPrompt}`,
+  ];
+
+  // Step 3: Color grading & lighting nuances
+  const nuanceTransforms: string[] = ["q_auto", "f_auto"];
+
+  switch (vibe) {
+    case "Aesthetic":
+      nuanceTransforms.push("co_rgb:1B1A17,e_tint:30:F6F1E6:EDE4D3");
+      break;
+    case "Melancholy":
+      nuanceTransforms.push("e_contrast:20,e_vignette:30,co_rgb:6B6458,e_tint:20:F6F1E6");
+      break;
+    case "Dazzling":
+      nuanceTransforms.push("e_vibrance:30,e_contrast:15,e_saturation:20");
+      break;
+    case "Party":
+      nuanceTransforms.push("e_saturation:25,e_vibrance:20,e_tint:15:B5532F:E3C27A");
+      break;
+    case "Sad":
+      nuanceTransforms.push("e_grayscale,e_contrast:10,e_tint:20:EDE4D3:1B1A17");
+      break;
+    case "Happy":
+      nuanceTransforms.push("e_contrast:10,e_saturation:15,e_vibrance:20");
+      break;
+  }
+
   if (timeOfDay === "Twilight" || timeOfDay === "Evening") {
-    transforms.push("e_vignette:25");
+    nuanceTransforms.push("e_vignette:20");
   } else if (timeOfDay === "Midnight") {
-    transforms.push("e_contrast:25,e_vignette:45");
+    nuanceTransforms.push("e_contrast:20,e_vignette:35");
   } else if (timeOfDay === "Dawn") {
-    transforms.push("e_tint:15:E3C27A:F6F1E6");
+    nuanceTransforms.push("e_tint:10:E3C27A:F6F1E6");
   }
 
-  const transformClause = transforms.join(",");
-  return `${parts[0]}/upload/${transformClause}/${parts[1]}`;
+  transformSteps.push(nuanceTransforms.join(","));
+
+  return `${parts[0]}/upload/${transformSteps.join("/")}/${parts[1]}`;
 }
