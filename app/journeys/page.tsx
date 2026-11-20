@@ -154,6 +154,7 @@ export default function MyArchivePage() {
                     src={post.revampedImageUrl || post.originalImageUrl}
                     alt={post.placeName}
                     fill
+                    sizes="(max-width: 640px) 100vw, 250px"
                     className="object-cover"
                   />
                 </div>
