@@ -263,14 +263,14 @@ export async function createKolkataCompositeMemory(params: {
       nuanceTransforms.push({ effect: "grayscale" });
       break;
     case "Happy":
-      nuanceTransforms.push({ effect: "contrast:10", effect: "saturation:15" });
+      nuanceTransforms.push({ effect: "contrast:10" }, { effect: "saturation:15" });
       break;
   }
 
   if (params.timeOfDay === "Twilight" || params.timeOfDay === "Evening") {
     nuanceTransforms.push({ effect: "vignette:25" });
   } else if (params.timeOfDay === "Midnight") {
-    nuanceTransforms.push({ effect: "contrast:20", effect: "vignette:35" });
+    nuanceTransforms.push({ effect: "contrast:20" }, { effect: "vignette:35" });
   } else if (params.timeOfDay === "Dawn") {
     nuanceTransforms.push({
       color: "rgb:E3C27A",
