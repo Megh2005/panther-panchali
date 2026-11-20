@@ -8,10 +8,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# Pather Panchali: The Living Canvas — Agent Guidelines & Architecture
+# Panther Panchali: The Living Canvas — Agent Guidelines & Architecture
 
 ## 1. Project Overview & Core Concept
-"Pather Panchali: The Living Canvas" is a Next.js (App Router), TypeScript, and Tailwind CSS community platform where visitors and citizens celebrate the living memory of Kolkata.
+"Panther Panchali: The Living Canvas" is a Next.js (App Router), TypeScript, and Tailwind CSS community platform where visitors and citizens celebrate the living memory of Kolkata.
 
 Users choose an iconic Kolkata landmark (with exact OpenStreetMap coordinates), select the time of day, span of the year (including Poila Baisakh, Durga Pooja, and Deepavali), choose an atmospheric vibe (default: Aesthetic), and optionally provide personal memory details. Stability AI generates an authentic 1:1 square photograph from scratch using its base model (SD 3.5 Medium) with Core fallback. Cloudinary extracts dominant colors into a 5-color palette, and Gemini synthesizes an evocative plain-text poetic caption with curated hashtags. Users review and edit details before publishing directly to the community feed, where posts feature interactive OpenStreetMap views, like toggle, comment discussions, and share capabilities.
 
@@ -34,7 +34,7 @@ panther-panchali/
 │   │           └── share/route.ts       # Share counter increment (POST)
 │   ├── auth/page.tsx                 # Single-purpose Google OAuth screen
 │   ├── canvas/page.tsx               # Create Post Studio (Landmark, Light, Season, Vibe, Review, Publish)
-│   ├── explore/page.tsx              # Pather Panchali Feed with OpenStreetMap
+│   ├── explore/page.tsx              # Panther Panchali Feed with OpenStreetMap
 │   ├── journeys/page.tsx             # My Archive of published Kolkata posts
 │   ├── posts/[id]/page.tsx           # Dedicated single post & share target view
 │   ├── profile/page.tsx              # Minimal Account Profile (avatar, name, email, user ID)
