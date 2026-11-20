@@ -1,0 +1,34 @@
+import type { NextAuthConfig } from "next-auth";
+
+export const authConfig: NextAuthConfig = {
+  pages: {
+    signIn: "/auth",
+    error: "/auth",
+  },
+  callbacks: {
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isProtected = [
+        "/canvas",
+        "/story",
+        "/journeys",
+        "/explore",
+        "/profile",
+        "/thread",
+      ].some((path) => nextUrl.pathname.startsWith(path));
+
+      if (isProtected) {
+        if (isLoggedIn) return true;
+        return false;
+      }
+      return true;
+    },
+    async redirect({ url, baseUrl }) {
+      if (url === "/" || url === baseUrl || url.endsWith("/")) {
+        return `${baseUrl}/`;
+      }
+      return `${baseUrl}/profile`;
+    },
+  },
+  providers: [],
+};
