@@ -1,23 +1,31 @@
 import { v2 as cloudinary } from "cloudinary";
 import type { PostVibe, TimeOfDay, YearSpan } from "@/lib/models/post";
 
-const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-const apiKey = process.env.CLOUDINARY_API_KEY;
-const apiSecret = process.env.CLOUDINARY_API_SECRET;
+function getCloudinary() {
+  const cloudName =
+    process.env.CLOUDINARY_CLOUD_NAME ||
+    process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const apiKey =
+    process.env.CLOUDINARY_API_KEY ||
+    process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+  const apiSecret =
+    process.env.CLOUDINARY_API_SECRET ||
+    process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
 
-cloudinary.config({
-  cloud_name: cloudName,
-  api_key: apiKey,
-  api_secret: apiSecret,
-  secure: true,
-});
-
-function assertCloudinaryConfigured(): void {
   if (!cloudName || !apiKey || !apiSecret) {
     throw new Error(
       "Cloudinary server credentials are missing from environment configuration.",
     );
   }
+
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
+    secure: true,
+  });
+
+  return cloudinary;
 }
 
 export interface CloudinaryUploadResult {
@@ -26,14 +34,55 @@ export interface CloudinaryUploadResult {
   colors: string[];
 }
 
+function normalizeHexColor(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const trimmed = raw.trim();
+
+  // If already #RRGGBB
+  if (/^#[0-9a-fA-F]{6}$/.test(trimmed)) {
+    return trimmed.toUpperCase();
+  }
+
+  // If RRGGBB without #
+  if (/^[0-9a-fA-F]{6}$/.test(trimmed)) {
+    return `#${trimmed.toUpperCase()}`;
+  }
+
+  // If #RGB short form
+  if (/^#[0-9a-fA-F]{3}$/.test(trimmed)) {
+    const r = trimmed[1];
+    const g = trimmed[2];
+    const b = trimmed[3];
+    return `#${r}${r}${g}${g}${b}${b}`.toUpperCase();
+  }
+
+  // If RGB short form without #
+  if (/^[0-9a-fA-F]{3}$/.test(trimmed)) {
+    const r = trimmed[0];
+    const g = trimmed[1];
+    const b = trimmed[2];
+    return `#${r}${r}${g}${g}${b}${b}`.toUpperCase();
+  }
+
+  return null;
+}
+
+const DEFAULT_KOLKATA_PALETTE = [
+  "#B5532F", // Terracotta
+  "#EDE4D3", // Morning Paper Card
+  "#1B1A17", // Vintage Ink
+  "#E3C27A", // Soft Gold Glow
+  "#6B6458", // Muted Sepia
+];
+
 export async function uploadToCloudinary(
   imageSource: string,
   folder = "pather_panchali",
 ): Promise<{ url: string; publicId: string }> {
-  assertCloudinaryConfigured();
+  const cld = getCloudinary();
 
   try {
-    const uploadRes = await cloudinary.uploader.upload(imageSource, {
+    const uploadRes = await cld.uploader.upload(imageSource, {
       folder,
       resource_type: "image",
     });
@@ -55,33 +104,75 @@ export async function uploadPostImageWithColors(
   imageSource: string,
   folder = "pather_panchali/posts",
 ): Promise<CloudinaryUploadResult> {
-  assertCloudinaryConfigured();
+  const cld = getCloudinary();
 
   try {
-    const uploadRes = await cloudinary.uploader.upload(imageSource, {
+    const uploadRes = await cld.uploader.upload(imageSource, {
       folder,
       resource_type: "image",
       colors: true,
+      predominant: true,
     });
 
-    // Extract dominant hex colors analyzed by Cloudinary AI
-    const extractedColors: string[] = [];
+    const candidateColors: string[] = [];
+
+    // 1. Extract from uploadRes.colors: typically [["#HEX", score], ...] or [{color: "#HEX", ...}]
     if (Array.isArray(uploadRes.colors)) {
       for (const item of uploadRes.colors) {
-        if (Array.isArray(item) && typeof item[0] === "string") {
-          extractedColors.push(item[0]);
+        if (Array.isArray(item)) {
+          const hex = normalizeHexColor(item[0]);
+          if (hex && !candidateColors.includes(hex)) {
+            candidateColors.push(hex);
+          }
+        } else if (item && typeof item === "object") {
+          const raw = (item as { color?: unknown }).color;
+          const hex = normalizeHexColor(raw);
+          if (hex && !candidateColors.includes(hex)) {
+            candidateColors.push(hex);
+          }
         }
       }
     }
 
-    if (extractedColors.length === 0) {
-      extractedColors.push("#B5532F", "#EDE4D3", "#1B1A17", "#E3C27A");
+    // 2. Extract from uploadRes.predominant?.cloudinary or google
+    const predominant = uploadRes.predominant as
+      | { cloudinary?: unknown[][]; google?: unknown[][] }
+      | undefined;
+
+    if (predominant?.cloudinary && Array.isArray(predominant.cloudinary)) {
+      for (const item of predominant.cloudinary) {
+        if (Array.isArray(item)) {
+          const hex = normalizeHexColor(item[0]);
+          if (hex && !candidateColors.includes(hex)) {
+            candidateColors.push(hex);
+          }
+        }
+      }
+    }
+
+    if (predominant?.google && Array.isArray(predominant.google)) {
+      for (const item of predominant.google) {
+        if (Array.isArray(item)) {
+          const hex = normalizeHexColor(item[0]);
+          if (hex && !candidateColors.includes(hex)) {
+            candidateColors.push(hex);
+          }
+        }
+      }
+    }
+
+    // 3. Complement with Kolkata heritage palette if fewer than 4 distinct colors
+    for (const fallback of DEFAULT_KOLKATA_PALETTE) {
+      if (candidateColors.length >= 5) break;
+      if (!candidateColors.includes(fallback)) {
+        candidateColors.push(fallback);
+      }
     }
 
     return {
       url: uploadRes.secure_url,
       publicId: uploadRes.public_id,
-      colors: extractedColors.slice(0, 6),
+      colors: candidateColors.slice(0, 5),
     };
   } catch (error) {
     const message =
@@ -92,6 +183,9 @@ export async function uploadPostImageWithColors(
   }
 }
 
+/**
+ * Revamps an image with atmospheric Kolkata tones, strictly locked to a 1:1 square aspect ratio.
+ */
 export function revampKolkataImageAtmosphere(
   baseCloudinaryUrl: string,
   vibe: PostVibe = "Aesthetic",
@@ -107,7 +201,8 @@ export function revampKolkataImageAtmosphere(
     return baseCloudinaryUrl;
   }
 
-  const transforms: string[] = ["q_auto", "f_auto"];
+  // Enforce true 1:1 square crop with smart auto gravity
+  const transforms: string[] = ["c_fill,ar_1:1,g_auto", "q_auto", "f_auto"];
 
   // 1. Atmosphere based on vibe
   switch (vibe) {
