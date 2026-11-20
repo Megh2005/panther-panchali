@@ -118,7 +118,7 @@ export default function SinglePostPage(props: {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
-          title: `${post.placeName} — Facebook of Kolkata`,
+          title: `${post.placeName} — Pather Panchali`,
           text: `"${post.caption}"`,
           url: shareUrl,
         });
@@ -177,14 +177,20 @@ export default function SinglePostPage(props: {
   const comments = post.comments || [];
 
   return (
-    <main className="min-h-screen bg-paper-bg text-paper-text pt-8 pb-28 px-4">
+    <main className="relative min-h-screen bg-paper-bg text-paper-text pt-8 pb-28 px-4 overflow-hidden">
+      {/* Warm ambient background glow consistent with Homepage */}
+      <div
+        className="pointer-events-none absolute top-20 left-1/2 -translate-x-1/2 h-[60vw] max-h-[600px] w-[60vw] max-w-[800px] rounded-full bg-radial from-[#E3C27A]/20 via-[#E3C27A]/5 to-transparent blur-3xl opacity-75"
+        aria-hidden="true"
+      />
+
       {toastMessage && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 rounded-full border border-terracotta/40 bg-paper-text text-paper-bg px-6 py-2 text-xs font-semibold tracking-wider shadow-lg">
           {toastMessage}
         </div>
       )}
 
-      <div className="max-w-2xl mx-auto">
+      <div className="relative z-10 max-w-2xl mx-auto">
         <Link
           href="/explore"
           className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-paper-muted hover:text-terracotta transition-colors mb-6"

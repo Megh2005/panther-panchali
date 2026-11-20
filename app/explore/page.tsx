@@ -42,7 +42,7 @@ export default function ExploreFeedPage() {
 
   const fetchPosts = useCallback(async () => {
     try {
-      const res = await fetch("/api/posts");
+      const res = await fetch("/api/posts", { cache: "no-store" });
       const data = await res.json();
       if (Array.isArray(data.posts)) {
         setPosts(data.posts);
@@ -85,9 +85,9 @@ export default function ExploreFeedPage() {
       const el = document.getElementById(`post-${targetPostId}`);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
-        el.classList.add("ring-2", "ring-[#B5532F]", "ring-offset-4");
+        el.classList.add("ring-2", "ring-terracotta", "ring-offset-4");
         setTimeout(() => {
-          el.classList.remove("ring-2", "ring-[#B5532F]", "ring-offset-4");
+          el.classList.remove("ring-2", "ring-terracotta", "ring-offset-4");
         }, 3000);
       }
     }
@@ -203,7 +203,7 @@ export default function ExploreFeedPage() {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
-          title: `${post.placeName} — Facebook of Kolkata`,
+          title: `${post.placeName} — Pather Panchali`,
           text: `"${post.caption}"\n\nExperience this memory of Kolkata:`,
           url: shareUrl,
         });
@@ -225,7 +225,13 @@ export default function ExploreFeedPage() {
   };
 
   return (
-    <main className="min-h-screen bg-paper-bg text-paper-text pt-10 pb-28 px-4">
+    <main className="relative min-h-screen bg-paper-bg text-paper-text pt-10 pb-28 px-4 overflow-hidden">
+      {/* Warm ambient background glow consistent with Homepage */}
+      <div
+        className="pointer-events-none absolute top-20 left-1/2 -translate-x-1/2 h-[60vw] max-h-[600px] w-[60vw] max-w-[800px] rounded-full bg-radial from-[#E3C27A]/20 via-[#E3C27A]/5 to-transparent blur-3xl opacity-75"
+        aria-hidden="true"
+      />
+
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 rounded-full border border-terracotta/40 bg-paper-text text-paper-bg px-6 py-2.5 text-xs font-semibold tracking-wider shadow-lg flex items-center gap-2 animate-bounce">
@@ -235,12 +241,12 @@ export default function ExploreFeedPage() {
       )}
 
       {/* Feed Header */}
-      <div className="max-w-2xl mx-auto flex flex-col items-center text-center mb-8">
+      <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center text-center mb-8">
         <span
-          className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta"
+          className="text-xs font-semibold uppercase tracking-[0.2em] text-[#B5532F]"
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         >
-          Community Feed · Facebook of Kolkata
+          Community Feed · Pather Panchali
         </span>
         <h1
           className="mt-2 text-3xl sm:text-5xl font-light tracking-normal text-paper-text"
@@ -255,7 +261,7 @@ export default function ExploreFeedPage() {
           className="mt-2 text-base italic text-paper-muted max-w-lg"
           style={{ fontFamily: "var(--font-newsreader), serif" }}
         >
-          Every corner of the city, captured and revamping through living memories,
+          Every corner of the city, captured and synthesized through living memories,
           festivals, and heritage atmospheres.
         </p>
 
@@ -275,7 +281,7 @@ export default function ExploreFeedPage() {
 
           <Link
             href="/canvas"
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-terracotta px-5 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white shadow-xs hover:bg-paper-text transition-colors"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-terracotta px-5 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white shadow-xs hover:bg-paper-text hover:scale-105 transition-all duration-300"
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
           >
             <span>Create Post</span>
@@ -285,7 +291,7 @@ export default function ExploreFeedPage() {
 
       {/* Feed Stream */}
       {loading ? (
-        <div className="mt-16 flex flex-col items-center justify-center gap-3">
+        <div className="relative z-10 mt-16 flex flex-col items-center justify-center gap-3">
           <LuLoaderCircle size={28} className="animate-spin text-terracotta" />
           <p
             className="text-sm italic text-paper-muted"
@@ -295,11 +301,14 @@ export default function ExploreFeedPage() {
           </p>
         </div>
       ) : posts.length === 0 ? (
-        <div className="mt-12 max-w-md mx-auto rounded-2xl border border-paper-muted/20 bg-paper-card p-8 text-center shadow-sm">
+        <div className="relative z-10 mt-12 max-w-md mx-auto rounded-3xl border border-paper-muted/20 bg-paper-card p-8 text-center shadow-sm">
           <LuMapPin size={32} className="mx-auto text-terracotta" />
           <h2
             className="mt-3 text-2xl font-light text-paper-text"
-            style={{ fontFamily: "var(--font-fraunces), serif" }}
+            style={{
+              fontFamily: "var(--font-fraunces), serif",
+              fontVariationSettings: '"opsz" 36, "SOFT" 85, "WONK" 1',
+            }}
           >
             No Posts in the Feed Yet
           </h2>
@@ -307,18 +316,18 @@ export default function ExploreFeedPage() {
             className="mt-1.5 text-sm italic text-paper-muted"
             style={{ fontFamily: "var(--font-newsreader), serif" }}
           >
-            Be the first to upload a photo and publish a moment of Kolkata.
+            Be the first to synthesize and publish a memory of Kolkata.
           </p>
           <Link
             href="/canvas"
-            className="mt-5 inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-white hover:bg-paper-text transition-colors"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-white hover:bg-paper-text hover:scale-105 transition-all duration-300"
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
           >
             <span>Create First Post</span>
           </Link>
         </div>
       ) : (
-        <div className="max-w-2xl mx-auto flex flex-col gap-8">
+        <div className="relative z-10 max-w-2xl mx-auto flex flex-col gap-8">
           {posts.map((post) => {
             const isLiked = likedPosts[post.id] || false;
             const currentLikes = likeCounts[post.id] ?? post.likesCount ?? 0;
