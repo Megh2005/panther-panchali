@@ -9,10 +9,10 @@ import {
   LuCompass,
   LuGlobe,
   LuHouse,
+  LuImagePlus,
   LuLogIn,
   LuLogOut,
   LuMenu,
-  LuPalette,
   LuRoute,
   LuUser,
   LuX,
@@ -27,10 +27,9 @@ interface NavDestination {
 
 const AUTHENTICATED_DESTINATIONS: NavDestination[] = [
   { id: "home", name: "Home", href: "/", icon: LuHouse },
-  { id: "canvas", name: "The Canvas", href: "/canvas", icon: LuPalette },
-  { id: "story", name: "Begin a story", href: "/story", icon: LuCompass },
-  { id: "journeys", name: "My journeys", href: "/journeys", icon: LuRoute },
-  { id: "explore", name: "Explore", href: "/explore", icon: LuGlobe },
+  { id: "canvas", name: "Create Post", href: "/canvas", icon: LuImagePlus },
+  { id: "explore", name: "Kolkata Feed", href: "/explore", icon: LuGlobe },
+  { id: "journeys", name: "My Archive", href: "/journeys", icon: LuRoute },
   { id: "profile", name: "Profile", href: "/profile", icon: LuUser },
 ];
 
