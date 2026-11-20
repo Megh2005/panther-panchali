@@ -2,10 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/api/auth";
 import { KOLKATA_PLACES } from "@/lib/constants/kolkata-places";
 import type { PostVibe, TimeOfDay, YearSpan } from "@/lib/models/post";
-import {
-  revampKolkataImageAtmosphere,
-  uploadPostImageWithColors,
-} from "@/lib/services/cloudinary";
+import { createKolkataCompositeMemory } from "@/lib/services/cloudinary";
 import { generateKolkataPostCaption } from "@/lib/services/gemini";
 
 export async function POST(req: Request) {
@@ -48,22 +45,16 @@ export async function POST(req: Request) {
     const selectedYearSpan = yearSpan || "Pooja";
     const selectedVibe = vibe || "Aesthetic";
 
-    // 1. Upload user's photograph to Cloudinary with AI color extraction
-    const uploadResult = await uploadPostImageWithColors(imageSource);
-
-    // 2. Synthesize Kolkata memory using Cloudinary's native Generative AI & atmospheric composition
-    const revampedImageUrl = revampKolkataImageAtmosphere(uploadResult.url, {
-      placeName: place.name,
+    // 1. Synthesize Kolkata graphic memory combining the landmark scene, festival lighting, and user portrait
+    const compositeResult = await createKolkataCompositeMemory({
+      userImageSource: imageSource,
+      place,
       vibe: selectedVibe,
       yearSpan: selectedYearSpan,
       timeOfDay: selectedTime,
-      userPromptNotes,
     });
 
-    // Warm up Cloudinary generative processing in background
-    void fetch(revampedImageUrl).catch(() => {});
-
-    // 3. Command Gemini to synthesize an evocative plain-text caption and hashtags
+    // 2. Command Gemini to synthesize an evocative plain-text caption and hashtags
     const captionResult = await generateKolkataPostCaption({
       placeName: place.name,
       timeOfDay: selectedTime,
@@ -74,9 +65,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      originalImageUrl: uploadResult.url,
-      revampedImageUrl,
-      extractedColors: uploadResult.colors,
+      originalImageUrl: compositeResult.originalImageUrl,
+      revampedImageUrl: compositeResult.revampedImageUrl,
+      extractedColors: compositeResult.extractedColors,
       caption: captionResult.caption,
       hashtags: captionResult.hashtags,
       place,
