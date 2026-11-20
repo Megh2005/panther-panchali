@@ -31,7 +31,7 @@ const instrumentSans = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Pather Panchali: The Living Canvas",
+  title: "Panther Panchali: The Living Canvas",
   description: "Feel Kolkata through a living story.",
 };
 

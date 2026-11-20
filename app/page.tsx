@@ -14,7 +14,7 @@ export default function Home() {
           className="text-xs font-semibold uppercase tracking-[0.2em] text-[#B5532F]"
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         >
-          Pather Panchali
+          Panther Panchali
         </span>
 
         <h1
