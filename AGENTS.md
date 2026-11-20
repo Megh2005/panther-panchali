@@ -60,7 +60,8 @@ panther-panchali/
 │   └── services/
 │       ├── cloudinary.ts             # Color extraction, media storage & atmospheric revamp
 │       ├── gemini.ts                 # Plain text poetic caption & hashtag synthesizer
-│       └── mailer.ts                 # Post publication email dispatch service
+│       ├── mailer.ts                 # Post publication email dispatch service
+│       └── stability.ts              # Stability AI image generation & revamp engine
 │
 ├── auth.config.ts                    # Edge-compatible Auth.js v5 route protection config
 ├── auth.ts                           # NextAuth Auth.js v5 handlers, session and Google OAuth config

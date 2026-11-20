@@ -5,8 +5,13 @@ import type { PostVibe, TimeOfDay, YearSpan } from "@/lib/models/post";
 import {
   revampKolkataImageAtmosphere,
   uploadPostImageWithColors,
+  uploadToCloudinary,
 } from "@/lib/services/cloudinary";
 import { generateKolkataPostCaption } from "@/lib/services/gemini";
+import {
+  generateKolkataImageWithStability,
+  type StabilityGenerationResult,
+} from "@/lib/services/stability";
 
 export async function POST(req: Request) {
   try {
@@ -42,21 +47,64 @@ export async function POST(req: Request) {
       );
     }
 
-    const place = KOLKATA_PLACES.find((p) => p.id === placeId) || KOLKATA_PLACES[0];
+    const place =
+      KOLKATA_PLACES.find((p) => p.id === placeId) || KOLKATA_PLACES[0];
     const selectedTime = timeOfDay || "Twilight";
     const selectedYearSpan = yearSpan || "Pooja";
     const selectedVibe = vibe || "Aesthetic";
 
-    // 1. Upload to Cloudinary with AI color extraction
-    const uploadResult = await uploadPostImageWithColors(imageSource);
+    // 1. Generate or revamp the photograph using Stability AI API
+    let stabilityResult: StabilityGenerationResult | null = null;
+    try {
+      stabilityResult = await generateKolkataImageWithStability({
+        imageSource,
+        placeName: place.name,
+        timeOfDay: selectedTime,
+        yearSpan: selectedYearSpan,
+        vibe: selectedVibe,
+        userPromptNotes,
+      });
+    } catch (stabErr) {
+      console.warn(
+        "Stability AI generation warning (proceeding with direct atmosphere revamp):",
+        stabErr instanceof Error ? stabErr.message : stabErr,
+      );
+    }
 
-    // 2. Revamp image atmosphere using the selected place, time, festival, and vibe
-    const revampedImageUrl = revampKolkataImageAtmosphere(
-      uploadResult.url,
-      selectedVibe,
-      selectedYearSpan,
-      selectedTime,
-    );
+    // 2. Upload generated or revamped image to Cloudinary with AI color extraction
+    let finalImageUrl: string;
+    let originalImageUrl: string;
+    let extractedColors: string[];
+
+    if (stabilityResult) {
+      // Convert Stability image buffer to data URI for Cloudinary ingestion & color extraction
+      const stabilityDataUri = `data:${stabilityResult.mimeType};base64,${stabilityResult.imageBuffer.toString("base64")}`;
+
+      const [stabilityUpload, originalUpload] = await Promise.all([
+        uploadPostImageWithColors(stabilityDataUri),
+        uploadToCloudinary(imageSource).catch(() => null),
+      ]);
+
+      finalImageUrl = revampKolkataImageAtmosphere(
+        stabilityUpload.url,
+        selectedVibe,
+        selectedYearSpan,
+        selectedTime,
+      );
+      originalImageUrl = originalUpload?.url || stabilityUpload.url;
+      extractedColors = stabilityUpload.colors;
+    } else {
+      // Fallback: direct Cloudinary upload with atmospheric color revamp
+      const directUpload = await uploadPostImageWithColors(imageSource);
+      finalImageUrl = revampKolkataImageAtmosphere(
+        directUpload.url,
+        selectedVibe,
+        selectedYearSpan,
+        selectedTime,
+      );
+      originalImageUrl = directUpload.url;
+      extractedColors = directUpload.colors;
+    }
 
     // 3. Command Gemini to synthesize a specific plain text caption and hashtags
     const captionResult = await generateKolkataPostCaption({
@@ -69,9 +117,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      originalImageUrl: uploadResult.url,
-      revampedImageUrl,
-      extractedColors: uploadResult.colors,
+      originalImageUrl,
+      revampedImageUrl: finalImageUrl,
+      extractedColors,
       caption: captionResult.caption,
       hashtags: captionResult.hashtags,
       place,
