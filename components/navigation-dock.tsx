@@ -293,7 +293,7 @@ export default function NavigationDock() {
                 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#B5532F] block"
                 style={{ fontFamily: "var(--font-instrument), sans-serif" }}
               >
-                Pather Panchali
+                Panther Panchali
               </span>
               <h2
                 className="text-xl font-light text-[#1B1A17]"
