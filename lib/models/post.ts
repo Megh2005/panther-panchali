@@ -32,6 +32,16 @@ export interface KolkataPlace {
   area: string;
 }
 
+export interface PostComment {
+  id: string;
+  userId: string;
+  userEmail: string;
+  userName: string;
+  userAvatar?: string;
+  text: string;
+  createdAt: string | Date;
+}
+
 export interface KolkataPost {
   _id?: string;
   id: string;
@@ -54,5 +64,8 @@ export interface KolkataPost {
   hashtags: string[];
   extractedColors: string[];
   likesCount: number;
+  likedBy?: string[];
+  comments?: PostComment[];
+  sharesCount?: number;
   createdAt: Date;
 }

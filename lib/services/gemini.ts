@@ -28,6 +28,7 @@ export async function generateKolkataPostCaption(params: {
 Generate a poetic, atmospheric, and culturally grounded social feed post caption and relevant hashtags for an image.
 Details:
 - Location / Landmark: ${placeName}
+- Visual Format: Classic 1:1 Square Instagram/Facebook photo framed at the landmark
 - Time of Day: ${timeOfDay}
 - Season / Festival / Span of Year: ${yearSpan}
 - Vibe / Mood: ${vibe}
