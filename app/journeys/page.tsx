@@ -47,8 +47,14 @@ export default function MyArchivePage() {
   }, [fetchPosts]);
 
   return (
-    <main className="min-h-screen bg-paper-bg text-paper-text pt-12 pb-28 px-4">
-      <div className="max-w-3xl mx-auto flex flex-col items-center text-center mb-8">
+    <main className="relative min-h-screen bg-paper-bg text-paper-text pt-12 pb-28 px-4 overflow-hidden">
+      {/* Warm ambient background glow consistent with Homepage */}
+      <div
+        className="pointer-events-none absolute top-20 left-1/2 -translate-x-1/2 h-[60vw] max-h-[600px] w-[60vw] max-w-[800px] rounded-full bg-radial from-[#E3C27A]/20 via-[#E3C27A]/5 to-transparent blur-3xl opacity-75"
+        aria-hidden="true"
+      />
+
+      <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center text-center mb-8">
         <span
           className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta"
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
@@ -68,13 +74,13 @@ export default function MyArchivePage() {
           className="mt-2 text-base italic text-paper-muted max-w-lg"
           style={{ fontFamily: "var(--font-newsreader), serif" }}
         >
-          All your revamping moments, heritage landmarks, and sensory snapshots
+          All your synthesized memories, heritage landmarks, and sensory snapshots
           preserved across the seasons of the city.
         </p>
 
         <Link
           href="/canvas"
-          className="mt-5 inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-xs hover:bg-paper-text transition-colors"
+          className="mt-5 inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-xs hover:bg-paper-text hover:scale-105 transition-all duration-300"
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         >
           <LuImagePlus size={15} />
@@ -83,7 +89,7 @@ export default function MyArchivePage() {
       </div>
 
       {loading ? (
-        <div className="mt-16 flex flex-col items-center justify-center gap-3">
+        <div className="relative z-10 mt-16 flex flex-col items-center justify-center gap-3">
           <LuLoaderCircle size={28} className="animate-spin text-terracotta" />
           <p
             className="text-sm italic text-paper-muted"
@@ -93,11 +99,14 @@ export default function MyArchivePage() {
           </p>
         </div>
       ) : myPosts.length === 0 ? (
-        <div className="mt-12 max-w-md mx-auto rounded-2xl border border-paper-muted/20 bg-paper-card p-8 text-center shadow-sm">
+        <div className="relative z-10 mt-12 max-w-md mx-auto rounded-3xl border border-paper-muted/20 bg-paper-card p-8 text-center shadow-sm">
           <LuMapPin size={32} className="mx-auto text-terracotta" />
           <h2
             className="mt-3 text-2xl font-light text-paper-text"
-            style={{ fontFamily: "var(--font-fraunces), serif" }}
+            style={{
+              fontFamily: "var(--font-fraunces), serif",
+              fontVariationSettings: '"opsz" 36, "SOFT" 85, "WONK" 1',
+            }}
           >
             No Archive Posts Yet
           </h2>
@@ -105,18 +114,18 @@ export default function MyArchivePage() {
             className="mt-1.5 text-sm italic text-paper-muted"
             style={{ fontFamily: "var(--font-newsreader), serif" }}
           >
-            Upload your photo to craft your first Kolkata moment.
+            Synthesize a memory to craft your first Kolkata moment.
           </p>
           <Link
             href="/canvas"
-            className="mt-5 inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-white hover:bg-paper-text transition-colors"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-white hover:bg-paper-text hover:scale-105 transition-all duration-300"
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
           >
             <span>Create Post</span>
           </Link>
         </div>
       ) : (
-        <div className="max-w-2xl mx-auto flex flex-col gap-6">
+        <div className="relative z-10 max-w-2xl mx-auto flex flex-col gap-6">
           {myPosts.map((post) => (
             <article
               key={post.id}
