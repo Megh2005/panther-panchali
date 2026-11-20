@@ -203,7 +203,7 @@ export default function ExploreFeedPage() {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
-          title: `${post.placeName} — Pather Panchali`,
+          title: `${post.placeName} — Panther Panchali`,
           text: `"${post.caption}"\n\nExperience this memory of Kolkata:`,
           url: shareUrl,
         });
@@ -246,7 +246,7 @@ export default function ExploreFeedPage() {
           className="text-xs font-semibold uppercase tracking-[0.2em] text-[#B5532F]"
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         >
-          Community Feed · Pather Panchali
+          Community Feed · Panther Panchali
         </span>
         <h1
           className="mt-2 text-3xl sm:text-5xl font-light tracking-normal text-paper-text"

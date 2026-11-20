@@ -188,7 +188,7 @@ export default function CreatePostStudio() {
                 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#B5532F]"
                 style={{ fontFamily: "var(--font-instrument), sans-serif" }}
               >
-                Post Studio · Pather Panchali
+                Post Studio · Panther Panchali
               </span>
             </div>
             <h1

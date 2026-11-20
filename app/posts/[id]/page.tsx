@@ -118,7 +118,7 @@ export default function SinglePostPage(props: {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
-          title: `${post.placeName} — Pather Panchali`,
+          title: `${post.placeName} — Panther Panchali`,
           text: `"${post.caption}"`,
           url: shareUrl,
         });
