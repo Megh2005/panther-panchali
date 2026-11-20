@@ -10,11 +10,9 @@ export const authConfig: NextAuthConfig = {
       const isLoggedIn = !!auth?.user;
       const isProtected = [
         "/canvas",
-        "/story",
-        "/journeys",
         "/explore",
+        "/journeys",
         "/profile",
-        "/thread",
       ].some((path) => nextUrl.pathname.startsWith(path));
 
       if (isProtected) {

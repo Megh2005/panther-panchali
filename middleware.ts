@@ -7,14 +7,11 @@ export const config = {
   matcher: [
     "/canvas",
     "/canvas/:path*",
-    "/story",
-    "/story/:path*",
-    "/journeys",
-    "/journeys/:path*",
     "/explore",
     "/explore/:path*",
+    "/journeys",
+    "/journeys/:path*",
     "/profile",
     "/profile/:path*",
-    "/thread/:path*",
   ],
 };
