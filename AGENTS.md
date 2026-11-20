@@ -24,20 +24,14 @@ panther-panchali/
 ├── app/                              # Next.js App Router (Routes, Layouts & Endpoints ONLY)
 │   ├── api/
 │   │   ├── auth/[...nextauth]/route.ts  # NextAuth Auth.js v5 route handler
-│   │   ├── posts/
-│   │   │   ├── route.ts                 # Feed retrieval (GET) & publishing (POST)
-│   │   │   └── generate/route.ts        # Image revamp & caption synthesis
-│   │   ├── canvas/transform/route.ts    # In-scene atmospheric transformations
-│   │   ├── export/email/route.ts        # Story email dispatch
-│   │   ├── story/generate/route.ts      # Narrative synthesis pipeline
-│   │   └── threads/route.ts             # Journey threads persistence & forking
+│   │   └── posts/
+│   │       ├── route.ts                 # Feed retrieval (GET) & publishing (POST)
+│   │       └── generate/route.ts        # Image revamp & caption synthesis
 │   ├── auth/page.tsx                 # Single-purpose Google OAuth screen
 │   ├── canvas/page.tsx               # Create Post Studio (Upload, Select, Revamp, Edit, Publish)
 │   ├── explore/page.tsx              # Facebook of Kolkata Feed with OpenStreetMap
 │   ├── journeys/page.tsx             # My Archive of published Kolkata posts
 │   ├── profile/page.tsx              # Minimal Account Profile (avatar, name, email, user ID)
-│   ├── story/page.tsx                # Redirects seamlessly to /canvas
-│   ├── thread/[id]/export/page.tsx   # Archival storybook PDF view (Suspense-wrapped)
 │   ├── globals.css                   # Modern Tailwind CSS v4 theme tokens & base styles
 │   ├── layout.tsx                    # Root layout & Google fonts configuration
 │   └── page.tsx                      # Minimal hero landing page
@@ -46,8 +40,7 @@ panther-panchali/
 │   ├── auth-provider.tsx             # NextAuth SessionProvider wrapper
 │   ├── create-post-studio.tsx        # Upload, place selection, revamp, and plain-text editor
 │   ├── open-street-map-modal.tsx     # High-visibility interactive OpenStreetMap modal
-│   ├── navigation-dock.tsx           # State-dependent dual-form navigation dock
-│   └── product-tour.tsx              # Accessible guided tour modal
+│   └── navigation-dock.tsx           # State-dependent dual-form navigation dock
 │
 ├── lib/                              # Shared backend utilities, adapters & domain models
 │   ├── api/
@@ -55,16 +48,12 @@ panther-panchali/
 │   ├── constants/
 │   │   └── kolkata-places.ts         # Heritage spots, coordinates, vibes, and festival seasons
 │   ├── mongodb.ts                    # Native MongoDB client connection
-│   ├── validation.ts                 # Type guards and request validators
 │   ├── models/
 │   │   ├── post.ts                   # KolkataPost, KolkataPlace, TimeOfDay, YearSpan, PostVibe
-│   │   ├── journey.ts                # TypeScript domain models (Thread, Chapter, Branch)
 │   │   └── user.ts                   # User domain model
 │   └── services/
 │       ├── cloudinary.ts             # Color extraction, media storage & atmospheric revamp
-│       ├── gemini.ts                 # Plain text poetic caption & hashtag synthesizer
-│       ├── mailer.ts                 # Story dispatch email service
-│       └── stability.ts              # Atmospheric imagery generator
+│       └── gemini.ts                 # Plain text poetic caption & hashtag synthesizer
 │
 ├── auth.config.ts                    # Edge-compatible Auth.js v5 route protection config
 ├── auth.ts                           # NextAuth Auth.js v5 handlers, session and Google OAuth config
@@ -78,7 +67,7 @@ panther-panchali/
 
 ## 3. Authentication & Security Rules
 - **Google OAuth Only**: Only Google OAuth 2.0 is permitted. Do NOT implement or allow guest connections, mock credentials, or secondary passkeys.
-- **Route Protection**: `middleware.ts` guards all protected routes (`/canvas`, `/story`, `/journeys`, `/explore`, `/profile`, `/thread/:path*`). Unauthenticated users are redirected directly to `/auth`.
+- **Route Protection**: `middleware.ts` guards all protected routes (`/canvas`, `/explore`, `/journeys`, `/profile`). Unauthenticated users are redirected directly to `/auth`.
 - **Public Surfaces**: Only the root landing page (`/`) and the authentication page (`/auth`) are publicly accessible without signing in.
 - **Single Database Collection**: All registered user accounts reside strictly under the single `users` collection in database `cloudinary`. Auth.js uses encrypted JWT sessions, so no secondary `accounts`, `sessions`, or `verification_tokens` collections are created.
 - **Redirect Policy**: Upon successful authentication, users are redirected strictly to the profile page (`/profile`). Upon logging out, users are redirected strictly to the home page (`/`).
