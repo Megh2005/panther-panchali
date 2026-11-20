@@ -108,6 +108,6 @@ panther-panchali/
 - The navigation dock is dynamic and state-reactive:
   - **Unauthenticated state**: Displays only public destinations (`Home` and `Sign in`).
   - **Authenticated state**: Displays the full suite (`Home`, `Create Post`, `Kolkata Feed`, `My Archive`, `Profile`, and `Sign out`).
-  - **Route tracking**: Automatically marks the current active destination based on `pathname` with terracotta `#B5532F` and an active indicator dot.
+  - **Route tracking**: Automatically marks the current active destination based on `pathname` with soft gold glow `#E3C27A` and an active indicator dot.
   - **Auth Screen Isolation**: Completely hidden on `/auth` to ensure an uncluttered sign-in experience.
   - **Dual-Form Responsive Design**: Floating bottom pill with tooltips on desktop/tablet; foldable sidebar drawer on mobile.

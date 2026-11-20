@@ -60,10 +60,15 @@ export default function NavigationDock() {
     ? AUTHENTICATED_DESTINATIONS
     : PUBLIC_DESTINATIONS;
 
-  const currentDestination = visibleDestinations.find((d) =>
-    d.href === "/" ? pathname === "/" : pathname?.startsWith(d.href),
-  );
-  const activeId = currentDestination?.id || "";
+  const getActiveId = () => {
+    if (pathname === "/") return "home";
+    if (pathname?.startsWith("/canvas")) return "canvas";
+    if (pathname?.startsWith("/explore") || pathname?.startsWith("/posts")) return "explore";
+    if (pathname?.startsWith("/journeys")) return "journeys";
+    if (pathname?.startsWith("/profile")) return "profile";
+    return "";
+  };
+  const activeId = getActiveId();
 
   const [isOpen, setIsOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -165,7 +170,7 @@ export default function NavigationDock() {
               href={item.href}
               className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200 ${
                 isActive
-                  ? "bg-terracotta/15 text-terracotta ring-1.5 ring-[#B5532F]/50 shadow-xs font-semibold"
+                  ? "bg-gold-glow text-red-600 shadow-sm ring-2 ring-[#C89B3C]/50 font-bold"
                   : "text-paper-muted hover:bg-paper-text/5 hover:text-paper-text"
               }`}
               aria-label={item.name}
@@ -174,12 +179,12 @@ export default function NavigationDock() {
               <Icon
                 size={20}
                 aria-hidden="true"
-                className={isActive ? "text-terracotta stroke-[2.25]" : ""}
+                className={isActive ? "text-paper-text stroke-[2.25]" : ""}
               />
 
               {isActive && (
                 <span
-                  className="absolute bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-terracotta shadow-[0_0_8px_#B5532F]"
+                  className="absolute bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-paper-text shadow-[0_0_6px_rgba(27,26,23,0.4)]"
                   aria-hidden="true"
                 />
               )}
@@ -289,7 +294,7 @@ export default function NavigationDock() {
                     onClick={closeSidebar}
                     className={`flex items-center gap-3.5 rounded-xl px-4 py-3 transition-colors duration-200 ${
                       isActive
-                        ? "border-l-4 border-terracotta bg-terracotta/15 font-semibold text-terracotta shadow-xs"
+                        ? "border-l-4 border-gold-glow bg-gold-glow/25 font-bold text-paper-text shadow-xs"
                         : "border-l-4 border-transparent text-paper-muted hover:bg-paper-text/5 hover:text-paper-text"
                     }`}
                     aria-current={isActive ? "page" : undefined}
@@ -297,7 +302,7 @@ export default function NavigationDock() {
                     <Icon
                       size={20}
                       aria-hidden="true"
-                      className={isActive ? "text-terracotta" : ""}
+                      className={isActive ? "text-[#8C6214] stroke-[2.25]" : ""}
                     />
                     <span
                       className="text-base tracking-normal"
