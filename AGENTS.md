@@ -108,7 +108,7 @@ panther-panchali/
 ## 6. State-Dependent Navigation Policy
 - The navigation dock is dynamic and state-reactive:
   - **Unauthenticated state**: Displays only public destinations (`Home` and `Sign in`).
-  - **Authenticated state**: Displays the full suite (`The Canvas`, `Begin a story`, `My journeys`, `Explore`, `Profile`, and `Sign out`).
+  - **Authenticated state**: Displays the full suite (`Home`, `The Canvas`, `Begin a story`, `My journeys`, `Explore`, `Profile`, and `Sign out`).
   - **Route tracking**: Automatically marks the current active destination based on `pathname` with terracotta `#B5532F` and an active indicator dot.
   - **Auth Screen Isolation**: Completely hidden on `/auth` to ensure an uncluttered sign-in experience.
   - **Dual-Form Responsive Design**: Floating bottom pill with tooltips on desktop/tablet; foldable sidebar drawer on mobile.

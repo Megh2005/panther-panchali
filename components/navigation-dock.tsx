@@ -12,6 +12,7 @@ import {
   LuLogIn,
   LuLogOut,
   LuMenu,
+  LuPalette,
   LuRoute,
   LuUser,
   LuX,
@@ -25,7 +26,8 @@ interface NavDestination {
 }
 
 const AUTHENTICATED_DESTINATIONS: NavDestination[] = [
-  { id: "canvas", name: "The Canvas", href: "/canvas", icon: LuHouse },
+  { id: "home", name: "Home", href: "/", icon: LuHouse },
+  { id: "canvas", name: "The Canvas", href: "/canvas", icon: LuPalette },
   { id: "story", name: "Begin a story", href: "/story", icon: LuCompass },
   { id: "journeys", name: "My journeys", href: "/journeys", icon: LuRoute },
   { id: "explore", name: "Explore", href: "/explore", icon: LuGlobe },
@@ -59,11 +61,10 @@ export default function NavigationDock() {
     ? AUTHENTICATED_DESTINATIONS
     : PUBLIC_DESTINATIONS;
 
-  const currentDestination = visibleDestinations.find(
-    (d) =>
-      pathname === d.href || (d.href !== "/" && pathname?.startsWith(d.href)),
+  const currentDestination = visibleDestinations.find((d) =>
+    d.href === "/" ? pathname === "/" : pathname?.startsWith(d.href),
   );
-  const activeId = currentDestination?.id || (pathname === "/" ? "home" : "");
+  const activeId = currentDestination?.id || "";
 
   const [isOpen, setIsOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
