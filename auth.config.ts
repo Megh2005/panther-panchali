@@ -13,6 +13,7 @@ export const authConfig: NextAuthConfig = {
         "/explore",
         "/journeys",
         "/profile",
+        "/posts",
       ].some((path) => nextUrl.pathname.startsWith(path));
 
       if (isProtected) {

@@ -26,11 +26,17 @@ panther-panchali/
 │   │   ├── auth/[...nextauth]/route.ts  # NextAuth Auth.js v5 route handler
 │   │   └── posts/
 │   │       ├── route.ts                 # Feed retrieval (GET) & publishing (POST)
-│   │       └── generate/route.ts        # Image revamp & caption synthesis
+│   │       ├── generate/route.ts        # Image revamp & caption synthesis
+│   │       └── [id]/
+│   │           ├── route.ts             # Single post retrieval (GET)
+│   │           ├── like/route.ts        # Like toggle (POST)
+│   │           ├── comments/route.ts    # Comments retrieval (GET) & addition (POST)
+│   │           └── share/route.ts       # Share counter increment (POST)
 │   ├── auth/page.tsx                 # Single-purpose Google OAuth screen
 │   ├── canvas/page.tsx               # Create Post Studio (Upload, Select, Revamp, Edit, Publish)
 │   ├── explore/page.tsx              # Facebook of Kolkata Feed with OpenStreetMap
 │   ├── journeys/page.tsx             # My Archive of published Kolkata posts
+│   ├── posts/[id]/page.tsx           # Dedicated single post & share target view
 │   ├── profile/page.tsx              # Minimal Account Profile (avatar, name, email, user ID)
 │   ├── globals.css                   # Modern Tailwind CSS v4 theme tokens & base styles
 │   ├── layout.tsx                    # Root layout & Google fonts configuration
@@ -53,7 +59,8 @@ panther-panchali/
 │   │   └── user.ts                   # User domain model
 │   └── services/
 │       ├── cloudinary.ts             # Color extraction, media storage & atmospheric revamp
-│       └── gemini.ts                 # Plain text poetic caption & hashtag synthesizer
+│       ├── gemini.ts                 # Plain text poetic caption & hashtag synthesizer
+│       └── mailer.ts                 # Post publication email dispatch service
 │
 ├── auth.config.ts                    # Edge-compatible Auth.js v5 route protection config
 ├── auth.ts                           # NextAuth Auth.js v5 handlers, session and Google OAuth config
@@ -67,7 +74,7 @@ panther-panchali/
 
 ## 3. Authentication & Security Rules
 - **Google OAuth Only**: Only Google OAuth 2.0 is permitted. Do NOT implement or allow guest connections, mock credentials, or secondary passkeys.
-- **Route Protection**: `middleware.ts` guards all protected routes (`/canvas`, `/explore`, `/journeys`, `/profile`). Unauthenticated users are redirected directly to `/auth`.
+- **Route Protection**: `middleware.ts` guards all protected routes (`/canvas`, `/explore`, `/journeys`, `/profile`, `/posts`). Unauthenticated users are redirected directly to `/auth`.
 - **Public Surfaces**: Only the root landing page (`/`) and the authentication page (`/auth`) are publicly accessible without signing in.
 - **Single Database Collection**: All registered user accounts reside strictly under the single `users` collection in database `cloudinary`. Auth.js uses encrypted JWT sessions, so no secondary `accounts`, `sessions`, or `verification_tokens` collections are created.
 - **Redirect Policy**: Upon successful authentication, users are redirected strictly to the profile page (`/profile`). Upon logging out, users are redirected strictly to the home page (`/`).

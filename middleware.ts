@@ -13,5 +13,7 @@ export const config = {
     "/journeys/:path*",
     "/profile",
     "/profile/:path*",
+    "/posts",
+    "/posts/:path*",
   ],
 };
