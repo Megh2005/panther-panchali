@@ -457,13 +457,22 @@ export default function CreatePostStudio() {
             </h2>
 
             <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {POST_VIBES.map((item) => {
-                const isSelected = selectedVibe === item.vibe;
+              {POST_VIBES.map((vibeName) => {
+                const isSelected = selectedVibe === vibeName;
+                const vibeDescriptions: Record<PostVibe, string> = {
+                  Aesthetic: "Vintage film tones and timeless nostalgia",
+                  Happy: "Radiant daylight and cheerful city life",
+                  Sad: "Poignant shadows and quiet stillness",
+                  Melancholy: "Rain-washed streets and contemplative mood",
+                  Dazzling: "Golden festival lights and celebration",
+                  Party: "Carnival lanterns and celebratory energy",
+                };
+
                 return (
                   <button
-                    key={item.vibe}
+                    key={vibeName}
                     type="button"
-                    onClick={() => setSelectedVibe(item.vibe)}
+                    onClick={() => setSelectedVibe(vibeName)}
                     className={`p-4 rounded-xl transition-all cursor-pointer text-left shadow-xs ${
                       isSelected
                         ? "bg-[#B5532F] text-white border-2 border-[#B5532F] ring-2 ring-[#B5532F]/40 scale-[1.02] shadow-md"
@@ -477,7 +486,7 @@ export default function CreatePostStudio() {
                         }`}
                         style={{ fontFamily: "var(--font-instrument), sans-serif" }}
                       >
-                        {item.vibe}
+                        {vibeName}
                       </span>
                       {isSelected ? (
                         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[#B5532F] shadow-xs">
@@ -493,7 +502,7 @@ export default function CreatePostStudio() {
                       }`}
                       style={{ fontFamily: "var(--font-newsreader), serif" }}
                     >
-                      {item.desc}
+                      {vibeDescriptions[vibeName]}
                     </p>
                   </button>
                 );
