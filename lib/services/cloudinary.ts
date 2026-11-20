@@ -179,6 +179,17 @@ export async function uploadPostImageWithColors(
 }
 
 /**
+ * Ingests a raw image buffer (e.g. from Stability AI) into Cloudinary and extracts the color palette.
+ */
+export async function uploadGeneratedBufferWithColors(
+  buffer: Buffer,
+  folder = "pather_panchali/posts",
+): Promise<CloudinaryUploadResult> {
+  const dataUri = `data:image/jpeg;base64,${buffer.toString("base64")}`;
+  return uploadPostImageWithColors(dataUri, folder);
+}
+
+/**
  * Creates an authentic Kolkata graphic memory poster combining:
  * 1. Landmark scenic backdrop (e.g., Howrah Bridge, Victoria Memorial, Kumartuli)
  * 2. User's photo layered in the foreground

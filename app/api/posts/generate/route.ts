@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/api/auth";
 import { KOLKATA_PLACES } from "@/lib/constants/kolkata-places";
 import type { PostVibe, TimeOfDay, YearSpan } from "@/lib/models/post";
-import { createKolkataCompositeMemory } from "@/lib/services/cloudinary";
+import { uploadGeneratedBufferWithColors } from "@/lib/services/cloudinary";
 import { generateKolkataPostCaption } from "@/lib/services/gemini";
+import { generateKolkataArtworkWithStability } from "@/lib/services/stability";
 
 export async function POST(req: Request) {
   try {
@@ -17,14 +18,12 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const {
-      imageSource,
       placeId,
       timeOfDay,
       yearSpan,
       vibe = "Aesthetic",
       userPromptNotes,
     } = body as {
-      imageSource?: string;
       placeId?: string;
       timeOfDay?: TimeOfDay;
       yearSpan?: YearSpan;
@@ -32,29 +31,28 @@ export async function POST(req: Request) {
       userPromptNotes?: string;
     };
 
-    if (!imageSource || typeof imageSource !== "string") {
-      return NextResponse.json(
-        { error: "An image is required to craft a Kolkata post." },
-        { status: 400 },
-      );
-    }
-
     const place =
       KOLKATA_PLACES.find((p) => p.id === placeId) || KOLKATA_PLACES[0];
     const selectedTime = timeOfDay || "Twilight";
     const selectedYearSpan = yearSpan || "Pooja";
     const selectedVibe = vibe || "Aesthetic";
 
-    // 1. Synthesize Kolkata graphic memory combining the landmark scene, festival lighting, and user portrait
-    const compositeResult = await createKolkataCompositeMemory({
-      userImageSource: imageSource,
-      place,
-      vibe: selectedVibe,
-      yearSpan: selectedYearSpan,
+    // 1. Generate authentic Kolkata memory photograph from scratch using Stability AI (SD 3.5 Medium base model)
+    const stabilityResult = await generateKolkataArtworkWithStability({
+      placeName: place.name,
       timeOfDay: selectedTime,
+      yearSpan: selectedYearSpan,
+      vibe: selectedVibe,
+      userPromptNotes,
     });
 
-    // 2. Command Gemini to synthesize an evocative plain-text caption and hashtags
+    // 2. Ingest generated artwork to media repository and extract authentic color palette
+    const uploadResult = await uploadGeneratedBufferWithColors(
+      stabilityResult.imageBuffer,
+      "pather_panchali/posts",
+    );
+
+    // 3. Command Gemini to synthesize an evocative plain-text caption and hashtags
     const captionResult = await generateKolkataPostCaption({
       placeName: place.name,
       timeOfDay: selectedTime,
@@ -65,9 +63,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      originalImageUrl: compositeResult.originalImageUrl,
-      revampedImageUrl: compositeResult.revampedImageUrl,
-      extractedColors: compositeResult.extractedColors,
+      originalImageUrl: uploadResult.url,
+      revampedImageUrl: uploadResult.url,
+      extractedColors: uploadResult.colors,
       caption: captionResult.caption,
       hashtags: captionResult.hashtags,
       place,
