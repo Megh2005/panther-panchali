@@ -39,6 +39,7 @@ export async function POST(req: Request) {
 
     // 1. Generate authentic Kolkata memory photograph from scratch using Stability AI (SD 3.5 Medium base model)
     const stabilityResult = await generateKolkataArtworkWithStability({
+      placeId: place.id,
       placeName: place.name,
       timeOfDay: selectedTime,
       yearSpan: selectedYearSpan,
