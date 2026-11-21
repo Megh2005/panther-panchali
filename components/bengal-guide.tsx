@@ -608,7 +608,10 @@ export default function BengalGuide() {
                           </button>
                         </div>
                       </div>
-                      <div className="prose prose-paper max-w-none text-paper-text text-sm sm:text-base leading-relaxed">
+                      <div
+                        className="prose prose-paper max-w-none text-paper-text text-base sm:text-lg italic leading-relaxed"
+                        style={{ fontFamily: "var(--font-newsreader), serif" }}
+                      >
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                           {guideResult.scenicBeauty}
                         </ReactMarkdown>
@@ -656,7 +659,10 @@ export default function BengalGuide() {
                           </button>
                         </div>
                       </div>
-                      <div className="prose prose-paper max-w-none text-paper-text text-sm sm:text-base leading-relaxed">
+                      <div
+                        className="prose prose-paper max-w-none text-paper-text text-base sm:text-lg italic leading-relaxed"
+                        style={{ fontFamily: "var(--font-newsreader), serif" }}
+                      >
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                           {guideResult.historicalSignificance}
                         </ReactMarkdown>

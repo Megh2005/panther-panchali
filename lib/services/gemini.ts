@@ -40,8 +40,11 @@ export async function analyzeWestBengalPlaceFromImage(params: {
   // Strip prefix data URI headers if present so Gemini receives pure base64
   const cleanBase64 = imageBase64.replace(/^data:image\/[a-zA-Z0-9+.-]+;base64,/, "");
 
-  const prompt = `You are an expert cultural geographer, architectural historian, and master storyteller of West Bengal, India for the cultural archive "Panther Panchali".
+  const prompt = `You are a warm cultural guide and master storyteller of West Bengal, India for the cultural archive "Panther Panchali".
 Analyze the provided photograph carefully.
+
+CRITICAL LANGUAGE RULE ACROSS ALL FIELDS:
+Use simple, clear, vivid, and easily understandable English throughout every section. Avoid overly complex, academic, or obscure words so that any reader of any age can effortlessly understand, imagine, and connect with the place.
 
 TASK:
 1. Identify the location shown in the photograph.
@@ -60,7 +63,8 @@ Set "isWestBengal": true. Provide accurate, culturally rich details:
 - "coordinates": Exact latitude and longitude { "lat": number, "lng": number } for OpenStreetMap positioning.
 - "plainTextSummary":
   CRITICAL CONSTRAINED PROMPT RULE FOR "plainTextSummary":
-  You MUST write an evocative, comprehensive, and culturally grounded overview summary of approximately 300 words.
+  You MUST write an engaging, comprehensive, and culturally grounded overview summary of approximately 300 words.
+  Use easy-to-understand, natural, and simple English so any reader can follow along comfortably.
   MANDATORY REQUIREMENT: You MUST NATIVELY output ZERO Markdown characters in this field.
   DO NOT use any asterisks (* or **), hashes (#), underscores (_), backticks (\`), tildes (~), brackets, bullet marks (-), or numbered list prefixes.
   Every single sentence and paragraph must be standard, flowing literary English prose.
@@ -68,19 +72,27 @@ Set "isWestBengal": true. Provide accurate, culturally rich details:
   Describe the geographical atmosphere, cultural aura, lived experience, and overall sensory identity of this place as a flowing 300-word story.
 - "scenicBeauty":
   OPTIONAL (NOT MANDATORY): Not every location in West Bengal possesses prominent natural or scenic beauty. If this location has authentic natural landscape, topography, river currents, red laterite soils, hills, tea gardens, forests, or seasonal atmosphere, provide a dedicated scenic reflection.
-  STRICT WORD LIMIT: Must be strictly within 300 words.
-  FORMAT: Rich Markdown text (subheadings like ###, **bold**, bullet lists -).
+  CRITICAL RULES:
+  1. SINGLE PARAGRAPH ONLY: Must be written strictly as a single, cohesive, flowing paragraph (ZERO subheadings, ZERO bullet points, ZERO line breaks).
+  2. INTERACTIVE STORYTELLING MODE: Do NOT write in a serious, dry, academic, or formal statement mode (avoid encyclopedic statements like "The area is characterized by dense vegetation and humid climate"). Instead, use an interactive storytelling mode that invites the reader in and makes the landscape feel alive.
+  3. NO PERSONA: Do NOT adopt an artificial persona (do NOT say "I am your guide" or talk in the first person). Instead, use simple, friendly, and relatable words that bring the sunlight, breezes, rivers, and surroundings directly to life.
+  4. EASY LANGUAGE: Use simple, plain, clear vocabulary that anyone can easily read and visualize.
+  5. FORMAT: Rich Markdown single paragraph where key sensory and environmental highlights are emphasized in **bold**.
   If the location is strictly architectural or urban with no notable natural or scenic landscape, set this to null.
 - "historicalSignificance":
   OPTIONAL (NOT MANDATORY): Not every location possesses ancient or historical architecture. If this location has genuine historical heritage, architectural style (e.g. terracotta plaques, Chala/Ratna temples, Nawabi palaces, colonial edifices), founding dynasties, or folklore, provide a dedicated historical reflection.
-  STRICT WORD LIMIT: Must be strictly within 300 words.
-  FORMAT: Rich Markdown text (subheadings like ###, **bold**, bullet lists -).
+  CRITICAL RULES:
+  1. SINGLE PARAGRAPH ONLY: Must be written strictly as a single, cohesive, flowing paragraph (ZERO subheadings, ZERO bullet points, ZERO line breaks).
+  2. INTERACTIVE STORYTELLING MODE: Do NOT write in a serious, dry, museum-plaque, or textbook statement mode (avoid stiff statements like "This structure was constructed in 1704 by the ruler"). Instead, use an interactive storytelling mode that weaves time, craft, and human hands into an engaging story.
+  3. NO PERSONA: Do NOT adopt an artificial persona. Instead, let simple, vivid vocabulary show the beauty of the craft—inviting the reader to notice the carved clay tiles, the old river paths, and the timeless heritage.
+  4. EASY LANGUAGE: Use straightforward, accessible English without complicated historical jargon.
+  5. FORMAT: Rich Markdown single paragraph where standout architectural styles, dynasties, and heritage facets are emphasized in **bold**.
   If the location is purely a natural landscape without notable historic architecture or heritage, set this to null.
   NOTE: A place may have only scenicBeauty, only historicalSignificance, or both if it has rich natural and historical significance.
 - "predictedMood":
-  - "moodName": The predicted emotional or contemplative atmosphere of the place (e.g. "Contemplative Solitude", "Serene Reverence", "Verdant Nostalgia", "Festive Grandeur", "Monsoon Melancholy", "Mystical Stillness").
-  - "moodParagraph": An evocative, cohesive narrative paragraph (strictly under 300 words) describing the ideal mindset for visiting and what visitors can expect to experience sensory-wise. CRITICAL RULE: Highlight all key terminologies, emotional mindsets, sensory expectations (such as fragrances, sounds, local teas, and architectural features), and optimal visiting moments with Markdown BOLD (e.g. **contemplative stillness**, **fragrance of wet red earth**, **early morning mist**).
-  - "bestTimeToVisit": Recommended season and time of day (e.g. "Late Autumn to Spring (October–March), best experienced at dawn when mist envelops the monument").
+  - "moodName": The predicted emotional or contemplative atmosphere of the place (e.g. "Peaceful Solitude", "Serene Reverence", "Quiet Nostalgia", "Joyful Grandeur", "Gentle Rain Reflection", "Calm Stillness").
+  - "moodParagraph": An evocative, cohesive narrative paragraph (strictly under 300 words) written in clear, simple, and relatable language describing the ideal mindset for visiting and what visitors can expect to feel and sense. CRITICAL RULE: Highlight all key terminologies, emotional mindsets, sensory expectations (such as fragrances, sounds, local teas, and architectural features), and optimal visiting moments with Markdown BOLD (e.g. **peaceful calm**, **scent of wet earth**, **cool morning breeze**).
+  - "bestTimeToVisit": Recommended season and time of day (e.g. "Late Autumn to Spring (October–March), best experienced in the early morning when the air is cool and peaceful").
 
 ${userNotes ? `User Hint / Memory Note: "${userNotes}"` : ""}
 
@@ -94,8 +106,8 @@ Respond ONLY with valid JSON conforming to this structure:
   "detailedAddress": "...",
   "coordinates": { "lat": 23.0768, "lng": 87.3242 },
   "plainTextSummary": "Continuous literary plain text summary of approximately 300 words without any markdown characters.",
-  "scenicBeauty": "### Scenic Highlights\\n\\nMarkdown formatted text...",
-  "historicalSignificance": "### Heritage & Architecture\\n\\nMarkdown formatted text...",
+  "scenicBeauty": "A single flowing paragraph in interactive storytelling mode highlighting **natural landscape cues** in bold...",
+  "historicalSignificance": "A single flowing paragraph in interactive storytelling mode highlighting **architectural and heritage facets** in bold...",
   "predictedMood": {
     "moodName": "...",
     "moodParagraph": "A rich flowing paragraph where **key terminologies**, **mindset**, and **sensory cues** are highlighted in bold...",

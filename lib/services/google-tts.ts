@@ -1,7 +1,7 @@
 /**
  * Google Cloud Text-to-Speech service for Panther Panchali.
- * Generates natural Indian English audio playback for place guide memoirs and reflections
- * using Google Cloud Text-to-Speech API (en-IN female voice).
+ * Generates clear, measured Indian English audio playback for place guide memoirs and reflections
+ * using Google Cloud Text-to-Speech API with a distinguished male voice and relaxed speaking rate.
  */
 
 export function cleanTextForSpeech(text: string): string {
@@ -36,19 +36,20 @@ export async function generateSpeechAudio(rawText: string): Promise<Uint8Array> 
     throw new Error("Text is empty or invalid for speech synthesis.");
   }
 
-  // Frank, clear Indian English female voice (Neural2-A with fallback)
-  const preferredVoiceName = process.env.GOOGLE_VOICE_NAME || "en-IN-Neural2-A";
+  // Clear, distinguished Indian English male voice (Neural2-B with fallback to Wavenet-B)
+  const preferredVoiceName = process.env.GOOGLE_VOICE_NAME || "en-IN-Neural2-B";
 
+  // Relaxed speaking rate (0.86) ensuring every word is clearly distinguishable and pleasant to listen to
   const requestBody = {
     input: { text },
     voice: {
       languageCode: "en-IN",
       name: preferredVoiceName,
-      ssmlGender: "FEMALE",
+      ssmlGender: "MALE",
     },
     audioConfig: {
       audioEncoding: "MP3",
-      speakingRate: 1.0,
+      speakingRate: 0.86,
       pitch: 0.0,
     },
   };
@@ -67,8 +68,8 @@ export async function generateSpeechAudio(rawText: string): Promise<Uint8Array> 
   if (!response.ok) {
     const errorData = await response.text();
 
-    // If Neural2 is unavailable for this quota tier, fallback to Wavenet-A
-    if (preferredVoiceName !== "en-IN-Wavenet-A") {
+    // Fallback to Wavenet-B male voice if Neural2-B encounters quota limitations
+    if (preferredVoiceName !== "en-IN-Wavenet-B") {
       const fallbackRes = await fetch(
         `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`,
         {
@@ -80,8 +81,8 @@ export async function generateSpeechAudio(rawText: string): Promise<Uint8Array> 
             ...requestBody,
             voice: {
               languageCode: "en-IN",
-              name: "en-IN-Wavenet-A",
-              ssmlGender: "FEMALE",
+              name: "en-IN-Wavenet-B",
+              ssmlGender: "MALE",
             },
           }),
         },
