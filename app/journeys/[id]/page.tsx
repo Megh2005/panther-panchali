@@ -24,6 +24,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import AudioPlayerButton from "@/components/audio-player-button";
 import SatelliteMapView from "@/components/satellite-map-view";
+import WeatherCard from "@/components/weather-card";
 import type { ExploredPlace } from "@/lib/models/guide";
 
 function JourneyDetailsContent() {
@@ -348,6 +349,14 @@ function JourneyDetailsContent() {
             </div>
           </div>
         )}
+
+        {/* Real-Time Live Atmospheric Weather Card */}
+        <WeatherCard
+          lat={place.coordinates.lat}
+          lng={place.coordinates.lng}
+          district={place.district}
+          placeName={place.placeName}
+        />
 
         {/* Satellite Map & Overview Memoir Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

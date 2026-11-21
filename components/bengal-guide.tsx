@@ -24,6 +24,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import AudioPlayerButton from "@/components/audio-player-button";
 import BengalMapFlyTo from "@/components/bengal-map-flyto";
+import WeatherCard from "@/components/weather-card";
 import type { BengalPlaceGuide } from "@/lib/models/guide";
 
 export default function BengalGuide() {
@@ -494,6 +495,14 @@ export default function BengalGuide() {
                   </div>
                 </div>
               )}
+
+              {/* Real-Time Live Atmospheric Weather */}
+              <WeatherCard
+                lat={guideResult.coordinates.lat}
+                lng={guideResult.coordinates.lng}
+                district={guideResult.district}
+                placeName={guideResult.placeName}
+              />
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-7 flex flex-col space-y-3">
