@@ -42,18 +42,32 @@ export async function POST(req: Request) {
     const {
       originalImageUrl,
       revampedImageUrl,
+      imageUrl,
       placeId,
+      placeName,
+      bengaliName,
+      district,
+      state,
+      detailedAddress,
+      placeCoords,
       timeOfDay,
       yearSpan,
       vibe,
       caption,
+      plainTextSummary,
+      scenicBeauty,
+      historicalSignificance,
+      predictedMood,
       hashtags,
       extractedColors,
-    } = body as Partial<KolkataPost>;
+    } = body as Partial<KolkataPost> & {
+      imageUrl?: string;
+    };
 
-    if (!revampedImageUrl || !placeId || !caption) {
+    const finalImageUrl = revampedImageUrl || originalImageUrl || imageUrl;
+    if (!finalImageUrl) {
       return NextResponse.json(
-        { error: "revampedImageUrl, placeId, and caption are required." },
+        { error: "An image URL is required to publish a discovery." },
         { status: 400 },
       );
     }
@@ -61,31 +75,53 @@ export async function POST(req: Request) {
     const place =
       KOLKATA_PLACES.find((p) => p.id === placeId) || KOLKATA_PLACES[0];
 
+    const finalPlaceName = placeName?.trim() || place.name;
+    const finalCoords =
+      placeCoords && typeof placeCoords.lat === "number" && typeof placeCoords.lng === "number"
+        ? placeCoords
+        : { lat: place.lat, lng: place.lng };
+
+    const finalCaption =
+      caption?.trim() ||
+      (plainTextSummary
+        ? plainTextSummary.slice(0, 180).trim() + "..."
+        : `Discovered in ${finalPlaceName}, ${district || "West Bengal"}`);
+
     const postDoc: KolkataPost = {
       id: randomUUID(),
       userId: user.id || user.email,
       userEmail: user.email,
-      userName: user.name || "Kolkata Explorer",
+      userName: user.name || "Bengal Explorer",
       userAvatar: user.image || undefined,
-      originalImageUrl: originalImageUrl || revampedImageUrl,
-      revampedImageUrl,
-      placeId: place.id,
-      placeName: place.name,
-      placeCoords: {
-        lat: place.lat,
-        lng: place.lng,
-      },
+      originalImageUrl: originalImageUrl || finalImageUrl,
+      revampedImageUrl: finalImageUrl,
+      placeId: placeId || `discovery-${Date.now()}`,
+      placeName: finalPlaceName,
+      bengaliName: bengaliName?.trim() || undefined,
+      district: district?.trim() || "West Bengal",
+      state: state?.trim() || "West Bengal",
+      detailedAddress: detailedAddress?.trim() || undefined,
+      placeCoords: finalCoords,
       timeOfDay: timeOfDay || "Twilight",
       yearSpan: yearSpan || "Pooja",
       vibe: vibe || "Aesthetic",
-      caption: caption.trim(),
+      caption: finalCaption,
+      plainTextSummary: plainTextSummary?.trim() || undefined,
+      scenicBeauty: scenicBeauty?.trim() || undefined,
+      historicalSignificance: historicalSignificance?.trim() || undefined,
+      predictedMood: predictedMood || undefined,
       hashtags: Array.isArray(hashtags)
         ? hashtags.map((t) => (t.startsWith("#") ? t : `#${t}`))
-        : [],
+        : [
+            `#${finalPlaceName.replace(/\s+/g, "")}`,
+            `#${(district || "WestBengal").replace(/\s+/g, "")}`,
+            "#PantherPanchali",
+            "#BengalHeritage",
+          ],
       extractedColors:
         Array.isArray(extractedColors) && extractedColors.length > 0
           ? extractedColors
-          : ["#B5532F", "#EDE4D3", "#1B1A17", "#E3C27A"],
+          : ["#B5532F", "#EDE4D3", "#1B1A17", "#E3C27A", "#6B6458"],
       likesCount: 0,
       likedBy: [],
       comments: [],

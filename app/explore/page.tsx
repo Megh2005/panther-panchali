@@ -246,7 +246,7 @@ export default function ExploreFeedPage() {
           className="text-xs font-semibold uppercase tracking-[0.2em] text-[#B5532F]"
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         >
-          Community Feed · Panther Panchali
+          Panther Panchali · Living Bengal Archive
         </span>
         <h1
           className="mt-2 text-3xl sm:text-5xl font-light tracking-normal text-paper-text"
@@ -255,14 +255,15 @@ export default function ExploreFeedPage() {
             fontVariationSettings: '"opsz" 72, "SOFT" 85, "WONK" 1',
           }}
         >
-          Kolkata Chronicle
+          Bengal Chronicle
         </h1>
         <p
           className="mt-2 text-base italic text-paper-muted max-w-lg"
           style={{ fontFamily: "var(--font-newsreader), serif" }}
         >
-          Every corner of the city, captured and synthesized through living memories,
-          festivals, and heritage atmospheres.
+          Landmarks, districts, and living memories uncovered across West
+          Bengal through photographs, OpenStreetMap radar flights, and literary
+          memoirs.
         </p>
 
         {/* Quick Create Post Bar */}
@@ -275,7 +276,7 @@ export default function ExploreFeedPage() {
               className="text-sm italic text-paper-muted"
               style={{ fontFamily: "var(--font-newsreader), serif" }}
             >
-              Have a moment in Kolkata? Share your story...
+              Seen a place in West Bengal? Reveal its location and story...
             </span>
           </div>
 
@@ -284,7 +285,7 @@ export default function ExploreFeedPage() {
             className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-terracotta px-5 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white shadow-xs hover:bg-paper-text hover:scale-105 transition-all duration-300"
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
           >
-            <span>Create Post</span>
+            <span>Identify Place</span>
           </Link>
         </div>
       </div>
@@ -379,16 +380,25 @@ export default function ExploreFeedPage() {
                     </div>
                   </div>
 
-                  {/* Badges: Festival & Time */}
+                  {/* Badges: District & Mood */}
                   <div className="flex flex-wrap items-center justify-end gap-1.5">
-                    <span className="inline-flex items-center gap-1 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-terracotta">
-                      <LuCalendar size={11} />
-                      <span>{post.yearSpan}</span>
-                    </span>
-                    <span className="inline-flex items-center gap-1 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-paper-muted">
-                      <LuClock size={11} />
-                      <span>{post.timeOfDay}</span>
-                    </span>
+                    {post.district && (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-terracotta/30 bg-terracotta/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-terracotta">
+                        <LuMapPin size={11} />
+                        <span>{post.district}</span>
+                      </span>
+                    )}
+                    {post.predictedMood?.moodName ? (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-paper-text">
+                        <LuSparkles size={11} className="text-terracotta" />
+                        <span>{post.predictedMood.moodName}</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-paper-muted">
+                        <LuClock size={11} />
+                        <span>{post.timeOfDay}</span>
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -396,7 +406,12 @@ export default function ExploreFeedPage() {
                 <div className="px-5 sm:px-6 pb-3 flex items-center justify-between text-xs text-paper-muted">
                   <div className="flex items-center gap-1.5 font-medium">
                     <LuMapPin size={14} className="text-terracotta shrink-0" />
-                    <span className="text-paper-text">{post.placeName}</span>
+                    <span className="text-paper-text font-semibold">{post.placeName}</span>
+                    {post.bengaliName && (
+                      <span className="text-terracotta font-normal">
+                        ({post.bengaliName})
+                      </span>
+                    )}
                   </div>
 
                   {/* OpenStreetMap Trigger Button */}
@@ -407,7 +422,7 @@ export default function ExploreFeedPage() {
                     style={{ fontFamily: "var(--font-instrument), sans-serif" }}
                   >
                     <LuMapPin size={12} />
-                    <span>View on Map</span>
+                    <span>View Map Radar</span>
                   </button>
                 </div>
 

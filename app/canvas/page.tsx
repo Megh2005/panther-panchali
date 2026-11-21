@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import CreatePostStudio from "@/components/create-post-studio";
+import PlaceDiscoveryStudio from "@/components/place-discovery-studio";
 
 export const metadata: Metadata = {
-  title: "Create Post — Panther Panchali",
+  title: "Identify a Place in West Bengal — Panther Panchali",
   description:
-    "Choose a landmark, season, and vibe to synthesize a memory and publish to the Kolkata Feed.",
+    "Upload a photograph of a place in West Bengal to identify its district, address, OpenStreetMap radar flight, 300-word literary memoir, and scenic heritage.",
 };
 
 export default function CanvasPage() {
@@ -21,7 +21,7 @@ export default function CanvasPage() {
           className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta"
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         >
-          Panther Panchali · Post Studio
+          Panther Panchali · Place Discovery
         </span>
 
         <h1
@@ -31,19 +31,20 @@ export default function CanvasPage() {
             fontVariationSettings: '"opsz" 72, "SOFT" 85, "WONK" 1',
           }}
         >
-          Create a Kolkata Post
+          Discover Bengal&apos;s Living Canvas
         </h1>
         <p
           className="mt-2 text-base sm:text-lg italic text-paper-muted max-w-2xl leading-relaxed"
           style={{ fontFamily: "var(--font-newsreader), serif" }}
         >
-          Choose an iconic landmark, season, and atmospheric vibe. Your memory
-          will be synthesized with authentic photography, color palettes,
-          and poetic reflections.
+          Sometimes you see a place and know it lives in West Bengal, but its
+          exact district and heritage remain a mystery. Upload your photograph to
+          reveal its location, watch the multi-stage map flight, and read its
+          300-word literary memoir.
         </p>
       </div>
 
-      <CreatePostStudio />
+      <PlaceDiscoveryStudio />
     </main>
   );
 }
