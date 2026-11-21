@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
-import { LuLoaderCircle, LuLogOut, LuUser } from "react-icons/lu";
+import { FaArrowRightFromBracket, FaSpinner, FaUser } from "react-icons/fa6";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -15,7 +15,7 @@ export default function ProfilePage() {
   if (status === "loading") {
     return (
       <main className="flex min-h-screen items-center justify-center bg-paper-bg text-paper-text">
-        <LuLoaderCircle size={32} className="animate-spin text-terracotta" />
+        <FaSpinner size={28} className="animate-spin text-terracotta" />
       </main>
     );
   }
@@ -64,7 +64,7 @@ export default function ProfilePage() {
                 className="h-full w-full object-cover"
               />
             ) : (
-              <LuUser size={36} className="text-terracotta" />
+              <FaUser size={32} className="text-terracotta" />
             )}
           </div>
 
@@ -114,7 +114,7 @@ export default function ProfilePage() {
               className="inline-flex items-center justify-center gap-2 w-full rounded-full border border-terracotta/40 bg-paper-bg px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-terracotta transition-all duration-300 hover:bg-terracotta hover:text-white hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta cursor-pointer shadow-xs"
               style={{ fontFamily: "var(--font-instrument), sans-serif" }}
             >
-              <LuLogOut size={16} />
+              <FaArrowRightFromBracket size={14} />
               <span>Sign Out</span>
             </button>
           </div>

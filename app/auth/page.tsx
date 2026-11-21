@@ -5,7 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
-import { LuArrowLeft, LuLoaderCircle } from "react-icons/lu";
+import { FaArrowLeft, FaSpinner } from "react-icons/fa6";
 
 function AuthForm() {
   const router = useRouter();
@@ -49,7 +49,7 @@ function AuthForm() {
         style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         aria-label="Back to home"
       >
-        <LuArrowLeft size={16} aria-hidden="true" />
+        <FaArrowLeft size={14} aria-hidden="true" />
         <span>Back to home</span>
       </Link>
 
@@ -116,8 +116,8 @@ function AuthForm() {
                 aria-hidden="true"
               >
                 {isLoading ? (
-                  <LuLoaderCircle
-                    size={22}
+                  <FaSpinner
+                    size={20}
                     className="animate-spin text-terracotta"
                   />
                 ) : (
@@ -141,7 +141,7 @@ export default function AuthPage() {
     <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center bg-paper-bg">
-          <LuLoaderCircle size={32} className="animate-spin text-terracotta" />
+          <FaSpinner size={28} className="animate-spin text-terracotta" />
         </div>
       }
     >

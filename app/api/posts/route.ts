@@ -1,15 +1,14 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/api/auth";
-import { KOLKATA_PLACES } from "@/lib/constants/kolkata-places";
-import type { KolkataPost } from "@/lib/models/post";
+import type { BengalPost } from "@/lib/models/post";
 import { getDatabase } from "@/lib/mongodb";
 import { sendPostPublishedEmail } from "@/lib/services/mailer";
 
 export async function GET() {
   try {
     const db = await getDatabase();
-    const postsCol = db.collection<KolkataPost>("kolkata_posts");
+    const postsCol = db.collection<BengalPost>("kolkata_posts");
 
     const posts = await postsCol
       .find({})
@@ -17,7 +16,6 @@ export async function GET() {
       .limit(50)
       .toArray();
 
-    // No dummy data — only real user-created posts are returned
     return NextResponse.json({ success: true, posts });
   } catch (error) {
     console.error("Error fetching Kolkata posts:", error);
@@ -60,7 +58,7 @@ export async function POST(req: Request) {
       predictedMood,
       hashtags,
       extractedColors,
-    } = body as Partial<KolkataPost> & {
+    } = body as Partial<BengalPost> & {
       imageUrl?: string;
     };
 
@@ -72,14 +70,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const place =
-      KOLKATA_PLACES.find((p) => p.id === placeId) || KOLKATA_PLACES[0];
-
-    const finalPlaceName = placeName?.trim() || place.name;
+    const finalPlaceName = placeName?.trim() || "West Bengal Landmark";
     const finalCoords =
       placeCoords && typeof placeCoords.lat === "number" && typeof placeCoords.lng === "number"
         ? placeCoords
-        : { lat: place.lat, lng: place.lng };
+        : { lat: 22.5726, lng: 88.3639 };
 
     const finalCaption =
       caption?.trim() ||
@@ -87,7 +82,7 @@ export async function POST(req: Request) {
         ? plainTextSummary.slice(0, 180).trim() + "..."
         : `Discovered in ${finalPlaceName}, ${district || "West Bengal"}`);
 
-    const postDoc: KolkataPost = {
+    const postDoc: BengalPost = {
       id: randomUUID(),
       userId: user.id || user.email,
       userEmail: user.email,
@@ -130,20 +125,19 @@ export async function POST(req: Request) {
     };
 
     const db = await getDatabase();
-    await db.collection<KolkataPost>("kolkata_posts").insertOne(postDoc);
+    await db.collection<BengalPost>("kolkata_posts").insertOne(postDoc);
 
-    // Send email notification to user upon successful post publishing
     if (user.email) {
       void sendPostPublishedEmail({
         to: user.email,
         userName: postDoc.userName,
         placeName: postDoc.placeName,
-        yearSpan: postDoc.yearSpan,
-        vibe: postDoc.vibe,
-        timeOfDay: postDoc.timeOfDay,
+        yearSpan: postDoc.yearSpan || "Bengal Living Chronicle",
+        vibe: postDoc.predictedMood?.moodName || "Aesthetic",
+        timeOfDay: postDoc.timeOfDay || "Twilight",
         caption: postDoc.caption,
         hashtags: postDoc.hashtags,
-        revampedImageUrl: postDoc.revampedImageUrl,
+        revampedImageUrl: postDoc.revampedImageUrl || postDoc.imageUrl || "",
         extractedColors: postDoc.extractedColors,
         postId: postDoc.id,
       });
