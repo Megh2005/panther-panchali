@@ -1,8 +1,5 @@
 import * as cloudinaryPackage from "cloudinary";
 
-export type { BengalSeason } from "@/lib/models/seasons";
-export { BENGAL_SEASONS, buildSeasonalCloudinaryUrl } from "@/lib/models/seasons";
-
 export interface CloudinaryUploadResult {
   url: string;
   publicId: string;
