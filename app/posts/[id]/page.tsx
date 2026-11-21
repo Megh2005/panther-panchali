@@ -8,14 +8,18 @@ import {
   LuCalendar,
   LuClock,
   LuHeart,
+  LuLayers,
   LuLoaderCircle,
   LuMapPin,
   LuMessageSquare,
   LuSend,
   LuShare2,
   LuSparkles,
+  LuTrees,
   LuUser,
 } from "react-icons/lu";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import OpenStreetMapModal from "@/components/open-street-map-modal";
 import type { KolkataPost, PostComment } from "@/lib/models/post";
 
@@ -197,7 +201,7 @@ export default function SinglePostPage(props: {
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         >
           <LuArrowLeft size={14} />
-          <span>Back to Kolkata Feed</span>
+          <span>Back to Bengal Feed</span>
         </Link>
 
         <article className="overflow-hidden rounded-3xl border border-paper-muted/20 bg-paper-card shadow-sm">
@@ -239,14 +243,23 @@ export default function SinglePostPage(props: {
             </div>
 
             <div className="flex flex-wrap items-center justify-end gap-1.5">
-              <span className="inline-flex items-center gap-1 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-terracotta">
-                <LuCalendar size={11} />
-                <span>{post.yearSpan}</span>
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-paper-muted">
-                <LuClock size={11} />
-                <span>{post.timeOfDay}</span>
-              </span>
+              {post.district && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-terracotta/30 bg-terracotta/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-terracotta">
+                  <LuMapPin size={11} />
+                  <span>{post.district}</span>
+                </span>
+              )}
+              {post.predictedMood?.moodName ? (
+                <span className="inline-flex items-center gap-1 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-paper-text">
+                  <LuSparkles size={11} className="text-terracotta" />
+                  <span>{post.predictedMood.moodName}</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-paper-muted">
+                  <LuClock size={11} />
+                  <span>{post.timeOfDay}</span>
+                </span>
+              )}
             </div>
           </div>
 
@@ -254,7 +267,12 @@ export default function SinglePostPage(props: {
           <div className="px-5 sm:px-6 pb-3 flex items-center justify-between text-xs text-paper-muted">
             <div className="flex items-center gap-1.5 font-medium">
               <LuMapPin size={14} className="text-terracotta shrink-0" />
-              <span className="text-paper-text">{post.placeName}</span>
+              <span className="text-paper-text font-semibold">{post.placeName}</span>
+              {post.bengaliName && (
+                <span className="text-terracotta font-normal">
+                  ({post.bengaliName})
+                </span>
+              )}
             </div>
             <button
               type="button"
@@ -263,7 +281,7 @@ export default function SinglePostPage(props: {
               style={{ fontFamily: "var(--font-instrument), sans-serif" }}
             >
               <LuMapPin size={12} />
-              <span>View on Map</span>
+              <span>View Map Radar</span>
             </button>
           </div>
 
@@ -307,13 +325,85 @@ export default function SinglePostPage(props: {
           )}
 
           {/* Body */}
-          <div className="p-5 sm:p-6 pt-4">
-            <p
-              className="text-base sm:text-lg italic text-paper-text leading-relaxed whitespace-pre-line"
-              style={{ fontFamily: "var(--font-newsreader), serif" }}
-            >
-              {post.caption}
-            </p>
+          <div className="p-5 sm:p-6 pt-4 space-y-6">
+            {/* 300-word Plain Text Literary Memoir */}
+            <div>
+              <span
+                className="text-[10px] font-bold uppercase tracking-[0.18em] text-terracotta block mb-2"
+                style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+              >
+                Panther Panchali · Literary Memoir
+              </span>
+              <p
+                className="text-base sm:text-lg italic text-paper-text leading-relaxed whitespace-pre-line"
+                style={{ fontFamily: "var(--font-newsreader), serif" }}
+              >
+                {post.plainTextSummary || post.caption}
+              </p>
+            </div>
+
+            {/* Scenic Beauty & Historical Significance */}
+            {(post.scenicBeauty || post.historicalSignificance) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-paper-muted/15">
+                {post.scenicBeauty && (
+                  <div className="rounded-2xl bg-paper-bg p-5 border border-paper-muted/20">
+                    <div className="flex items-center gap-2 mb-2 text-terracotta text-xs font-semibold uppercase tracking-wider">
+                      <LuTrees size={16} />
+                      <span>Scenic Beauty</span>
+                    </div>
+                    <div className="prose prose-sm text-paper-text leading-relaxed">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {post.scenicBeauty}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                )}
+
+                {post.historicalSignificance && (
+                  <div className="rounded-2xl bg-paper-bg p-5 border border-paper-muted/20">
+                    <div className="flex items-center gap-2 mb-2 text-terracotta text-xs font-semibold uppercase tracking-wider">
+                      <LuLayers size={16} />
+                      <span>Historical Heritage</span>
+                    </div>
+                    <div className="prose prose-sm text-paper-text leading-relaxed">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {post.historicalSignificance}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Predicted Mood Card */}
+            {post.predictedMood && (
+              <div className="rounded-2xl bg-paper-bg p-5 border border-paper-muted/20">
+                <div className="flex items-center justify-between text-xs font-semibold text-terracotta mb-2">
+                  <span className="uppercase tracking-wider">
+                    Predicted Atmosphere: {post.predictedMood.moodName}
+                  </span>
+                  <span className="text-paper-muted">
+                    {post.predictedMood.bestTimeToVisit}
+                  </span>
+                </div>
+                <p
+                  className="text-sm italic text-paper-muted mb-3"
+                  style={{ fontFamily: "var(--font-newsreader), serif" }}
+                >
+                  {post.predictedMood.moodDescription}
+                </p>
+                {Array.isArray(post.predictedMood.whatToExpect) && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-paper-text">
+                    {post.predictedMood.whatToExpect.map((exp, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <span className="h-1.5 w-1.5 rounded-full bg-terracotta" />
+                        <span>{exp}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {Array.isArray(post.hashtags) && post.hashtags.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-1.5">

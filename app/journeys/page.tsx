@@ -59,7 +59,7 @@ export default function MyArchivePage() {
           className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta"
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         >
-          Personal Chronicle
+          Personal Chronicle · Panther Panchali
         </span>
         <h1
           className="mt-2 text-3xl sm:text-5xl font-light tracking-normal text-paper-text"
@@ -68,14 +68,15 @@ export default function MyArchivePage() {
             fontVariationSettings: '"opsz" 72, "SOFT" 85, "WONK" 1',
           }}
         >
-          My Kolkata Archive
+          My Bengal Discoveries
         </h1>
         <p
           className="mt-2 text-base italic text-paper-muted max-w-lg"
           style={{ fontFamily: "var(--font-newsreader), serif" }}
         >
-          All your synthesized memories, heritage landmarks, and sensory snapshots
-          preserved across the seasons of the city.
+          All your identified places, heritage landmarks, OpenStreetMap radar
+          records, and 300-word literary memoirs preserved across the districts of
+          West Bengal.
         </p>
 
         <Link
@@ -84,7 +85,7 @@ export default function MyArchivePage() {
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         >
           <LuImagePlus size={15} />
-          <span>Create New Post</span>
+          <span>Identify New Place</span>
         </Link>
       </div>
 
