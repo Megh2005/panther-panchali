@@ -9,11 +9,9 @@ export const authConfig: NextAuthConfig = {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isProtected = [
+        "/guide",
         "/canvas",
-        "/explore",
-        "/journeys",
         "/profile",
-        "/posts",
       ].some((path) => nextUrl.pathname.startsWith(path));
 
       if (isProtected) {
@@ -26,7 +24,7 @@ export const authConfig: NextAuthConfig = {
       if (url === "/" || url === baseUrl || url.endsWith("/")) {
         return `${baseUrl}/`;
       }
-      return `${baseUrl}/profile`;
+      return `${baseUrl}/guide`;
     },
   },
   providers: [],

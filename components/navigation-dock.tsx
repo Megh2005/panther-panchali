@@ -8,11 +8,9 @@ import type { IconType } from "react-icons";
 import {
   FaBars,
   FaCompass,
-  FaGlobe,
   FaHouse,
   FaRightFromBracket,
   FaRightToBracket,
-  FaRoute,
   FaUser,
   FaXmark,
 } from "react-icons/fa6";
@@ -26,14 +24,13 @@ interface NavDestination {
 
 const AUTHENTICATED_DESTINATIONS: NavDestination[] = [
   { id: "home", name: "Home", href: "/", icon: FaHouse },
-  { id: "canvas", name: "Identify Place", href: "/canvas", icon: FaCompass },
-  { id: "explore", name: "Bengal Feed", href: "/explore", icon: FaGlobe },
-  { id: "journeys", name: "My Discoveries", href: "/journeys", icon: FaRoute },
+  { id: "guide", name: "Bengal Guide", href: "/guide", icon: FaCompass },
   { id: "profile", name: "Profile", href: "/profile", icon: FaUser },
 ];
 
 const PUBLIC_DESTINATIONS: NavDestination[] = [
   { id: "home", name: "Home", href: "/", icon: FaHouse },
+  { id: "guide", name: "Bengal Guide", href: "/guide", icon: FaCompass },
 ];
 
 const SIGN_OUT: NavDestination = {
@@ -61,10 +58,7 @@ export default function NavigationDock() {
 
   const getActiveId = () => {
     if (pathname === "/") return "home";
-    if (pathname?.startsWith("/canvas")) return "canvas";
-    if (pathname?.startsWith("/explore") || pathname?.startsWith("/posts"))
-      return "explore";
-    if (pathname?.startsWith("/journeys")) return "journeys";
+    if (pathname?.startsWith("/guide") || pathname?.startsWith("/canvas")) return "guide";
     if (pathname?.startsWith("/profile")) return "profile";
     return "";
   };
@@ -155,7 +149,7 @@ export default function NavigationDock() {
       {/* 1. Desktop & Tablet Floating Dock */}
       <nav
         aria-label="Main Navigation"
-        className="fixed bottom-6 left-1/2 z-40 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-[#6B6458]/20 bg-[#EDE4D3]/95 backdrop-blur-md px-3.5 py-2 md:flex shadow-[0_8px_32px_rgba(27,26,23,0.08),0_18px_48px_rgba(227,194,122,0.22)]"
+        className="fixed bottom-6 left-1/2 z-40 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-paper-muted/20 bg-paper-card/95 backdrop-blur-md px-3.5 py-2 md:flex shadow-[0_8px_32px_rgba(27,26,23,0.08),0_18px_48px_rgba(227,194,122,0.22)]"
         style={{
           bottom: "max(1.5rem, calc(env(safe-area-inset-bottom) + 0.75rem))",
         }}
@@ -170,8 +164,8 @@ export default function NavigationDock() {
               href={item.href}
               className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 ${
                 isActive
-                  ? "bg-[#E3C27A] text-[#1B1A17] shadow-sm ring-2 ring-[#B5532F]/40 font-bold scale-105"
-                  : "text-[#6B6458] hover:bg-[#F6F1E6] hover:text-[#1B1A17]"
+                  ? "bg-gold-glow text-paper-text shadow-sm ring-2 ring-[#B5532F]/40 font-bold scale-105"
+                  : "text-paper-muted hover:bg-paper-bg hover:text-paper-text"
               }`}
               aria-label={item.name}
               aria-current={isActive ? "page" : undefined}
@@ -179,19 +173,19 @@ export default function NavigationDock() {
               <Icon
                 size={20}
                 aria-hidden="true"
-                className={isActive ? "text-[#1B1A17] stroke-[2.25]" : ""}
+                className={isActive ? "text-paper-text stroke-[2.25]" : ""}
               />
 
               {isActive && (
                 <span
-                  className="absolute bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#B5532F] shadow-[0_0_6px_rgba(181,83,47,0.5)]"
+                  className="absolute bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-terracotta shadow-[0_0_6px_rgba(181,83,47,0.5)]"
                   aria-hidden="true"
                 />
               )}
 
               {/* Native Brand Kit Tooltip */}
               <span
-                className="pointer-events-none absolute bottom-full left-1/2 mb-2.5 -translate-x-1/2 rounded-full border border-[#6B6458]/20 bg-[#F6F1E6] px-3 py-1 text-[11px] font-semibold tracking-wider uppercase text-[#1B1A17] shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 whitespace-nowrap z-50"
+                className="pointer-events-none absolute bottom-full left-1/2 mb-2.5 -translate-x-1/2 rounded-full border border-paper-muted/20 bg-paper-bg px-3 py-1 text-[11px] font-semibold tracking-wider uppercase text-paper-text shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 whitespace-nowrap z-50"
                 style={{ fontFamily: "var(--font-instrument), sans-serif" }}
               >
                 {item.name}
@@ -201,19 +195,19 @@ export default function NavigationDock() {
         })}
 
         {/* Divider */}
-        <div className="mx-1 h-5 w-px bg-[#6B6458]/25" aria-hidden="true" />
+        <div className="mx-1 h-5 w-px bg-paper-muted/25" aria-hidden="true" />
 
         {/* Sign in / Sign out */}
         {isAuthenticated ? (
           <button
             type="button"
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="group relative flex h-10 w-10 items-center justify-center rounded-full text-[#6B6458] transition-all duration-300 hover:bg-[#B5532F]/10 hover:text-[#B5532F] cursor-pointer"
+            className="group relative flex h-10 w-10 items-center justify-center rounded-full text-paper-muted transition-all duration-300 hover:bg-terracotta/10 hover:text-terracotta cursor-pointer"
             aria-label={SIGN_OUT.name}
           >
             <SIGN_OUT.icon size={20} aria-hidden="true" />
             <span
-              className="pointer-events-none absolute bottom-full left-1/2 mb-2.5 -translate-x-1/2 rounded-full border border-[#6B6458]/20 bg-[#F6F1E6] px-3 py-1 text-[11px] font-semibold tracking-wider uppercase text-[#1B1A17] shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 whitespace-nowrap z-50"
+              className="pointer-events-none absolute bottom-full left-1/2 mb-2.5 -translate-x-1/2 rounded-full border border-paper-muted/20 bg-paper-bg px-3 py-1 text-[11px] font-semibold tracking-wider uppercase text-paper-text shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 whitespace-nowrap z-50"
               style={{ fontFamily: "var(--font-instrument), sans-serif" }}
             >
               {SIGN_OUT.name}
@@ -222,12 +216,12 @@ export default function NavigationDock() {
         ) : (
           <Link
             href="/auth"
-            className="group relative flex h-10 w-10 items-center justify-center rounded-full text-[#6B6458] transition-all duration-300 hover:bg-[#B5532F]/10 hover:text-[#B5532F]"
+            className="group relative flex h-10 w-10 items-center justify-center rounded-full text-paper-muted transition-all duration-300 hover:bg-terracotta/10 hover:text-terracotta"
             aria-label={SIGN_IN.name}
           >
             <SIGN_IN.icon size={20} aria-hidden="true" />
             <span
-              className="pointer-events-none absolute bottom-full left-1/2 mb-2.5 -translate-x-1/2 rounded-full border border-[#6B6458]/20 bg-[#F6F1E6] px-3 py-1 text-[11px] font-semibold tracking-wider uppercase text-[#1B1A17] shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 whitespace-nowrap z-50"
+              className="pointer-events-none absolute bottom-full left-1/2 mb-2.5 -translate-x-1/2 rounded-full border border-paper-muted/20 bg-paper-bg px-3 py-1 text-[11px] font-semibold tracking-wider uppercase text-paper-text shadow-sm opacity-0 transition-opacity duration-150 group-hover:opacity-100 whitespace-nowrap z-50"
               style={{ fontFamily: "var(--font-instrument), sans-serif" }}
             >
               {SIGN_IN.name}
@@ -241,7 +235,7 @@ export default function NavigationDock() {
         ref={menuButtonRef}
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-[#6B6458]/20 bg-[#EDE4D3] text-[#1B1A17] shadow-[0_2px_10px_rgba(27,26,23,0.08)] transition-all duration-300 hover:text-[#B5532F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B5532F] md:hidden cursor-pointer"
+        className="fixed top-4 left-4 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-paper-muted/20 bg-paper-card text-paper-text shadow-[0_2px_10px_rgba(27,26,23,0.08)] transition-all duration-300 hover:text-terracotta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B5532F] md:hidden cursor-pointer"
         style={{
           top: "max(1rem, env(safe-area-inset-top))",
           left: "max(1rem, env(safe-area-inset-left))",
@@ -258,7 +252,7 @@ export default function NavigationDock() {
 
       {/* Dimmed Background Scrim */}
       <div
-        className={`fixed inset-0 z-40 bg-[#1B1A17]/40 backdrop-blur-xs transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-40 bg-paper-text/40 backdrop-blur-xs transition-opacity duration-300 md:hidden ${
           isOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
@@ -276,7 +270,7 @@ export default function NavigationDock() {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className={`fixed top-0 left-0 bottom-0 z-50 flex w-72 max-w-[85vw] flex-col justify-between border-r border-[#6B6458]/20 bg-[#EDE4D3] p-6 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed top-0 left-0 bottom-0 z-50 flex w-72 max-w-[85vw] flex-col justify-between border-r border-paper-muted/20 bg-paper-card p-6 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{
@@ -286,16 +280,16 @@ export default function NavigationDock() {
         }}
       >
         <div className="flex flex-col gap-6">
-          <div className="flex items-center justify-between border-b border-[#6B6458]/15 pb-4">
+          <div className="flex items-center justify-between border-b border-paper-muted/15 pb-4">
             <div>
               <span
-                className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#B5532F] block"
+                className="text-[10px] font-semibold uppercase tracking-[0.2em] text-terracotta block"
                 style={{ fontFamily: "var(--font-instrument), sans-serif" }}
               >
                 Panther Panchali
               </span>
               <h2
-                className="text-xl font-light text-[#1B1A17]"
+                className="text-xl font-light text-paper-text"
                 style={{
                   fontFamily: "var(--font-fraunces), serif",
                   fontVariationSettings: '"opsz" 36, "SOFT" 85, "WONK" 1',
@@ -307,7 +301,7 @@ export default function NavigationDock() {
             <button
               type="button"
               onClick={closeSidebar}
-              className="flex h-8 w-8 items-center justify-center rounded-full text-[#6B6458] hover:text-[#B5532F] cursor-pointer"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-paper-muted hover:text-terracotta cursor-pointer"
               aria-label="Close menu"
             >
               <FaXmark size={18} />
@@ -326,14 +320,14 @@ export default function NavigationDock() {
                   onClick={closeSidebar}
                   className={`flex items-center gap-3.5 rounded-2xl px-4 py-3 text-sm transition-all duration-200 ${
                     isActive
-                      ? "border-l-4 border-[#B5532F] bg-[#E3C27A]/35 text-[#1B1A17] font-semibold shadow-xs"
-                      : "text-[#6B6458] hover:bg-[#F6F1E6] hover:text-[#1B1A17] font-normal"
+                      ? "border-l-4 border-terracotta bg-gold-glow/35 text-paper-text font-semibold shadow-xs"
+                      : "text-paper-muted hover:bg-paper-bg hover:text-paper-text font-normal"
                   }`}
                   style={{ fontFamily: "var(--font-instrument), sans-serif" }}
                 >
                   <Icon
                     size={18}
-                    className={isActive ? "text-[#B5532F]" : ""}
+                    className={isActive ? "text-terracotta" : ""}
                   />
                   <span>{item.name}</span>
                 </Link>
@@ -342,7 +336,7 @@ export default function NavigationDock() {
           </nav>
         </div>
 
-        <div className="border-t border-[#6B6458]/15 pt-4">
+        <div className="border-t border-paper-muted/15 pt-4">
           {isAuthenticated ? (
             <button
               type="button"
@@ -350,7 +344,7 @@ export default function NavigationDock() {
                 closeSidebar();
                 void signOut({ callbackUrl: "/" });
               }}
-              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm text-[#6B6458] transition-colors hover:bg-[#B5532F]/10 hover:text-[#B5532F] cursor-pointer"
+              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm text-paper-muted transition-colors hover:bg-terracotta/10 hover:text-terracotta cursor-pointer"
               style={{ fontFamily: "var(--font-instrument), sans-serif" }}
             >
               <SIGN_OUT.icon size={18} />
@@ -360,7 +354,7 @@ export default function NavigationDock() {
             <Link
               href="/auth"
               onClick={closeSidebar}
-              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm text-[#6B6458] transition-colors hover:bg-[#B5532F]/10 hover:text-[#B5532F]"
+              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm text-paper-muted transition-colors hover:bg-terracotta/10 hover:text-terracotta"
               style={{ fontFamily: "var(--font-instrument), sans-serif" }}
             >
               <SIGN_IN.icon size={18} />
