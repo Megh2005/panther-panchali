@@ -11,6 +11,7 @@ export const authConfig: NextAuthConfig = {
       const isProtected = [
         "/guide",
         "/canvas",
+        "/journeys",
         "/profile",
       ].some((path) => nextUrl.pathname.startsWith(path));
 

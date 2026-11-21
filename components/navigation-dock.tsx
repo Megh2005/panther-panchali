@@ -11,6 +11,7 @@ import {
   FaHouse,
   FaRightFromBracket,
   FaRightToBracket,
+  FaRoute,
   FaUser,
   FaXmark,
 } from "react-icons/fa6";
@@ -25,6 +26,7 @@ interface NavDestination {
 const AUTHENTICATED_DESTINATIONS: NavDestination[] = [
   { id: "home", name: "Home", href: "/", icon: FaHouse },
   { id: "guide", name: "Bengal Guide", href: "/guide", icon: FaCompass },
+  { id: "journeys", name: "My Journey", href: "/journeys", icon: FaRoute },
   { id: "profile", name: "Profile", href: "/profile", icon: FaUser },
 ];
 
@@ -59,6 +61,7 @@ export default function NavigationDock() {
   const getActiveId = () => {
     if (pathname === "/") return "home";
     if (pathname?.startsWith("/guide") || pathname?.startsWith("/canvas")) return "guide";
+    if (pathname?.startsWith("/journeys")) return "journeys";
     if (pathname?.startsWith("/profile")) return "profile";
     return "";
   };

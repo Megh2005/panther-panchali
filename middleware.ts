@@ -9,6 +9,8 @@ export const config = {
     "/guide/:path*",
     "/canvas",
     "/canvas/:path*",
+    "/journeys",
+    "/journeys/:path*",
     "/profile",
     "/profile/:path*",
   ],
