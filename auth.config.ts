@@ -8,6 +8,13 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
+
+      // Allow public access to shared landmark details (/journeys/[id])
+      const isPublicSharedJourney = /^\/journeys\/[^/]+$/.test(nextUrl.pathname);
+      if (isPublicSharedJourney) {
+        return true;
+      }
+
       const isProtected = [
         "/guide",
         "/canvas",

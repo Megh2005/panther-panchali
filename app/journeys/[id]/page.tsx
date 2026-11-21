@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Suspense, useEffect, useState } from "react";
 import {
   FaArrowLeft,
@@ -13,6 +14,7 @@ import {
   FaLayerGroup,
   FaLocationDot,
   FaSatellite,
+  FaShareNodes,
   FaSpinner,
   FaTrashCan,
   FaTree,
@@ -28,6 +30,7 @@ import type { ExploredPlace } from "@/lib/models/guide";
 function JourneyDetailsContent() {
   const params = useParams();
   const router = useRouter();
+  const { data: session } = useSession();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
   const [place, setPlace] = useState<ExploredPlace | null>(null);
@@ -35,6 +38,14 @@ function JourneyDetailsContent() {
   const [error, setError] = useState<string | null>(null);
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isCopiedLink, setIsCopiedLink] = useState(false);
+  const [shareToast, setShareToast] = useState<string | null>(null);
+
+  const isOwner = Boolean(
+    session?.user &&
+      place &&
+      (session.user.email === place.userEmail || session.user.id === place.userId),
+  );
 
   useEffect(() => {
     if (!id) return;
@@ -95,6 +106,38 @@ function JourneyDetailsContent() {
     }
   };
 
+  const handleShare = async () => {
+    if (typeof window === "undefined") return;
+
+    const shareUrl = window.location.href;
+    const shareData = {
+      title: `${place?.placeName || "Landmark"} · Panther Panchali`,
+      text: `Explore ${place?.placeName || "this landmark"} in ${place?.district || "West Bengal"} on Panther Panchali.`,
+      url: shareUrl,
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          console.warn("Share failed, falling back to clipboard copy:", err);
+        }
+      }
+    }
+
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(shareUrl);
+      setIsCopiedLink(true);
+      setShareToast("Link copied to clipboard!");
+      setTimeout(() => {
+        setIsCopiedLink(false);
+        setShareToast(null);
+      }, 3000);
+    }
+  };
+
   if (loading) {
     return (
       <main className="min-h-screen bg-paper-bg text-paper-text flex flex-col items-center justify-center p-4">
@@ -133,12 +176,12 @@ function JourneyDetailsContent() {
             {error || "This place could not be located in your personal chronicle."}
           </p>
           <Link
-            href="/journeys"
+            href={session?.user ? "/journeys" : "/guide"}
             className="inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white hover:bg-paper-text transition-colors"
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
           >
             <FaArrowLeft size={11} />
-            <span>Return to Gallery</span>
+            <span>{session?.user ? "Return to Gallery" : "Explore Places on Guide"}</span>
           </Link>
         </div>
       </main>
@@ -153,28 +196,59 @@ function JourneyDetailsContent() {
         aria-hidden="true"
       />
 
+      {shareToast && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 rounded-full border border-terracotta/40 bg-paper-text text-paper-bg px-6 py-2.5 text-xs font-semibold tracking-wider shadow-lg flex items-center gap-2">
+          <FaCheck size={12} className="text-gold-glow" />
+          <span>{shareToast}</span>
+        </div>
+      )}
+
       <div className="relative z-10 w-full max-w-[94vw] lg:max-w-[85vw] mx-auto space-y-8">
         {/* Navigation Bar */}
         <div className="flex items-center justify-between">
           <Link
-            href="/journeys"
+            href={session?.user ? "/journeys" : "/guide"}
             className="inline-flex items-center gap-2 rounded-full border border-paper-muted/30 bg-paper-card px-4 py-2 text-xs font-semibold uppercase tracking-wider text-paper-text hover:border-terracotta hover:text-terracotta transition-colors shadow-2xs"
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
           >
             <FaArrowLeft size={11} />
-            <span>Back to Gallery</span>
+            <span>{session?.user ? "Back to Gallery" : "Explore on Bengal Guide"}</span>
           </Link>
 
-          <button
-            type="button"
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-paper-card px-4 py-2 text-xs font-semibold uppercase tracking-wider text-red-600 hover:bg-red-600 hover:text-white transition-colors cursor-pointer shadow-2xs disabled:opacity-50"
-            style={{ fontFamily: "var(--font-instrument), sans-serif" }}
-          >
-            <FaTrashCan size={11} />
-            <span>{isDeleting ? "Removing…" : "Remove Place"}</span>
-          </button>
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={handleShare}
+              className="inline-flex items-center gap-1.5 rounded-full border border-paper-muted/30 bg-paper-card px-4 py-2 text-xs font-semibold uppercase tracking-wider text-paper-text hover:border-terracotta hover:text-terracotta transition-colors cursor-pointer shadow-2xs"
+              style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+              title="Copy link to share this landmark"
+            >
+              {isCopiedLink ? (
+                <>
+                  <FaCheck size={11} className="text-terracotta" />
+                  <span>Link Copied</span>
+                </>
+              ) : (
+                <>
+                  <FaShareNodes size={11} />
+                  <span>Share Link</span>
+                </>
+              )}
+            </button>
+
+            {isOwner && (
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-paper-card px-4 py-2 text-xs font-semibold uppercase tracking-wider text-red-600 hover:bg-red-600 hover:text-white transition-colors cursor-pointer shadow-2xs disabled:opacity-50"
+                style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+              >
+                <FaTrashCan size={11} />
+                <span>{isDeleting ? "Removing…" : "Remove"}</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Place Header Card */}
@@ -219,7 +293,26 @@ function JourneyDetailsContent() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              type="button"
+              onClick={handleShare}
+              className="inline-flex items-center gap-1.5 rounded-full border border-paper-muted/30 bg-paper-bg px-4 py-2 text-xs font-semibold uppercase tracking-wider text-paper-text hover:border-terracotta hover:text-terracotta transition-colors cursor-pointer shadow-2xs"
+              style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+              title="Copy link to share this landmark"
+            >
+              {isCopiedLink ? (
+                <>
+                  <FaCheck size={11} className="text-terracotta" />
+                  <span>Link Copied</span>
+                </>
+              ) : (
+                <>
+                  <FaShareNodes size={11} />
+                  <span>Share Link</span>
+                </>
+              )}
+            </button>
             <AudioPlayerButton text={place.plainTextSummary} label="Listen to Memoir" />
           </div>
         </div>

@@ -6,27 +6,15 @@ import { getDatabase } from "@/lib/mongodb";
 
 export async function GET(req: Request) {
   try {
-    const user = await getAuthenticatedUser();
-    if (!user) {
-      return NextResponse.json(
-        { error: "Authentication required to view your journey." },
-        { status: 401 },
-      );
-    }
-
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
     const db = await getDatabase();
     const collection = db.collection<ExploredPlace>("explored_places");
 
-    const userKey = user.email || user.id;
-
+    // Public shared route: anyone with the shared ID can view landmark details
     if (id) {
-      const place = await collection.findOne({
-        id,
-        $or: [{ userEmail: userKey }, { userId: userKey }],
-      });
+      const place = await collection.findOne({ id });
 
       if (!place) {
         return NextResponse.json({ error: "Place not found." }, { status: 404 });
@@ -34,6 +22,17 @@ export async function GET(req: Request) {
 
       return NextResponse.json({ success: true, place });
     }
+
+    // Listing personal gallery requires authentication
+    const user = await getAuthenticatedUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: "Authentication required to view your journey gallery." },
+        { status: 401 },
+      );
+    }
+
+    const userKey = user.email || user.id;
 
     const places = await collection
       .find({
