@@ -19,7 +19,7 @@ import {
   BENGAL_SEASONS,
   type BengalSeason,
   buildSeasonalCloudinaryUrl,
-} from "@/lib/services/cloudinary";
+} from "@/lib/models/seasons";
 
 interface BengalSeasonsRecolorProps {
   baseImageUrl: string;
@@ -258,7 +258,7 @@ export default function BengalSeasonsRecolor({
                 ? activeSeason.cssFilterFallback
                 : undefined,
           }}
-          className="max-h-96 sm:max-h-[520px] w-auto max-w-full rounded-xl object-contain block mx-auto shadow-xs transition-all duration-300"
+          className="max-h-96 sm:max-h-130 w-auto max-w-full rounded-xl object-contain block mx-auto shadow-xs transition-all duration-300"
         />
 
         {/* Seasonal Watermark Overlay Badge */}
