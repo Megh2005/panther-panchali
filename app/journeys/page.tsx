@@ -171,11 +171,6 @@ export default function JourneysPage() {
                   >
                     {place.placeName}
                   </h3>
-                  {place.bengaliName && (
-                    <span className="text-base text-terracotta font-normal">
-                      {place.bengaliName}
-                    </span>
-                  )}
                 </div>
 
                 <div className="flex items-center gap-2">

@@ -48,7 +48,6 @@ export async function POST(req: Request) {
     const body = await req.json();
     const {
       placeName,
-      bengaliName,
       district,
       state,
       detailedAddress,
@@ -73,7 +72,6 @@ export async function POST(req: Request) {
       userId: user.id || user.email,
       userEmail: user.email,
       placeName: placeName.trim(),
-      bengaliName: bengaliName?.trim(),
       district: district.trim(),
       state: state?.trim() || "West Bengal",
       detailedAddress: detailedAddress?.trim() || "",
