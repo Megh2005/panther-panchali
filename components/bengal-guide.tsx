@@ -262,13 +262,13 @@ export default function BengalGuide() {
             />
 
             {imagePreviewUrl ? (
-              <div className="flex flex-col items-center space-y-4">
-                <div className="relative h-60 w-60 sm:h-72 sm:w-72 overflow-hidden rounded-2xl border-2 border-terracotta/40 shadow-md">
-                  <Image
+              <div className="flex flex-col items-center space-y-4 w-full">
+                <div className="relative max-w-full overflow-hidden rounded-2xl border-2 border-terracotta/40 bg-paper-bg p-2 shadow-md flex items-center justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={imagePreviewUrl}
                     alt="Uploaded place preview"
-                    fill
-                    className="object-cover"
+                    className="max-h-96 sm:max-h-125 w-auto max-w-full rounded-xl object-contain block mx-auto"
                   />
                 </div>
                 <div className="text-xs text-paper-muted font-medium">
@@ -468,6 +468,39 @@ export default function BengalGuide() {
                   </Link>
                 </div>
               </div>
+
+              {/* Uploaded Photograph Full Uncropped Preview */}
+              {(uploadedImageUrl || imagePreviewUrl) && (
+                <div className="rounded-3xl border border-paper-muted/20 bg-paper-card p-6 sm:p-8 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-paper-muted/15">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta text-white shadow-xs">
+                        <FaImage size={14} />
+                      </div>
+                      <h3
+                        className="text-xl sm:text-2xl font-light text-paper-text"
+                        style={{ fontFamily: "var(--font-fraunces), serif" }}
+                      >
+                        Uploaded Photograph
+                      </h3>
+                    </div>
+                    <span
+                      className="text-[11px] font-semibold uppercase tracking-wider text-paper-muted"
+                      style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+                    >
+                      Original Aspect Ratio
+                    </span>
+                  </div>
+                  <div className="relative max-w-full overflow-hidden rounded-2xl border border-paper-muted/20 bg-paper-bg p-2 flex items-center justify-center">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={uploadedImageUrl || imagePreviewUrl || ""}
+                      alt={guideResult.placeName}
+                      className="max-h-96 sm:max-h-125 w-auto max-w-full rounded-xl object-contain block mx-auto shadow-xs"
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-7 flex flex-col space-y-3">
