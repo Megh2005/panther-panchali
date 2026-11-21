@@ -4,29 +4,28 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import {
-  FaBook,
+  FaBookOpen,
   FaCheck,
-  FaCloudUploadAlt,
+  FaCircleExclamation,
+  FaCloudArrowUp,
   FaCompass,
   FaCopy,
-  FaExclamationCircle,
-  FaExclamationTriangle,
   FaHeart,
   FaImage,
-  FaInfoCircle,
   FaLayerGroup,
-  FaMagic,
-  FaMapMarkerAlt,
+  FaLocationDot,
   FaPaperPlane,
+  FaRotateLeft,
   FaSpinner,
   FaSun,
   FaTree,
-  FaUndo,
-} from "react-icons/fa";
+  FaTriangleExclamation,
+  FaWandMagicSparkles,
+} from "react-icons/fa6";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import BengalMapFlyTo from "@/components/bengal-map-flyto";
-import type { BengalPlaceAnalysis } from "@/lib/models/place-discovery";
+import type { BengalPlaceAnalysis } from "@/lib/models/post";
 
 export default function PlaceDiscoveryStudio() {
   const router = useRouter();
@@ -305,7 +304,7 @@ export default function PlaceDiscoveryStudio() {
             ) : (
               <div className="flex flex-col items-center gap-3">
                 <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-terracotta text-white shadow-md">
-                  <FaCloudUploadAlt size={30} />
+                  <FaCloudArrowUp size={30} />
                 </div>
                 <div>
                   <span
@@ -348,7 +347,7 @@ export default function PlaceDiscoveryStudio() {
           {/* Error Message */}
           {errorMessage && (
             <div className="mt-5 max-w-2xl mx-auto flex items-center gap-2.5 rounded-xl bg-terracotta/10 border border-terracotta/30 p-3.5 text-xs text-terracotta">
-              <FaExclamationCircle size={16} className="shrink-0" />
+              <FaCircleExclamation size={16} className="shrink-0" />
               <span>{errorMessage}</span>
             </div>
           )}
@@ -373,7 +372,7 @@ export default function PlaceDiscoveryStudio() {
                 </>
               ) : (
                 <>
-                  <FaMagic size={16} />
+                  <FaWandMagicSparkles size={16} />
                   <span>Reveal Place & Stories</span>
                 </>
               )}
@@ -389,7 +388,7 @@ export default function PlaceDiscoveryStudio() {
           {!analysisResult.isWestBengal ? (
             <section className="rounded-3xl border border-terracotta/30 bg-paper-card p-8 sm:p-12 text-center shadow-lg">
               <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-2xl bg-terracotta text-white mb-4">
-                <FaExclamationTriangle size={32} />
+                <FaTriangleExclamation size={32} />
               </div>
               <span
                 className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta block"
@@ -417,7 +416,7 @@ export default function PlaceDiscoveryStudio() {
                   className="inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-white hover:bg-paper-text transition-all cursor-pointer"
                   style={{ fontFamily: "var(--font-instrument), sans-serif" }}
                 >
-                  <FaUndo size={14} />
+                  <FaRotateLeft size={14} />
                   <span>Upload a West Bengal Photo</span>
                 </button>
               </div>
@@ -427,7 +426,7 @@ export default function PlaceDiscoveryStudio() {
               {/* HEADER BADGE & PLACE TITLE */}
               <section className="flex flex-col items-center text-center">
                 <div className="inline-flex items-center gap-2 rounded-full bg-terracotta px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-sm mb-3">
-                  <FaMapMarkerAlt size={13} />
+                  <FaLocationDot size={13} />
                   <span>
                     {analysisResult.district} District · {analysisResult.state}
                   </span>
@@ -603,7 +602,7 @@ export default function PlaceDiscoveryStudio() {
                   <div className="flex items-center justify-between px-1">
                     <div className="flex items-center gap-2">
                       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta text-white shadow-xs">
-                        <FaBook size={14} />
+                        <FaBookOpen size={14} />
                       </div>
                       <h3
                         className="text-xl sm:text-2xl font-light text-paper-text"
@@ -796,7 +795,7 @@ export default function PlaceDiscoveryStudio() {
                   className="inline-flex items-center gap-2 rounded-full border border-paper-muted/30 bg-paper-card px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.16em] text-paper-text hover:border-terracotta hover:text-terracotta transition-colors cursor-pointer"
                   style={{ fontFamily: "var(--font-instrument), sans-serif" }}
                 >
-                  <FaUndo size={14} />
+                  <FaRotateLeft size={14} />
                   <span>Identify Another Place</span>
                 </button>
 

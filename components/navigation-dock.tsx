@@ -6,17 +6,16 @@ import { useSession, signOut } from "next-auth/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { IconType } from "react-icons";
 import {
-  LuCompass,
-  LuGlobe,
-  LuHouse,
-  LuImagePlus,
-  LuLogIn,
-  LuLogOut,
-  LuMenu,
-  LuRoute,
-  LuUser,
-  LuX,
-} from "react-icons/lu";
+  FaBars,
+  FaCompass,
+  FaGlobe,
+  FaHouse,
+  FaRightFromBracket,
+  FaRightToBracket,
+  FaRoute,
+  FaUser,
+  FaXmark,
+} from "react-icons/fa6";
 
 interface NavDestination {
   id: string;
@@ -26,29 +25,29 @@ interface NavDestination {
 }
 
 const AUTHENTICATED_DESTINATIONS: NavDestination[] = [
-  { id: "home", name: "Home", href: "/", icon: LuHouse },
-  { id: "canvas", name: "Identify Place", href: "/canvas", icon: LuCompass },
-  { id: "explore", name: "Bengal Feed", href: "/explore", icon: LuGlobe },
-  { id: "journeys", name: "My Discoveries", href: "/journeys", icon: LuRoute },
-  { id: "profile", name: "Profile", href: "/profile", icon: LuUser },
+  { id: "home", name: "Home", href: "/", icon: FaHouse },
+  { id: "canvas", name: "Identify Place", href: "/canvas", icon: FaCompass },
+  { id: "explore", name: "Bengal Feed", href: "/explore", icon: FaGlobe },
+  { id: "journeys", name: "My Discoveries", href: "/journeys", icon: FaRoute },
+  { id: "profile", name: "Profile", href: "/profile", icon: FaUser },
 ];
 
 const PUBLIC_DESTINATIONS: NavDestination[] = [
-  { id: "home", name: "Home", href: "/", icon: LuHouse },
+  { id: "home", name: "Home", href: "/", icon: FaHouse },
 ];
 
 const SIGN_OUT: NavDestination = {
   id: "signout",
   name: "Sign out",
   href: "/auth",
-  icon: LuLogOut,
+  icon: FaRightFromBracket,
 };
 
 const SIGN_IN: NavDestination = {
   id: "signin",
   name: "Sign in",
   href: "/auth",
-  icon: LuLogIn,
+  icon: FaRightToBracket,
 };
 
 export default function NavigationDock() {
@@ -251,9 +250,9 @@ export default function NavigationDock() {
         aria-expanded={isOpen}
       >
         {isOpen ? (
-          <LuX size={20} aria-hidden="true" />
+          <FaXmark size={20} aria-hidden="true" />
         ) : (
-          <LuMenu size={20} aria-hidden="true" />
+          <FaBars size={20} aria-hidden="true" />
         )}
       </button>
 
@@ -311,7 +310,7 @@ export default function NavigationDock() {
               className="flex h-8 w-8 items-center justify-center rounded-full text-[#6B6458] hover:text-[#B5532F] cursor-pointer"
               aria-label="Close menu"
             >
-              <LuX size={18} />
+              <FaXmark size={18} />
             </button>
           </div>
 
