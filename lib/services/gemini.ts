@@ -78,9 +78,8 @@ Set "isWestBengal": true. Provide accurate, culturally rich details:
   If the location is purely a natural landscape without notable historic architecture or heritage, set this to null.
   NOTE: A place may have only scenicBeauty, only historicalSignificance, or both if it has rich natural and historical significance.
 - "predictedMood":
-  - "moodName": The predicted emotional or contemplative mood of the place (e.g. "Contemplative Solitude", "Serene Reverence", "Verdant Nostalgia", "Festive Grandeur", "Monsoon Melancholy", "Mystical Stillness").
-  - "moodDescription": 2-3 sentences explaining why a visitor should enter this place in this exact mood and what inner resonance it brings.
-  - "whatToExpect": An array of 4 to 6 specific sensory highlights (e.g. ["Fragrance of damp red earth and sal leaves", "Echo of temple bells across ancient dighi lakes", "Clay teacups (bhnaar) served at local village stalls", "Chiselled terracotta reliefs depicting epic poetry"]).
+  - "moodName": The predicted emotional or contemplative atmosphere of the place (e.g. "Contemplative Solitude", "Serene Reverence", "Verdant Nostalgia", "Festive Grandeur", "Monsoon Melancholy", "Mystical Stillness").
+  - "moodParagraph": An evocative, cohesive narrative paragraph (strictly under 300 words) describing the ideal mindset for visiting and what visitors can expect to experience sensory-wise. CRITICAL RULE: Highlight all key terminologies, emotional mindsets, sensory expectations (such as fragrances, sounds, local teas, and architectural features), and optimal visiting moments with Markdown BOLD (e.g. **contemplative stillness**, **fragrance of wet red earth**, **early morning mist**).
   - "bestTimeToVisit": Recommended season and time of day (e.g. "Late Autumn to Spring (October–March), best experienced at dawn when mist envelops the monument").
 
 ${userNotes ? `User Hint / Memory Note: "${userNotes}"` : ""}
@@ -99,8 +98,7 @@ Respond ONLY with valid JSON conforming to this structure:
   "historicalSignificance": "### Heritage & Architecture\\n\\nMarkdown formatted text...",
   "predictedMood": {
     "moodName": "...",
-    "moodDescription": "...",
-    "whatToExpect": ["...", "...", "...", "..."],
+    "moodParagraph": "A rich flowing paragraph where **key terminologies**, **mindset**, and **sensory cues** are highlighted in bold...",
     "bestTimeToVisit": "..."
   },
   "nonBengalNotice": null

@@ -509,9 +509,6 @@ export default function BengalGuide() {
                         Overview Summary
                       </h3>
                     </div>
-                    <span className="text-xs font-mono text-terracotta font-semibold uppercase tracking-wider">
-                      300 Words · Plain Text
-                    </span>
                   </div>
 
                   <div className="relative flex-1 rounded-2xl border border-paper-muted/20 bg-paper-card p-6 sm:p-7 shadow-[0_8px_30px_rgba(27,26,23,0.08)] flex flex-col justify-between overflow-hidden">
@@ -530,10 +527,7 @@ export default function BengalGuide() {
                       </p>
                     </div>
 
-                    <div className="mt-6 pt-4 border-t border-paper-muted/15 flex items-center justify-between">
-                      <span className="text-[11px] text-paper-muted">
-                        ~{guideResult.plainTextSummary.trim().split(/\s+/).length} words
-                      </span>
+                    <div className="mt-6 pt-4 border-t border-paper-muted/15 flex items-center justify-end">
                       <button
                         type="button"
                         onClick={() =>
@@ -584,25 +578,20 @@ export default function BengalGuide() {
                             </h3>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-[10px] font-mono uppercase tracking-wider text-terracotta hidden sm:inline-block">
-                            ≤ 300 Words
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              copyToClipboard(guideResult.scenicBeauty || "", "scenic")
-                            }
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta transition-colors"
-                          >
-                            {copiedSection === "scenic" ? (
-                              <FaCheck size={11} className="text-terracotta" />
-                            ) : (
-                              <FaCopy size={11} />
-                            )}
-                            <span>{copiedSection === "scenic" ? "Copied" : "Copy"}</span>
-                          </button>
-                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            copyToClipboard(guideResult.scenicBeauty || "", "scenic")
+                          }
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta transition-colors"
+                        >
+                          {copiedSection === "scenic" ? (
+                            <FaCheck size={11} className="text-terracotta" />
+                          ) : (
+                            <FaCopy size={11} />
+                          )}
+                          <span>{copiedSection === "scenic" ? "Copied" : "Copy"}</span>
+                        </button>
                       </div>
                       <div className="prose prose-paper max-w-none text-paper-text text-sm sm:text-base leading-relaxed">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -628,28 +617,23 @@ export default function BengalGuide() {
                             </h3>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-[10px] font-mono uppercase tracking-wider text-terracotta hidden sm:inline-block">
-                            ≤ 300 Words
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              copyToClipboard(
-                                guideResult.historicalSignificance || "",
-                                "history",
-                              )
-                            }
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta transition-colors"
-                          >
-                            {copiedSection === "history" ? (
-                              <FaCheck size={11} className="text-terracotta" />
-                            ) : (
-                              <FaCopy size={11} />
-                            )}
-                            <span>{copiedSection === "history" ? "Copied" : "Copy"}</span>
-                          </button>
-                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            copyToClipboard(
+                              guideResult.historicalSignificance || "",
+                              "history",
+                            )
+                          }
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta transition-colors"
+                        >
+                          {copiedSection === "history" ? (
+                            <FaCheck size={11} className="text-terracotta" />
+                          ) : (
+                            <FaCopy size={11} />
+                          )}
+                          <span>{copiedSection === "history" ? "Copied" : "Copy"}</span>
+                        </button>
                       </div>
                       <div className="prose prose-paper max-w-none text-paper-text text-sm sm:text-base leading-relaxed">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -687,36 +671,16 @@ export default function BengalGuide() {
                     </div>
                   </div>
 
-                  <p
-                    className="text-base sm:text-lg italic text-paper-muted leading-relaxed"
+                  <div
+                    className="prose prose-paper max-w-none text-paper-text text-base sm:text-lg italic leading-relaxed"
                     style={{ fontFamily: "var(--font-newsreader), serif" }}
                   >
-                    {guideResult.predictedMood.moodDescription}
-                  </p>
-
-                  {Array.isArray(guideResult.predictedMood.whatToExpect) && (
-                    <div className="mt-4 pt-4 border-t border-paper-muted/15 space-y-2">
-                      <span
-                        className="text-xs font-semibold uppercase tracking-[0.16em] text-terracotta block"
-                        style={{ fontFamily: "var(--font-instrument), sans-serif" }}
-                      >
-                        What to Expect & Sensory Highlights:
-                      </span>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                        {guideResult.predictedMood.whatToExpect.map((item, idx) => (
-                          <div
-                            key={idx}
-                            className="flex items-start gap-2.5 rounded-xl border border-paper-muted/15 bg-paper-bg p-3"
-                          >
-                            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-terracotta" />
-                            <span className="text-xs sm:text-sm text-paper-text leading-snug">
-                              {item}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {guideResult.predictedMood.moodParagraph ||
+                        guideResult.predictedMood.moodDescription ||
+                        ""}
+                    </ReactMarkdown>
+                  </div>
                 </div>
               )}
 

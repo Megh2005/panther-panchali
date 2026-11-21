@@ -1,7 +1,8 @@
 export interface PredictedMood {
   moodName: string;
-  moodDescription: string;
-  whatToExpect: string[];
+  moodParagraph: string;
+  moodDescription?: string;
+  whatToExpect?: string[];
   bestTimeToVisit: string;
 }
 
