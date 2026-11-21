@@ -54,23 +54,23 @@ export default function BengalMapFlyToClient({
     // Stage 1: India Overview (center approx [22.8, 82.5], zoom 4.5)
     map.setView([22.8, 82.5], 4.5);
 
-    // Stage 2: Smooth flight to West Bengal [23.8, 88.0], zoom 7.5
+    // Stage 2: Gradual, cinematic flight to West Bengal [23.8, 87.8], zoom 7.8
     const timer1 = setTimeout(() => {
       setStage(2);
-      map.flyTo([23.8, 88.0], 7.5, {
-        duration: 2.2,
-        easeLinearity: 0.25,
+      map.flyTo([23.8, 87.8], 7.8, {
+        duration: 3.5,
+        easeLinearity: 0.15,
       });
-    }, 1200);
+    }, 1500);
 
-    // Stage 3: Smooth flight directly into the District / Location coordinates, zoom 15.5
+    // Stage 3: Gradual descent directly into the District / Landmark coordinates, zoom 15.5
     const timer2 = setTimeout(() => {
       setStage(3);
       map.flyTo([lat, lng], 15.5, {
-        duration: 2.4,
-        easeLinearity: 0.25,
+        duration: 4.0,
+        easeLinearity: 0.15,
       });
-    }, 3600);
+    }, 5500);
 
     // Drop Pin marker after arrival
     const timer3 = setTimeout(() => {
@@ -112,7 +112,7 @@ export default function BengalMapFlyToClient({
         </div>
       `);
       marker.openPopup();
-    }, 6200);
+    }, 10000);
 
     animationTimersRef.current = [timer1, timer2, timer3];
   };

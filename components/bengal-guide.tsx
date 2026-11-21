@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import {
+  FaBookmark,
   FaBookOpen,
   FaCheck,
   FaCircleExclamation,
@@ -40,6 +42,46 @@ export default function BengalGuide() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [saveToast, setSaveToast] = useState<string | null>(null);
+
+  const handleSaveToJourney = async () => {
+    if (!guideResult) return;
+    setIsSaving(true);
+    try {
+      const res = await fetch("/api/journeys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          placeName: guideResult.placeName,
+          bengaliName: guideResult.bengaliName,
+          district: guideResult.district,
+          state: guideResult.state,
+          detailedAddress: guideResult.detailedAddress,
+          coordinates: guideResult.coordinates,
+          imageUrl: uploadedImageUrl || imagePreviewUrl || "",
+          plainTextSummary: guideResult.plainTextSummary,
+          scenicBeauty: guideResult.scenicBeauty,
+          historicalSignificance: guideResult.historicalSignificance,
+          predictedMood: guideResult.predictedMood,
+          extractedColors,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to save place.");
+      }
+      setIsSaved(true);
+      setSaveToast("Saved to your Journey!");
+      setTimeout(() => setSaveToast(null), 3500);
+    } catch (err) {
+      setSaveToast(err instanceof Error ? err.message : "Failed to save.");
+      setTimeout(() => setSaveToast(null), 3500);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const handleFileChange = (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -132,6 +174,8 @@ export default function BengalGuide() {
     setExtractedColors([]);
     setUploadedImageUrl(null);
     setErrorMessage(null);
+    setIsSaved(false);
+    setSaveToast(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -145,6 +189,13 @@ export default function BengalGuide() {
 
   return (
     <div className="w-full max-w-[94vw] lg:max-w-[85vw] mx-auto space-y-8">
+      {saveToast && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 rounded-full border border-terracotta/40 bg-paper-text text-paper-bg px-6 py-2.5 text-xs font-semibold tracking-wider shadow-lg flex items-center gap-2">
+          <FaCheck size={12} className="text-gold-glow" />
+          <span>{saveToast}</span>
+        </div>
+      )}
+
       {errorMessage && (
         <div className="rounded-2xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-700 flex items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center gap-2">
@@ -382,6 +433,23 @@ export default function BengalGuide() {
                 <div className="flex flex-wrap items-center gap-3">
                   <button
                     type="button"
+                    onClick={handleSaveToJourney}
+                    disabled={isSaving || isSaved}
+                    className="inline-flex items-center gap-2 rounded-full bg-terracotta px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-xs hover:bg-paper-text hover:scale-105 transition-all disabled:opacity-60 cursor-pointer"
+                    style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+                  >
+                    {isSaving ? (
+                      <FaSpinner size={12} className="animate-spin" />
+                    ) : isSaved ? (
+                      <FaCheck size={12} />
+                    ) : (
+                      <FaBookmark size={12} />
+                    )}
+                    <span>{isSaved ? "Saved to Journey" : isSaving ? "Saving…" : "Save to My Journey"}</span>
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={handleReset}
                     className="inline-flex items-center gap-2 rounded-full border border-paper-muted/30 bg-paper-bg px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-paper-text hover:border-terracotta hover:text-terracotta transition-colors cursor-pointer"
                     style={{ fontFamily: "var(--font-instrument), sans-serif" }}
@@ -389,6 +457,14 @@ export default function BengalGuide() {
                     <FaRotateLeft size={12} />
                     <span>Identify Another</span>
                   </button>
+
+                  <Link
+                    href="/journeys"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-paper-muted/20 bg-paper-bg px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta hover:border-terracotta transition-colors"
+                    style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+                  >
+                    <span>View Journey</span>
+                  </Link>
                 </div>
               </div>
 
@@ -483,84 +559,107 @@ export default function BengalGuide() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                {guideResult.scenicBeauty && (
-                  <div className="rounded-3xl border border-paper-muted/20 bg-paper-card p-6 sm:p-8 shadow-sm space-y-4">
-                    <div className="flex items-center justify-between pb-3 border-b border-paper-muted/15">
-                      <div className="flex items-center gap-2">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta text-white shadow-xs">
-                          <FaTree size={14} />
+              {/* Scenic Beauty & Historical Significance (Optional: either, both, or neither) */}
+              {(guideResult.scenicBeauty || guideResult.historicalSignificance) && (
+                <div
+                  className={`grid gap-8 items-start ${
+                    guideResult.scenicBeauty && guideResult.historicalSignificance
+                      ? "grid-cols-1 md:grid-cols-2"
+                      : "grid-cols-1"
+                  }`}
+                >
+                  {guideResult.scenicBeauty && (
+                    <div className="rounded-3xl border border-paper-muted/20 bg-paper-card p-6 sm:p-8 shadow-sm space-y-4">
+                      <div className="flex items-center justify-between pb-3 border-b border-paper-muted/15">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta text-white shadow-xs">
+                            <FaTree size={14} />
+                          </div>
+                          <div>
+                            <h3
+                              className="text-xl sm:text-2xl font-light text-paper-text"
+                              style={{ fontFamily: "var(--font-fraunces), serif" }}
+                            >
+                              Scenic Beauty & Landscape
+                            </h3>
+                          </div>
                         </div>
-                        <h3
-                          className="text-xl sm:text-2xl font-light text-paper-text"
-                          style={{ fontFamily: "var(--font-fraunces), serif" }}
-                        >
-                          Scenic Beauty & Landscape
-                        </h3>
+                        <div className="flex items-center gap-3">
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-terracotta hidden sm:inline-block">
+                            ≤ 300 Words
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              copyToClipboard(guideResult.scenicBeauty || "", "scenic")
+                            }
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta transition-colors"
+                          >
+                            {copiedSection === "scenic" ? (
+                              <FaCheck size={11} className="text-terracotta" />
+                            ) : (
+                              <FaCopy size={11} />
+                            )}
+                            <span>{copiedSection === "scenic" ? "Copied" : "Copy"}</span>
+                          </button>
+                        </div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          copyToClipboard(guideResult.scenicBeauty, "scenic")
-                        }
-                        className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta transition-colors"
-                      >
-                        {copiedSection === "scenic" ? (
-                          <FaCheck size={11} className="text-terracotta" />
-                        ) : (
-                          <FaCopy size={11} />
-                        )}
-                        <span>{copiedSection === "scenic" ? "Copied" : "Copy"}</span>
-                      </button>
+                      <div className="prose prose-paper max-w-none text-paper-text text-sm sm:text-base leading-relaxed">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {guideResult.scenicBeauty}
+                        </ReactMarkdown>
+                      </div>
                     </div>
-                    <div className="prose prose-paper max-w-none text-paper-text text-sm sm:text-base leading-relaxed">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {guideResult.scenicBeauty}
-                      </ReactMarkdown>
-                    </div>
-                  </div>
-                )}
+                  )}
 
-                {guideResult.historicalSignificance && (
-                  <div className="rounded-3xl border border-paper-muted/20 bg-paper-card p-6 sm:p-8 shadow-sm space-y-4">
-                    <div className="flex items-center justify-between pb-3 border-b border-paper-muted/15">
-                      <div className="flex items-center gap-2">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta text-white shadow-xs">
-                          <FaLayerGroup size={14} />
+                  {guideResult.historicalSignificance && (
+                    <div className="rounded-3xl border border-paper-muted/20 bg-paper-card p-6 sm:p-8 shadow-sm space-y-4">
+                      <div className="flex items-center justify-between pb-3 border-b border-paper-muted/15">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta text-white shadow-xs">
+                            <FaLayerGroup size={14} />
+                          </div>
+                          <div>
+                            <h3
+                              className="text-xl sm:text-2xl font-light text-paper-text"
+                              style={{ fontFamily: "var(--font-fraunces), serif" }}
+                            >
+                              Historical Heritage & Architecture
+                            </h3>
+                          </div>
                         </div>
-                        <h3
-                          className="text-xl sm:text-2xl font-light text-paper-text"
-                          style={{ fontFamily: "var(--font-fraunces), serif" }}
-                        >
-                          Historical Heritage & Architecture
-                        </h3>
+                        <div className="flex items-center gap-3">
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-terracotta hidden sm:inline-block">
+                            ≤ 300 Words
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              copyToClipboard(
+                                guideResult.historicalSignificance || "",
+                                "history",
+                              )
+                            }
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta transition-colors"
+                          >
+                            {copiedSection === "history" ? (
+                              <FaCheck size={11} className="text-terracotta" />
+                            ) : (
+                              <FaCopy size={11} />
+                            )}
+                            <span>{copiedSection === "history" ? "Copied" : "Copy"}</span>
+                          </button>
+                        </div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          copyToClipboard(
-                            guideResult.historicalSignificance,
-                            "history",
-                          )
-                        }
-                        className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta transition-colors"
-                      >
-                        {copiedSection === "history" ? (
-                          <FaCheck size={11} className="text-terracotta" />
-                        ) : (
-                          <FaCopy size={11} />
-                        )}
-                        <span>{copiedSection === "history" ? "Copied" : "Copy"}</span>
-                      </button>
+                      <div className="prose prose-paper max-w-none text-paper-text text-sm sm:text-base leading-relaxed">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {guideResult.historicalSignificance}
+                        </ReactMarkdown>
+                      </div>
                     </div>
-                    <div className="prose prose-paper max-w-none text-paper-text text-sm sm:text-base leading-relaxed">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {guideResult.historicalSignificance}
-                      </ReactMarkdown>
-                    </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
 
               {guideResult.predictedMood && (
                 <div className="rounded-3xl border border-paper-muted/20 bg-paper-card p-6 sm:p-8 shadow-sm space-y-4">
