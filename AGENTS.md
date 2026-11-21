@@ -34,10 +34,13 @@ panther-panchali/
 ├── app/                              # Next.js App Router (Routes, Layouts & Endpoints ONLY)
 │   ├── api/
 │   │   ├── auth/[...nextauth]/route.ts  # NextAuth Auth.js v5 route handler
-│   │   └── guide/
-│   │       └── analyze/route.ts         # Multimodal place identification & guide analysis
+│   │   ├── guide/
+│   │   │   └── analyze/route.ts         # Multimodal place identification & guide analysis
+│   │   └── journeys/
+│   │       └── route.ts                 # Explored places retrieval (GET), save (POST), delete (DELETE)
 │   ├── auth/page.tsx                 # Single-purpose Google OAuth screen
 │   ├── guide/page.tsx                # Bengal Place Guide (Upload, Map Radar, 300-word Memoir, Heritage)
+│   ├── journeys/page.tsx             # My Bengal Journey (Personal archive of explored places with map)
 │   ├── profile/page.tsx              # Minimal Account Profile (avatar, name, email, user ID)
 │   ├── globals.css                   # Modern Tailwind CSS v4 theme tokens & base styles
 │   ├── layout.tsx                    # Root layout & Google fonts configuration
@@ -109,7 +112,7 @@ panther-panchali/
 ## 6. State-Dependent Navigation Policy
 - The navigation dock is dynamic and state-reactive:
   - **Unauthenticated state**: Displays public destinations (`Home`, `Bengal Guide`, and `Sign in`).
-  - **Authenticated state**: Displays the full suite (`Home`, `Bengal Guide`, `Profile`, and `Sign out`).
+  - **Authenticated state**: Displays the full suite (`Home`, `Bengal Guide`, `My Journey`, `Profile`, and `Sign out`).
   - **Route tracking**: Automatically marks the current active destination based on `pathname` with soft gold glow `bg-gold-glow`, dark text `text-paper-text`, ring `ring-terracotta/30`, and terracotta active indicator dot.
   - **Auth Screen Isolation**: Completely hidden on `/auth` to ensure an uncluttered sign-in experience.
   - **Dual-Form Responsive Design**: Floating bottom pill with tooltips on desktop/tablet; foldable sidebar drawer on mobile.

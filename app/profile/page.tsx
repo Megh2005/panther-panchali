@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-import { FaArrowRightFromBracket, FaCompass, FaSpinner, FaUser } from "react-icons/fa6";
+import { FaArrowRightFromBracket, FaCompass, FaRoute, FaSpinner, FaUser } from "react-icons/fa6";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -116,6 +116,15 @@ export default function ProfilePage() {
             >
               <FaCompass size={14} />
               <span>Open Bengal Guide</span>
+            </Link>
+
+            <Link
+              href="/journeys"
+              className="inline-flex items-center justify-center gap-2 w-full rounded-full border border-paper-muted/30 bg-paper-bg px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-paper-text transition-all duration-300 hover:border-terracotta hover:text-terracotta hover:scale-105 cursor-pointer shadow-xs"
+              style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+            >
+              <FaRoute size={14} />
+              <span>My Bengal Journey</span>
             </Link>
 
             <button
