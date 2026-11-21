@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import type { BengalPlaceAnalysis } from "@/lib/models/post";
+import type { BengalPlaceGuide } from "@/lib/models/guide";
 
 function getGeminiClient(): GoogleGenAI {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -33,7 +33,7 @@ export async function analyzeWestBengalPlaceFromImage(params: {
   imageBase64: string;
   mimeType: string;
   userNotes?: string;
-}): Promise<BengalPlaceAnalysis> {
+}): Promise<BengalPlaceGuide> {
   const { imageBase64, mimeType, userNotes } = params;
   const ai = getGeminiClient();
 
@@ -129,7 +129,7 @@ Respond ONLY with valid JSON conforming to this structure:
   }
 
   const cleaned = cleanJsonText(text);
-  const parsed = JSON.parse(cleaned) as BengalPlaceAnalysis;
+  const parsed = JSON.parse(cleaned) as BengalPlaceGuide;
 
   // Ensure default fallback coordinates if missing
   if (!parsed.coordinates || typeof parsed.coordinates.lat !== "number") {
