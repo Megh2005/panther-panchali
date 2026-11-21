@@ -1,3 +1,7 @@
+import type { BengalPlaceAnalysis, PredictedMood } from "./place-discovery";
+
+export type { BengalPlaceAnalysis, PredictedMood };
+
 export type TimeOfDay =
   | "Dawn"
   | "Morning"
@@ -53,6 +57,10 @@ export interface KolkataPost {
   revampedImageUrl: string;
   placeId: string;
   placeName: string;
+  bengaliName?: string;
+  district?: string;
+  state?: string;
+  detailedAddress?: string;
   placeCoords: {
     lat: number;
     lng: number;
@@ -61,6 +69,10 @@ export interface KolkataPost {
   yearSpan: YearSpan;
   vibe: PostVibe;
   caption: string;
+  plainTextSummary?: string;
+  scenicBeauty?: string;
+  historicalSignificance?: string;
+  predictedMood?: PredictedMood;
   hashtags: string[];
   extractedColors: string[];
   likesCount: number;
