@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { LuExternalLink, LuMapPin, LuX } from "react-icons/lu";
+import { FaExternalLinkAlt, FaMapMarkerAlt, FaTimes } from "react-icons/fa";
+import BengalMapFlyTo from "@/components/bengal-map-flyto";
 
 interface OpenStreetMapModalProps {
   isOpen: boolean;
@@ -33,41 +34,32 @@ export default function OpenStreetMapModal({
 
   if (!isOpen) return null;
 
-  // Bounding box delta for efficient and clear street-level centering
-  const deltaLng = 0.0065;
-  const deltaLat = 0.0045;
-  const minLng = (lng - deltaLng).toFixed(5);
-  const minLat = (lat - deltaLat).toFixed(5);
-  const maxLng = (lng + deltaLng).toFixed(5);
-  const maxLat = (lat + deltaLat).toFixed(5);
-
-  const embedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${minLng}%2C${minLat}%2C${maxLng}%2C${maxLat}&layer=mapnik&marker=${lat}%2C${lng}`;
-  const directOsmUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=17/${lat}/${lng}`;
+  const directOsmUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}`;
 
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="osm-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-paper-text/50 backdrop-blur-[3px] animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-paper-text/60 backdrop-blur-xs animate-fadeIn"
     >
-      <div className="relative flex flex-col w-full max-w-2xl overflow-hidden rounded-2xl border border-paper-muted/20 bg-paper-card shadow-[0_16px_48px_-8px_rgba(27,26,23,0.35)] animate-scaleUp">
+      <div className="relative flex flex-col w-full max-w-3xl overflow-hidden rounded-3xl border border-paper-muted/20 bg-paper-card shadow-[0_20px_60px_-10px_rgba(27,26,23,0.45)] animate-scaleUp">
         {/* Header Bar */}
-        <div className="flex items-start justify-between p-5 border-b border-paper-muted/15 bg-paper-bg">
+        <div className="flex items-start justify-between p-4 sm:p-5 border-b border-paper-muted/15 bg-paper-bg">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-terracotta/15 text-terracotta border border-terracotta/30">
-              <LuMapPin size={20} />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-terracotta text-white shadow-sm">
+              <FaMapMarkerAlt size={18} />
             </div>
             <div>
               <span
-                className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta block"
+                className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.18em] text-terracotta block"
                 style={{ fontFamily: "var(--font-instrument), sans-serif" }}
               >
-                {area || "Kolkata, West Bengal"}
+                {area || "West Bengal"}
               </span>
               <h3
                 id="osm-modal-title"
-                className="text-xl sm:text-2xl font-light tracking-normal text-paper-text mt-0.5"
+                className="text-lg sm:text-2xl font-light tracking-normal text-paper-text mt-0.5"
                 style={{ fontFamily: "var(--font-fraunces), serif" }}
               >
                 {placeName}
@@ -81,17 +73,17 @@ export default function OpenStreetMapModal({
             className="flex h-8 w-8 items-center justify-center rounded-full text-paper-muted hover:text-terracotta hover:bg-paper-text/5 transition-colors cursor-pointer"
             aria-label="Close map"
           >
-            <LuX size={18} />
+            <FaTimes size={18} />
           </button>
         </div>
 
-        {/* OpenStreetMap Interactive Embed */}
-        <div className="relative w-full h-80 sm:h-96 bg-paper-bg">
-          <iframe
-            title={`OpenStreetMap for ${placeName}`}
-            src={embedUrl}
-            className="w-full h-full border-0"
-            loading="lazy"
+        {/* Animated OpenStreetMap Leaflet Radar */}
+        <div className="p-3 sm:p-4 bg-paper-bg">
+          <BengalMapFlyTo
+            lat={lat}
+            lng={lng}
+            placeName={placeName}
+            district={area || "West Bengal"}
           />
         </div>
 
@@ -101,7 +93,7 @@ export default function OpenStreetMapModal({
             className="text-xs text-paper-muted"
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
           >
-            OpenStreetMap Heritage Locator
+            OpenStreetMap Multi-Stage Radar · Panther Panchali
           </span>
 
           <a
@@ -111,8 +103,8 @@ export default function OpenStreetMapModal({
             className="inline-flex items-center gap-1.5 rounded-full border border-paper-muted/25 bg-paper-bg px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-paper-text hover:border-terracotta hover:text-terracotta transition-colors"
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
           >
-            <span>View Full Map</span>
-            <LuExternalLink size={13} />
+            <span>Open in OpenStreetMap</span>
+            <FaExternalLinkAlt size={13} />
           </a>
         </div>
       </div>

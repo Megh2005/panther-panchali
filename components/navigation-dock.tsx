@@ -27,9 +27,9 @@ interface NavDestination {
 
 const AUTHENTICATED_DESTINATIONS: NavDestination[] = [
   { id: "home", name: "Home", href: "/", icon: LuHouse },
-  { id: "canvas", name: "Create Post", href: "/canvas", icon: LuImagePlus },
-  { id: "explore", name: "Kolkata Feed", href: "/explore", icon: LuGlobe },
-  { id: "journeys", name: "My Archive", href: "/journeys", icon: LuRoute },
+  { id: "canvas", name: "Identify Place", href: "/canvas", icon: LuCompass },
+  { id: "explore", name: "Bengal Feed", href: "/explore", icon: LuGlobe },
+  { id: "journeys", name: "My Discoveries", href: "/journeys", icon: LuRoute },
   { id: "profile", name: "Profile", href: "/profile", icon: LuUser },
 ];
 
