@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import {
   FaArrowLeft,
   FaBookOpen,
@@ -25,7 +25,7 @@ import BengalSeasonsRecolor from "@/components/bengal-seasons-recolor";
 import SatelliteMapView from "@/components/satellite-map-view";
 import type { ExploredPlace } from "@/lib/models/guide";
 
-export default function JourneyDetailsPage() {
+function JourneyDetailsContent() {
   const params = useParams();
   const router = useRouter();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -511,5 +511,31 @@ export default function JourneyDetailsPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function JourneyDetailsPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-paper-bg text-paper-text flex flex-col items-center justify-center p-4">
+          <FaSpinner size={32} className="animate-spin text-terracotta mb-4" />
+          <h2
+            className="text-xl font-light text-paper-text"
+            style={{ fontFamily: "var(--font-fraunces), serif" }}
+          >
+            Retrieving Landmark Archive…
+          </h2>
+          <p
+            className="text-xs italic text-paper-muted mt-1"
+            style={{ fontFamily: "var(--font-newsreader), serif" }}
+          >
+            Loading high-resolution satellite imagery and memoirs
+          </p>
+        </main>
+      }
+    >
+      <JourneyDetailsContent />
+    </Suspense>
   );
 }

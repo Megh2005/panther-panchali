@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Instrument_Sans, Newsreader } from "next/font/google";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import AuthProvider from "@/components/auth-provider";
 import NavigationDock from "@/components/navigation-dock";
 import "./globals.css";
@@ -44,7 +44,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <AuthProvider>
           {children}
-          <NavigationDock />
+          <Suspense fallback={null}>
+            <NavigationDock />
+          </Suspense>
         </AuthProvider>
       </body>
     </html>
