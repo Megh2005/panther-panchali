@@ -67,9 +67,16 @@ Set "isWestBengal": true. Provide accurate, culturally rich details:
   The text must be generated natively as pure plain text without relying on post-processing replacement.
   Describe the geographical atmosphere, cultural aura, lived experience, and overall sensory identity of this place as a flowing 300-word story.
 - "scenicBeauty":
-  Rich, vivid Markdown text describing the natural landscape, topography, river currents, red laterite soils, hills, tea gardens, forests, or seasonal atmosphere. You ARE ENCOURAGED to use Markdown formatting here (such as ### subheadings, **bold**, and - bullet lists) to emphasize scenic elements.
+  OPTIONAL (NOT MANDATORY): Not every location in West Bengal possesses prominent natural or scenic beauty. If this location has authentic natural landscape, topography, river currents, red laterite soils, hills, tea gardens, forests, or seasonal atmosphere, provide a dedicated scenic reflection.
+  STRICT WORD LIMIT: Must be strictly within 300 words.
+  FORMAT: Rich Markdown text (subheadings like ###, **bold**, bullet lists -).
+  If the location is strictly architectural or urban with no notable natural or scenic landscape, set this to null.
 - "historicalSignificance":
-  Rich, deep Markdown text explaining the architectural style (e.g. terracotta plaques, Chala/Ratna temples, Indo-Saracenic, colonial), founding rulers/dynasties (e.g. Malla Kings, Nawabs of Bengal, Pala era), and literary or folkloric legends. You ARE ENCOURAGED to use Markdown formatting here (such as ### subheadings, **bold**, and - bullet lists) to emphasize historical points.
+  OPTIONAL (NOT MANDATORY): Not every location possesses ancient or historical architecture. If this location has genuine historical heritage, architectural style (e.g. terracotta plaques, Chala/Ratna temples, Nawabi palaces, colonial edifices), founding dynasties, or folklore, provide a dedicated historical reflection.
+  STRICT WORD LIMIT: Must be strictly within 300 words.
+  FORMAT: Rich Markdown text (subheadings like ###, **bold**, bullet lists -).
+  If the location is purely a natural landscape without notable historic architecture or heritage, set this to null.
+  NOTE: A place may have only scenicBeauty, only historicalSignificance, or both if it has rich natural and historical significance.
 - "predictedMood":
   - "moodName": The predicted emotional or contemplative mood of the place (e.g. "Contemplative Solitude", "Serene Reverence", "Verdant Nostalgia", "Festive Grandeur", "Monsoon Melancholy", "Mystical Stillness").
   - "moodDescription": 2-3 sentences explaining why a visitor should enter this place in this exact mood and what inner resonance it brings.
