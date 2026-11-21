@@ -4,30 +4,30 @@ import Image from "next/image";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import {
-  LuArrowLeft,
-  LuCalendar,
-  LuClock,
-  LuHeart,
-  LuLayers,
-  LuLoaderCircle,
-  LuMapPin,
-  LuMessageSquare,
-  LuSend,
-  LuShare2,
-  LuSparkles,
-  LuTrees,
-  LuUser,
-} from "react-icons/lu";
+  FaArrowLeft,
+  FaCalendarDays,
+  FaClock,
+  FaHeart,
+  FaLayerGroup,
+  FaLocationDot,
+  FaMessage,
+  FaPaperPlane,
+  FaShareNodes,
+  FaSpinner,
+  FaTree,
+  FaUser,
+  FaWandMagicSparkles,
+} from "react-icons/fa6";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import OpenStreetMapModal from "@/components/open-street-map-modal";
-import type { KolkataPost, PostComment } from "@/lib/models/post";
+import type { BengalPost, PostComment } from "@/lib/models/post";
 
 export default function SinglePostPage(props: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(props.params);
-  const [post, setPost] = useState<KolkataPost | null>(null);
+  const [post, setPost] = useState<BengalPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
@@ -73,7 +73,6 @@ export default function SinglePostPage(props: {
         setLikeCount(data.likesCount);
       }
     } catch {
-      // rollback
       setIsLiked(!nextLiked);
       setLikeCount((prev) => (!nextLiked ? prev + 1 : Math.max(0, prev - 1)));
     }
@@ -141,12 +140,12 @@ export default function SinglePostPage(props: {
   if (loading) {
     return (
       <main className="min-h-screen bg-paper-bg text-paper-text flex flex-col items-center justify-center gap-3">
-        <LuLoaderCircle size={28} className="animate-spin text-terracotta" />
+        <FaSpinner size={24} className="animate-spin text-terracotta" />
         <p
           className="text-sm italic text-paper-muted"
           style={{ fontFamily: "var(--font-newsreader), serif" }}
         >
-          Loading memory…
+          Loading discovery…
         </p>
       </main>
     );
@@ -165,7 +164,7 @@ export default function SinglePostPage(props: {
           className="mt-2 text-sm italic text-paper-muted"
           style={{ fontFamily: "var(--font-newsreader), serif" }}
         >
-          This memory may have been removed or does not exist.
+          This record may have been removed or does not exist.
         </p>
         <Link
           href="/explore"
@@ -182,9 +181,8 @@ export default function SinglePostPage(props: {
 
   return (
     <main className="relative min-h-screen bg-paper-bg text-paper-text pt-8 pb-28 px-4 overflow-hidden">
-      {/* Warm ambient background glow consistent with Homepage */}
       <div
-        className="pointer-events-none absolute top-20 left-1/2 -translate-x-1/2 h-[60vw] max-h-[600px] w-[60vw] max-w-[800px] rounded-full bg-radial from-[#E3C27A]/20 via-[#E3C27A]/5 to-transparent blur-3xl opacity-75"
+        className="pointer-events-none absolute top-20 left-1/2 -translate-x-1/2 h-[60vw] max-h-150 w-[60vw] max-w-200 rounded-full bg-radial from-[#E3C27A]/20 via-[#E3C27A]/5 to-transparent blur-3xl opacity-75"
         aria-hidden="true"
       />
 
@@ -194,18 +192,17 @@ export default function SinglePostPage(props: {
         </div>
       )}
 
-      <div className="relative z-10 max-w-2xl mx-auto">
+      <div className="relative z-10 max-w-3xl mx-auto">
         <Link
           href="/explore"
           className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-paper-muted hover:text-terracotta transition-colors mb-6"
           style={{ fontFamily: "var(--font-instrument), sans-serif" }}
         >
-          <LuArrowLeft size={14} />
+          <FaArrowLeft size={13} />
           <span>Back to Bengal Feed</span>
         </Link>
 
         <article className="overflow-hidden rounded-3xl border border-paper-muted/20 bg-paper-card shadow-sm">
-          {/* Header */}
           <div className="p-5 sm:p-6 pb-4 flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-paper-bg border border-terracotta/40 overflow-hidden shadow-xs">
@@ -218,7 +215,7 @@ export default function SinglePostPage(props: {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <LuUser size={20} className="text-terracotta" />
+                  <FaUser size={18} className="text-terracotta" />
                 )}
               </div>
               <div>
@@ -236,8 +233,12 @@ export default function SinglePostPage(props: {
                       year: "numeric",
                     })}
                   </span>
-                  <span>·</span>
-                  <span className="text-terracotta font-medium">{post.vibe}</span>
+                  {post.vibe && (
+                    <>
+                      <span>·</span>
+                      <span className="text-terracotta font-medium">{post.vibe}</span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -245,28 +246,27 @@ export default function SinglePostPage(props: {
             <div className="flex flex-wrap items-center justify-end gap-1.5">
               {post.district && (
                 <span className="inline-flex items-center gap-1 rounded-full border border-terracotta/30 bg-terracotta/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-terracotta">
-                  <LuMapPin size={11} />
+                  <FaLocationDot size={10} />
                   <span>{post.district}</span>
                 </span>
               )}
               {post.predictedMood?.moodName ? (
                 <span className="inline-flex items-center gap-1 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-paper-text">
-                  <LuSparkles size={11} className="text-terracotta" />
+                  <FaWandMagicSparkles size={10} className="text-terracotta" />
                   <span>{post.predictedMood.moodName}</span>
                 </span>
-              ) : (
+              ) : post.timeOfDay ? (
                 <span className="inline-flex items-center gap-1 rounded-full border border-paper-muted/20 bg-paper-bg px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-paper-muted">
-                  <LuClock size={11} />
+                  <FaClock size={10} />
                   <span>{post.timeOfDay}</span>
                 </span>
-              )}
+              ) : null}
             </div>
           </div>
 
-          {/* Location Bar */}
           <div className="px-5 sm:px-6 pb-3 flex items-center justify-between text-xs text-paper-muted">
             <div className="flex items-center gap-1.5 font-medium">
-              <LuMapPin size={14} className="text-terracotta shrink-0" />
+              <FaLocationDot size={13} className="text-terracotta shrink-0" />
               <span className="text-paper-text font-semibold">{post.placeName}</span>
               {post.bengaliName && (
                 <span className="text-terracotta font-normal">
@@ -280,27 +280,25 @@ export default function SinglePostPage(props: {
               className="inline-flex items-center gap-1 rounded-full border border-paper-muted/30 bg-paper-bg px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-terracotta hover:bg-terracotta hover:text-white transition-all cursor-pointer"
               style={{ fontFamily: "var(--font-instrument), sans-serif" }}
             >
-              <LuMapPin size={12} />
+              <FaLocationDot size={10} />
               <span>View Map Radar</span>
             </button>
           </div>
 
-          {/* Square Image */}
           <div className="relative w-full aspect-square bg-paper-bg overflow-hidden border-y border-paper-muted/15">
             <Image
-              src={post.revampedImageUrl || post.originalImageUrl}
+              src={post.revampedImageUrl || post.originalImageUrl || ""}
               alt={post.placeName}
               fill
-              sizes="(max-width: 768px) 100vw, 672px"
+              sizes="(max-width: 768px) 100vw, 768px"
               className="object-cover"
             />
           </div>
 
-          {/* Palette */}
           {Array.isArray(post.extractedColors) && post.extractedColors.length > 0 && (
             <div className="px-5 sm:px-6 py-2.5 bg-paper-bg/60 border-b border-paper-muted/15 flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 text-xs text-paper-muted">
-                <LuSparkles size={13} className="text-terracotta" />
+                <FaWandMagicSparkles size={11} className="text-terracotta" />
                 <span
                   className="font-semibold uppercase tracking-[0.16em] text-[10px]"
                   style={{ fontFamily: "var(--font-instrument), sans-serif" }}
@@ -324,9 +322,7 @@ export default function SinglePostPage(props: {
             </div>
           )}
 
-          {/* Body */}
           <div className="p-5 sm:p-6 pt-4 space-y-6">
-            {/* 300-word Plain Text Literary Memoir */}
             <div>
               <span
                 className="text-[10px] font-bold uppercase tracking-[0.18em] text-terracotta block mb-2"
@@ -342,13 +338,12 @@ export default function SinglePostPage(props: {
               </p>
             </div>
 
-            {/* Scenic Beauty & Historical Significance */}
             {(post.scenicBeauty || post.historicalSignificance) && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-paper-muted/15">
                 {post.scenicBeauty && (
                   <div className="rounded-2xl bg-paper-bg p-5 border border-paper-muted/20">
                     <div className="flex items-center gap-2 mb-2 text-terracotta text-xs font-semibold uppercase tracking-wider">
-                      <LuTrees size={16} />
+                      <FaTree size={14} />
                       <span>Scenic Beauty</span>
                     </div>
                     <div className="prose prose-sm text-paper-text leading-relaxed">
@@ -362,7 +357,7 @@ export default function SinglePostPage(props: {
                 {post.historicalSignificance && (
                   <div className="rounded-2xl bg-paper-bg p-5 border border-paper-muted/20">
                     <div className="flex items-center gap-2 mb-2 text-terracotta text-xs font-semibold uppercase tracking-wider">
-                      <LuLayers size={16} />
+                      <FaLayerGroup size={14} />
                       <span>Historical Heritage</span>
                     </div>
                     <div className="prose prose-sm text-paper-text leading-relaxed">
@@ -375,7 +370,6 @@ export default function SinglePostPage(props: {
               </div>
             )}
 
-            {/* Predicted Mood Card */}
             {post.predictedMood && (
               <div className="rounded-2xl bg-paper-bg p-5 border border-paper-muted/20">
                 <div className="flex items-center justify-between text-xs font-semibold text-terracotta mb-2">
@@ -419,7 +413,6 @@ export default function SinglePostPage(props: {
               </div>
             )}
 
-            {/* Interaction Bar */}
             <div className="mt-5 pt-4 border-t border-paper-muted/15 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <button
@@ -432,14 +425,14 @@ export default function SinglePostPage(props: {
                   }`}
                   style={{ fontFamily: "var(--font-instrument), sans-serif" }}
                 >
-                  <LuHeart size={14} className={isLiked ? "fill-white" : ""} />
+                  <FaHeart size={12} className={isLiked ? "fill-white" : ""} />
                   <span>{likeCount}</span>
                 </button>
                 <span
                   className="inline-flex items-center gap-1.5 text-xs text-paper-muted px-2"
                   style={{ fontFamily: "var(--font-instrument), sans-serif" }}
                 >
-                  <LuMessageSquare size={14} />
+                  <FaMessage size={12} />
                   <span>{comments.length} Comments</span>
                 </span>
               </div>
@@ -450,12 +443,11 @@ export default function SinglePostPage(props: {
                 className="inline-flex items-center gap-1.5 rounded-full bg-paper-bg border border-paper-muted/20 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-paper-muted hover:text-terracotta transition-colors cursor-pointer"
                 style={{ fontFamily: "var(--font-instrument), sans-serif" }}
               >
-                <LuShare2 size={13} />
+                <FaShareNodes size={12} />
                 <span>Share</span>
               </button>
             </div>
 
-            {/* Comments Section */}
             <div className="mt-6 pt-5 border-t border-paper-muted/15 space-y-4">
               <h3
                 className="text-xs font-semibold uppercase tracking-[0.16em] text-paper-muted"
@@ -500,7 +492,6 @@ export default function SinglePostPage(props: {
                 </div>
               )}
 
-              {/* Comment Input */}
               <form onSubmit={handleAddComment} className="flex items-center gap-2 pt-2">
                 <input
                   type="text"
@@ -516,7 +507,7 @@ export default function SinglePostPage(props: {
                   disabled={isSubmittingComment || !commentText.trim()}
                   className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-terracotta text-white shadow-xs hover:bg-paper-text transition-colors disabled:opacity-50 cursor-pointer"
                 >
-                  <LuSend size={13} />
+                  <FaPaperPlane size={11} />
                 </button>
               </form>
             </div>
