@@ -88,9 +88,9 @@ export async function uploadToCloudinary(
   }
 }
 
-export async function uploadPostImageWithColors(
+export async function uploadGuideImageWithColors(
   imageSource: string,
-  folder = "pather_panchali/posts",
+  folder = "panther_panchali/guide",
 ): Promise<CloudinaryUploadResult> {
   const cld = getCloudinary();
 
@@ -171,11 +171,13 @@ export async function uploadPostImageWithColors(
 /**
  * Helper to upload a base64 buffer with dominant 5-color palette extraction.
  */
+export const uploadPostImageWithColors = uploadGuideImageWithColors;
+
 export async function uploadGeneratedBufferWithColors(
   buffer: Buffer,
-  folder = "pather_panchali/discoveries",
+  folder = "panther_panchali/guide",
 ): Promise<CloudinaryUploadResult> {
   const dataUri = `data:image/jpeg;base64,${buffer.toString("base64")}`;
-  return uploadPostImageWithColors(dataUri, folder);
+  return uploadGuideImageWithColors(dataUri, folder);
 }
 
