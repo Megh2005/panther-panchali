@@ -55,12 +55,12 @@ function normalizeHexColor(raw: unknown): string | null {
   return null;
 }
 
-const DEFAULT_KOLKATA_PALETTE = [
-  "#B5532F", // Terracotta
-  "#EDE4D3", // Morning Paper Card
-  "#1B1A17", // Vintage Ink
-  "#E3C27A", // Soft Gold Glow
-  "#6B6458", // Muted Sepia
+const DEFAULT_BENGAL_PALETTE = [
+  "#B5532F",
+  "#EDE4D3",
+  "#1B1A17",
+  "#E3C27A",
+  "#6B6458",
 ];
 
 export async function uploadToCloudinary(
@@ -147,7 +147,7 @@ export async function uploadPostImageWithColors(
       }
     }
 
-    for (const fallback of DEFAULT_KOLKATA_PALETTE) {
+    for (const fallback of DEFAULT_BENGAL_PALETTE) {
       if (candidateColors.length >= 5) break;
       if (!candidateColors.includes(fallback)) {
         candidateColors.push(fallback);

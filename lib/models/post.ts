@@ -1,39 +1,26 @@
-import type { BengalPlaceAnalysis, PredictedMood } from "./place-discovery";
+export interface PredictedMood {
+  moodName: string;
+  moodDescription: string;
+  whatToExpect: string[];
+  bestTimeToVisit: string;
+}
 
-export type { BengalPlaceAnalysis, PredictedMood };
-
-export type TimeOfDay =
-  | "Dawn"
-  | "Morning"
-  | "Afternoon"
-  | "Twilight"
-  | "Evening"
-  | "Midnight";
-
-export type YearSpan =
-  | "Poila Baisakh"
-  | "Pooja"
-  | "Deepavali"
-  | "Winter Season"
-  | "Monsoon Rain"
-  | "Spring Breeze";
-
-export type PostVibe =
-  | "Aesthetic"
-  | "Happy"
-  | "Sad"
-  | "Melancholy"
-  | "Dazzling"
-  | "Party";
-
-export interface KolkataPlace {
-  id: string;
-  name: string;
-  tagline: string;
-  description: string;
-  lat: number;
-  lng: number;
-  area: string;
+export interface BengalPlaceAnalysis {
+  isWestBengal: boolean;
+  placeName: string;
+  bengaliName?: string;
+  district: string;
+  state: string;
+  detailedAddress: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  plainTextSummary: string;
+  scenicBeauty: string;
+  historicalSignificance: string;
+  predictedMood: PredictedMood;
+  nonBengalNotice?: string;
 }
 
 export interface PostComment {
@@ -46,28 +33,29 @@ export interface PostComment {
   createdAt: string | Date;
 }
 
-export interface KolkataPost {
+export interface BengalPost {
   _id?: string;
   id: string;
   userId: string;
   userEmail: string;
   userName: string;
   userAvatar?: string;
-  originalImageUrl: string;
-  revampedImageUrl: string;
+  imageUrl?: string;
+  originalImageUrl?: string;
+  revampedImageUrl?: string;
   placeId: string;
   placeName: string;
   bengaliName?: string;
-  district?: string;
-  state?: string;
+  district: string;
+  state: string;
   detailedAddress?: string;
   placeCoords: {
     lat: number;
     lng: number;
   };
-  timeOfDay: TimeOfDay;
-  yearSpan: YearSpan;
-  vibe: PostVibe;
+  timeOfDay?: string;
+  yearSpan?: string;
+  vibe?: string;
   caption: string;
   plainTextSummary?: string;
   scenicBeauty?: string;
@@ -81,3 +69,5 @@ export interface KolkataPost {
   sharesCount?: number;
   createdAt: Date;
 }
+
+export type KolkataPost = BengalPost;
