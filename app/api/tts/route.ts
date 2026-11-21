@@ -1,21 +1,21 @@
 import { NextResponse } from "next/server";
-import { generateSpeechAudio } from "@/lib/services/elevenlabs";
+import { generateSpeechAudio } from "@/lib/services/google-tts";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { text, voiceId } = body as { text?: string; voiceId?: string };
+    const { text } = body as { text?: string };
 
     if (!text || typeof text !== "string" || !text.trim()) {
       return NextResponse.json(
-        { error: "Text is required for audio playback." },
+        { error: "Text is required for voice narration." },
         { status: 400 },
       );
     }
 
-    const audioBuffer = await generateSpeechAudio(text, voiceId);
+    const audioUint8 = await generateSpeechAudio(text);
 
-    return new Response(audioBuffer, {
+    return new Response(audioUint8 as unknown as BodyInit, {
       status: 200,
       headers: {
         "Content-Type": "audio/mpeg",
@@ -23,9 +23,11 @@ export async function POST(req: Request) {
       },
     });
   } catch (error) {
-    console.error("Audio generation failed:", error);
+    console.error("Voice generation failed:", error);
     const message =
-      error instanceof Error ? error.message : "Failed to generate audio playback.";
+      error instanceof Error
+        ? error.message
+        : "Failed to generate voice narration.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
