@@ -64,11 +64,12 @@ Set "isWestBengal": true. Provide accurate, culturally rich details:
 - "detailedAddress": Full real-world postal address or landmark vicinity description.
 - "coordinates": Exact latitude and longitude { "lat": number, "lng": number } for OpenStreetMap positioning.
 - "plainTextSummary":
-  CRITICAL INSTRUCTION FOR "plainTextSummary":
-  You MUST write an evocative, deeply informative, continuous literary summary of approximately 300 words.
-  ABSOLUTE RULE: DO NOT USE ANY MARKDOWN CHARACTERS IN THIS FIELD.
-  DO NOT USE ASTERISKS (*), DOUBLE ASTERISKS (**), HASHES (#), UNDERSCORES (_), BACKTICKS (\`), TILDE (~), BRACKETS, OR BULLET MARKS (-).
-  Every single character must be standard plain text English prose.
+  CRITICAL CONSTRAINED PROMPT RULE FOR "plainTextSummary":
+  You MUST write an evocative, comprehensive, and culturally grounded overview summary of approximately 300 words.
+  MANDATORY REQUIREMENT: You MUST NATIVELY output ZERO Markdown characters in this field.
+  DO NOT use any asterisks (* or **), hashes (#), underscores (_), backticks (\`), tildes (~), brackets, bullet marks (-), or numbered list prefixes.
+  Every single sentence and paragraph must be standard, flowing literary English prose.
+  The text must be generated natively as pure plain text without relying on post-processing replacement.
   Describe the geographical atmosphere, cultural aura, lived experience, and overall sensory identity of this place as a flowing 300-word story.
 - "scenicBeauty":
   Rich, vivid Markdown text describing the natural landscape, topography, river currents, red laterite soils, hills, tea gardens, forests, or seasonal atmosphere. You ARE ENCOURAGED to use Markdown formatting here (such as ### subheadings, **bold**, and - bullet lists) to emphasize scenic elements.

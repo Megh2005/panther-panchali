@@ -568,65 +568,93 @@ export default function PlaceDiscoveryStudio() {
                 </div>
               </section>
 
-              {/* 300-WORD PLAIN TEXT SUMMARY (STRICTLY NO MARKDOWN) */}
-              <section className="relative rounded-3xl border border-paper-muted/20 bg-paper-card p-8 sm:p-12 shadow-[0_12px_40px_rgba(27,26,23,0.08)] overflow-hidden">
-                <div
-                  className="pointer-events-none absolute top-0 right-0 -mr-16 -mt-16 h-48 w-48 rounded-full bg-radial from-[#E3C27A]/20 to-transparent blur-2xl opacity-60"
-                  aria-hidden="true"
-                />
-
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-terracotta text-white">
-                    <FaBook size={16} />
-                  </div>
-                  <div>
-                    <span
-                      className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta block"
-                      style={{ fontFamily: "var(--font-instrument), sans-serif" }}
-                    >
-                      Panther Panchali · Literary Memoir
-                    </span>
-                    <span className="text-[11px] text-paper-muted">
-                      300-Word Continuous Plain Text Summary
-                    </span>
-                  </div>
-                </div>
-
-                {/* Pure plain text rendered with Newsreader italic */}
-                <div
-                  className="text-base sm:text-lg md:text-xl italic text-paper-text leading-[1.8] tracking-wide whitespace-pre-line"
-                  style={{ fontFamily: "var(--font-newsreader), serif" }}
-                >
-                  {analysisResult.plainTextSummary}
-                </div>
-              </section>
-
-              {/* OPENSTREETMAP MULTI-STAGE ANIMATED FLY-TO */}
-              <section className="space-y-3">
-                <div className="flex items-center justify-between px-1">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta text-white">
-                      <FaCompass size={15} />
+              {/* ALONGSIDE THE MAP: OPENSTREETMAP FLY-TO & 300-WORD PLAIN-TEXT OVERVIEW */}
+              <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                {/* Interactive OpenStreetMap Flight Animation */}
+                <div className="lg:col-span-7 flex flex-col space-y-3">
+                  <div className="flex items-center justify-between px-1">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta text-white shadow-xs">
+                        <FaCompass size={14} />
+                      </div>
+                      <h3
+                        className="text-xl sm:text-2xl font-light text-paper-text"
+                        style={{ fontFamily: "var(--font-fraunces), serif" }}
+                      >
+                        OpenStreetMap Flight Radar
+                      </h3>
                     </div>
-                    <h3
-                      className="text-xl sm:text-2xl font-light text-paper-text"
-                      style={{ fontFamily: "var(--font-fraunces), serif" }}
-                    >
-                      OpenStreetMap Flight Animation
-                    </h3>
+                    <span className="text-xs text-paper-muted">
+                      India &rarr; West Bengal &rarr; {analysisResult.district}
+                    </span>
                   </div>
-                  <span className="text-xs text-paper-muted">
-                    Subcontinent &rarr; West Bengal &rarr; {analysisResult.district}
-                  </span>
+
+                  <BengalMapFlyTo
+                    lat={analysisResult.coordinates.lat}
+                    lng={analysisResult.coordinates.lng}
+                    placeName={analysisResult.placeName}
+                    district={analysisResult.district}
+                    detailedAddress={analysisResult.detailedAddress}
+                  />
                 </div>
 
-                <BengalMapFlyTo
-                  lat={analysisResult.coordinates.lat}
-                  lng={analysisResult.coordinates.lng}
-                  placeName={analysisResult.placeName}
-                  district={analysisResult.district}
-                  detailedAddress={analysisResult.detailedAddress}
-                />
+                {/* Alongside the Map: Strictly Plain-Text Overview Summary (~300 words, Zero Markdown) */}
+                <div className="lg:col-span-5 flex flex-col space-y-3">
+                  <div className="flex items-center justify-between px-1">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta text-white shadow-xs">
+                        <FaBook size={14} />
+                      </div>
+                      <h3
+                        className="text-xl sm:text-2xl font-light text-paper-text"
+                        style={{ fontFamily: "var(--font-fraunces), serif" }}
+                      >
+                        Overview Summary
+                      </h3>
+                    </div>
+                    <span className="text-xs font-mono text-terracotta font-semibold uppercase tracking-wider">
+                      300 Words · Plain Text
+                    </span>
+                  </div>
+
+                  <div className="relative flex-1 rounded-2xl border border-paper-muted/20 bg-paper-card p-6 sm:p-7 shadow-[0_8px_30px_rgba(27,26,23,0.08)] flex flex-col justify-between overflow-hidden">
+                    <div
+                      className="pointer-events-none absolute top-0 right-0 -mr-12 -mt-12 h-36 w-36 rounded-full bg-radial from-[#E3C27A]/20 to-transparent blur-2xl opacity-60"
+                      aria-hidden="true"
+                    />
+
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-between pb-3 mb-4 border-b border-paper-muted/15">
+                        <span
+                          className="text-[10px] font-bold uppercase tracking-[0.18em] text-terracotta"
+                          style={{
+                            fontFamily: "var(--font-instrument), sans-serif",
+                          }}
+                        >
+                          Panther Panchali · Literary Memoir
+                        </span>
+                        <span className="text-[10px] text-paper-muted">
+                          Native Plain Text
+                        </span>
+                      </div>
+
+                      {/* Pure plain text rendered with Newsreader italic without any markdown replacement */}
+                      <div
+                        className="text-sm sm:text-base italic text-paper-text leading-[1.85] tracking-wide whitespace-pre-line"
+                        style={{ fontFamily: "var(--font-newsreader), serif" }}
+                      >
+                        {analysisResult.plainTextSummary}
+                      </div>
+                    </div>
+
+                    <div className="relative z-10 pt-4 mt-5 border-t border-paper-muted/15 flex items-center justify-between text-xs text-paper-muted">
+                      <span>Authentic Bengal Lore</span>
+                      <span className="font-semibold text-terracotta">
+                        {analysisResult.district} District
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </section>
 
               {/* SCENIC BEAUTY & HISTORICAL SIGNIFICANCE (MARKDOWN ENABLED) */}
