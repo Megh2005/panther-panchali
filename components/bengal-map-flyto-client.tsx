@@ -3,7 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { FaCompass, FaExternalLinkAlt, FaMapMarkerAlt, FaUndo } from "react-icons/fa";
+import {
+  FaArrowUpRightFromSquare,
+  FaCompass,
+  FaLocationDot,
+  FaRotateLeft,
+} from "react-icons/fa6";
 
 interface BengalMapFlyToProps {
   lat: number;
@@ -164,7 +169,7 @@ export default function BengalMapFlyToClient({
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-3.5 bg-paper-bg border-b border-paper-muted/15">
         <div className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-terracotta text-white shadow-sm">
-            <FaMapMarkerAlt size={16} />
+            <FaLocationDot size={16} />
           </div>
           <div>
             <span
@@ -196,7 +201,7 @@ export default function BengalMapFlyToClient({
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
             title="Replay multi-stage flight from India to this landmark"
           >
-            <FaUndo size={12} className={isAnimating ? "animate-spin" : ""} />
+            <FaRotateLeft size={12} className={isAnimating ? "animate-spin" : ""} />
             <span>{isAnimating ? "Flying..." : "Replay Journey"}</span>
           </button>
 
@@ -209,7 +214,7 @@ export default function BengalMapFlyToClient({
             title="Open in OpenStreetMap"
           >
             <span>OSM</span>
-            <FaExternalLinkAlt size={11} />
+            <FaArrowUpRightFromSquare size={11} />
           </a>
         </div>
       </div>

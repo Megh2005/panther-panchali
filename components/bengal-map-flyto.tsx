@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { FaCompass, FaSpinner } from "react-icons/fa";
+import { FaCompass, FaSpinner } from "react-icons/fa6";
 
 interface BengalMapFlyToProps {
   lat: number;

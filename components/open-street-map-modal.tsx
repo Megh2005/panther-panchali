@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { FaExternalLinkAlt, FaMapMarkerAlt, FaTimes } from "react-icons/fa";
+import {
+  FaArrowUpRightFromSquare,
+  FaLocationDot,
+  FaXmark,
+} from "react-icons/fa6";
 import BengalMapFlyTo from "@/components/bengal-map-flyto";
 
 interface OpenStreetMapModalProps {
@@ -48,7 +52,7 @@ export default function OpenStreetMapModal({
         <div className="flex items-start justify-between p-4 sm:p-5 border-b border-paper-muted/15 bg-paper-bg">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-terracotta text-white shadow-sm">
-              <FaMapMarkerAlt size={18} />
+              <FaLocationDot size={18} />
             </div>
             <div>
               <span
@@ -73,7 +77,7 @@ export default function OpenStreetMapModal({
             className="flex h-8 w-8 items-center justify-center rounded-full text-paper-muted hover:text-terracotta hover:bg-paper-text/5 transition-colors cursor-pointer"
             aria-label="Close map"
           >
-            <FaTimes size={18} />
+            <FaXmark size={18} />
           </button>
         </div>
 
@@ -104,7 +108,7 @@ export default function OpenStreetMapModal({
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
           >
             <span>Open in OpenStreetMap</span>
-            <FaExternalLinkAlt size={13} />
+            <FaArrowUpRightFromSquare size={13} />
           </a>
         </div>
       </div>
