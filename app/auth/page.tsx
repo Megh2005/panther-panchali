@@ -15,7 +15,7 @@ function AuthForm() {
 
   useEffect(() => {
     if (status === "authenticated") {
-      router.replace("/profile");
+      router.replace("/guide");
     }
   }, [status, router]);
 
@@ -26,7 +26,7 @@ function AuthForm() {
 
     try {
       await signIn("google", {
-        callbackUrl: "/profile",
+        callbackUrl: "/guide",
       });
     } catch {
       setErrorMessage("Connection interrupted. Please try again.");

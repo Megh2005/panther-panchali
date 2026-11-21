@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-import { FaArrowRightFromBracket, FaSpinner, FaUser } from "react-icons/fa6";
+import { FaArrowRightFromBracket, FaCompass, FaSpinner, FaUser } from "react-icons/fa6";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -106,8 +107,17 @@ export default function ProfilePage() {
             </div>
           )}
 
-          {/* Sign Out CTA */}
-          <div className="mt-8 pt-5 w-full border-t border-paper-muted/15 flex items-center justify-center">
+          {/* Action CTAs */}
+          <div className="mt-8 pt-5 w-full border-t border-paper-muted/15 flex flex-col items-center gap-3">
+            <Link
+              href="/guide"
+              className="inline-flex items-center justify-center gap-2 w-full rounded-full bg-terracotta px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-white transition-all duration-300 hover:bg-paper-text hover:scale-105 cursor-pointer shadow-xs"
+              style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+            >
+              <FaCompass size={14} />
+              <span>Open Bengal Guide</span>
+            </Link>
+
             <button
               type="button"
               onClick={() => signOut({ callbackUrl: "/" })}
