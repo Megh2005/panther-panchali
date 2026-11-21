@@ -22,6 +22,7 @@ import {
 } from "react-icons/fa6";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import AudioPlayerButton from "@/components/audio-player-button";
 import BengalMapFlyTo from "@/components/bengal-map-flyto";
 import type { BengalPlaceGuide } from "@/lib/models/guide";
 
@@ -509,6 +510,10 @@ export default function BengalGuide() {
                         Overview Summary
                       </h3>
                     </div>
+                    <AudioPlayerButton
+                      text={guideResult.plainTextSummary}
+                      label="Listen"
+                    />
                   </div>
 
                   <div className="relative flex-1 rounded-2xl border border-paper-muted/20 bg-paper-card p-6 sm:p-7 shadow-[0_8px_30px_rgba(27,26,23,0.08)] flex flex-col justify-between overflow-hidden">
@@ -527,7 +532,11 @@ export default function BengalGuide() {
                       </p>
                     </div>
 
-                    <div className="mt-6 pt-4 border-t border-paper-muted/15 flex items-center justify-end">
+                    <div className="mt-6 pt-4 border-t border-paper-muted/15 flex items-center justify-between">
+                      <AudioPlayerButton
+                        text={guideResult.plainTextSummary}
+                        label="Listen"
+                      />
                       <button
                         type="button"
                         onClick={() =>
@@ -578,20 +587,26 @@ export default function BengalGuide() {
                             </h3>
                           </div>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            copyToClipboard(guideResult.scenicBeauty || "", "scenic")
-                          }
-                          className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta transition-colors"
-                        >
-                          {copiedSection === "scenic" ? (
-                            <FaCheck size={11} className="text-terracotta" />
-                          ) : (
-                            <FaCopy size={11} />
-                          )}
-                          <span>{copiedSection === "scenic" ? "Copied" : "Copy"}</span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <AudioPlayerButton
+                            text={guideResult.scenicBeauty}
+                            label="Listen"
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              copyToClipboard(guideResult.scenicBeauty || "", "scenic")
+                            }
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta transition-colors"
+                          >
+                            {copiedSection === "scenic" ? (
+                              <FaCheck size={11} className="text-terracotta" />
+                            ) : (
+                              <FaCopy size={11} />
+                            )}
+                            <span>{copiedSection === "scenic" ? "Copied" : "Copy"}</span>
+                          </button>
+                        </div>
                       </div>
                       <div className="prose prose-paper max-w-none text-paper-text text-sm sm:text-base leading-relaxed">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -617,23 +632,29 @@ export default function BengalGuide() {
                             </h3>
                           </div>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            copyToClipboard(
-                              guideResult.historicalSignificance || "",
-                              "history",
-                            )
-                          }
-                          className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta transition-colors"
-                        >
-                          {copiedSection === "history" ? (
-                            <FaCheck size={11} className="text-terracotta" />
-                          ) : (
-                            <FaCopy size={11} />
-                          )}
-                          <span>{copiedSection === "history" ? "Copied" : "Copy"}</span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <AudioPlayerButton
+                            text={guideResult.historicalSignificance}
+                            label="Listen"
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              copyToClipboard(
+                                guideResult.historicalSignificance || "",
+                                "history",
+                              )
+                            }
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-paper-muted hover:text-terracotta transition-colors"
+                          >
+                            {copiedSection === "history" ? (
+                              <FaCheck size={11} className="text-terracotta" />
+                            ) : (
+                              <FaCopy size={11} />
+                            )}
+                            <span>{copiedSection === "history" ? "Copied" : "Copy"}</span>
+                          </button>
+                        </div>
                       </div>
                       <div className="prose prose-paper max-w-none text-paper-text text-sm sm:text-base leading-relaxed">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -659,7 +680,15 @@ export default function BengalGuide() {
                         Predicted Travel Mood & Mindset
                       </h3>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <AudioPlayerButton
+                        text={
+                          guideResult.predictedMood.moodParagraph ||
+                          guideResult.predictedMood.moodDescription ||
+                          ""
+                        }
+                        label="Listen"
+                      />
                       <span className="inline-flex items-center rounded-full bg-paper-bg border border-terracotta/30 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-terracotta">
                         Atmosphere: {guideResult.predictedMood.moodName}
                       </span>

@@ -220,11 +220,11 @@ export default function BengalMapFlyToClient({
       </div>
 
       {/* Map Viewport */}
-      <div className="relative w-full h-80 sm:h-96 md:h-[420px] bg-paper-bg">
+      <div className="relative w-full h-80 sm:h-96 md:h-105 bg-paper-bg">
         <div ref={mapContainerRef} className="w-full h-full z-0" />
 
         {/* Live Animation Stage Toast */}
-        <div className="pointer-events-none absolute bottom-4 left-4 z-[400] max-w-[85%] sm:max-w-md rounded-xl bg-paper-card/95 backdrop-blur-md px-3.5 py-2.5 border border-paper-muted/20 shadow-lg text-paper-text text-xs flex items-center gap-2.5">
+        <div className="pointer-events-none absolute bottom-4 left-4 z-400 max-w-[85%] sm:max-w-md rounded-xl bg-paper-card/95 backdrop-blur-md px-3.5 py-2.5 border border-paper-muted/20 shadow-lg text-paper-text text-xs flex items-center gap-2.5">
           <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-terracotta text-white animate-pulse">
             <FaCompass size={13} />
           </div>

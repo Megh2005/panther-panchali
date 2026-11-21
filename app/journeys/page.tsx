@@ -11,6 +11,7 @@ import {
   FaTrashCan,
   FaWandMagicSparkles,
 } from "react-icons/fa6";
+import AudioPlayerButton from "@/components/audio-player-button";
 import OpenStreetMapModal from "@/components/open-street-map-modal";
 import type { ExploredPlace } from "@/lib/models/guide";
 
@@ -178,6 +179,11 @@ export default function JourneysPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
+                  <AudioPlayerButton
+                    text={place.plainTextSummary}
+                    label="Listen"
+                  />
+
                   <button
                     type="button"
                     onClick={() => setActiveMapPlace(place)}
