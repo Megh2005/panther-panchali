@@ -9,7 +9,6 @@ export interface PredictedMood {
 export interface BengalPlaceGuide {
   isWestBengal: boolean;
   placeName: string;
-  bengaliName?: string;
   district: string;
   state: string;
   detailedAddress: string;
@@ -31,7 +30,6 @@ export interface ExploredPlace {
   userId: string;
   userEmail: string;
   placeName: string;
-  bengaliName?: string;
   district: string;
   state: string;
   detailedAddress: string;

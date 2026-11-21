@@ -55,8 +55,7 @@ Set "isWestBengal": false. Identify the location or landmark accurately in "plac
 
 CASE B: THE LOCATION IS IN WEST BENGAL
 Set "isWestBengal": true. Provide accurate, culturally rich details:
-- "placeName": The authentic iconic or local name of the place/landmark in English (e.g. "Bishnupur Terracotta Temples", "Batasia Loop", "Hazarduari Palace", "Victoria Memorial", "Mukutmanipur Dam", "Susunia Hills", "Kumartuli", "Belur Math", "Santiniketan Ashram", "Jaldapara National Park", "Dakshineswar Kali Temple").
-- "bengaliName": The authentic name in Bengali script (e.g. "বিষ্ণুপুর টেরাকোটা মন্দির", "বাতাসিয়া লুপ", "হাজারদুয়ারি প্রাসাদ").
+- "placeName": The authentic iconic or local name of the place/landmark strictly in English (e.g. "Bishnupur Terracotta Temples", "Batasia Loop", "Hazarduari Palace", "Victoria Memorial", "Mukutmanipur Dam", "Susunia Hills", "Kumartuli", "Belur Math", "Santiniketan Ashram", "Jaldapara National Park", "Dakshineswar Kali Temple").
 - "district": The specific district in West Bengal (e.g. "Bankura", "Darjeeling", "Murshidabad", "Purulia", "Kolkata", "Birbhum", "Hooghly", "Howrah", "South 24 Parganas", "North 24 Parganas", "Nadia", "Kalimpong", "Jalpaiguri", "Alipurduar", "Cooch Behar", "Malda", "Paschim Bardhaman", "Purba Bardhaman", "Paschim Medinipur", "Purba Medinipur", "Jhargram", "Dakshin Dinajpur", "Uttar Dinajpur").
 - "state": "West Bengal"
 - "detailedAddress": Full real-world postal address or landmark vicinity description.
@@ -96,11 +95,10 @@ Set "isWestBengal": true. Provide accurate, culturally rich details:
 
 ${userNotes ? `User Hint / Memory Note: "${userNotes}"` : ""}
 
-Respond ONLY with valid JSON conforming to this structure:
+Respond ONLY with valid JSON conforming to this structure (strictly in English, zero Bengali script):
 {
   "isWestBengal": true,
   "placeName": "...",
-  "bengaliName": "...",
   "district": "...",
   "state": "West Bengal",
   "detailedAddress": "...",
