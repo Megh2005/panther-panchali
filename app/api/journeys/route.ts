@@ -4,7 +4,7 @@ import { getAuthenticatedUser } from "@/lib/api/auth";
 import type { ExploredPlace } from "@/lib/models/guide";
 import { getDatabase } from "@/lib/mongodb";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const user = await getAuthenticatedUser();
     if (!user) {
@@ -14,10 +14,27 @@ export async function GET() {
       );
     }
 
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
     const db = await getDatabase();
     const collection = db.collection<ExploredPlace>("explored_places");
 
     const userKey = user.email || user.id;
+
+    if (id) {
+      const place = await collection.findOne({
+        id,
+        $or: [{ userEmail: userKey }, { userId: userKey }],
+      });
+
+      if (!place) {
+        return NextResponse.json({ error: "Place not found." }, { status: 404 });
+      }
+
+      return NextResponse.json({ success: true, place });
+    }
+
     const places = await collection
       .find({
         $or: [{ userEmail: userKey }, { userId: userKey }],
