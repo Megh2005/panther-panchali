@@ -98,10 +98,10 @@ export async function sendPostPublishedEmail(
           Panther Panchali · Living Chronicle
         </span>
         <h1 style="margin:8px 0 0 0;font-size:28px;font-weight:300;color:#1B1A17;letter-spacing:-0.02em;">
-          Your Memory is Published
+          Your Discovery is Published
         </h1>
         <p style="margin:6px 0 0 0;font-size:14px;color:#6B6458;font-style:italic;">
-          Namaskar, ${userName}. Your moment at ${placeName} has been woven into Kolkata's living tapestry.
+          Namaskar, ${userName}. Your discovery of ${placeName} has been woven into Bengal's living tapestry.
         </p>
       </td>
     </tr>
