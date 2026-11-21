@@ -108,14 +108,14 @@ export default function BengalSeasonsRecolor({
               className="text-xl sm:text-2xl font-light text-paper-text"
               style={{ fontFamily: "var(--font-fraunces), serif" }}
             >
-              The Six Seasons of Bengal · Shoro Ritu Simulation
+              Six Seasons of Bengal · Atmospheric Simulation
             </h3>
           </div>
           <p
             className="mt-1 text-xs sm:text-sm italic text-paper-muted max-w-2xl"
             style={{ fontFamily: "var(--font-newsreader), serif" }}
           >
-            Interactively simulate how {placeName || "this landmark"} breathes across Bengal&apos;s six seasonal atmospheres—from blazing summer laterite heat to festive autumn kash reeds and winter mist.
+            Interactively simulate how {placeName || "this landmark"} breathes across Bengal&apos;s six seasonal atmospheres—from blazing summer heat to festive autumn reed fields and winter mist.
           </p>
         </div>
 
@@ -140,7 +140,7 @@ export default function BengalSeasonsRecolor({
             className="text-[11px] font-semibold uppercase tracking-wider text-terracotta"
             style={{ fontFamily: "var(--font-instrument), sans-serif" }}
           >
-            {activeSeason.bengaliScript}
+            {activeSeason.seasonTag}
           </span>
         </div>
       </div>
@@ -178,7 +178,7 @@ export default function BengalSeasonsRecolor({
               className="text-base sm:text-lg font-medium text-terracotta"
               style={{ fontFamily: "var(--font-fraunces), serif" }}
             >
-              {activeSeason.bengaliName}
+              {activeSeason.name}
             </span>
             <span className="text-xs font-mono text-paper-muted font-medium">
               ({activeSeason.period})

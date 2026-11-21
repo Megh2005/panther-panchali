@@ -57,7 +57,6 @@ export default function BengalGuide() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           placeName: guideResult.placeName,
-          bengaliName: guideResult.bengaliName,
           district: guideResult.district,
           state: guideResult.state,
           detailedAddress: guideResult.detailedAddress,
@@ -417,12 +416,6 @@ export default function BengalGuide() {
                   >
                     {guideResult.placeName}
                   </h1>
-
-                  {guideResult.bengaliName && (
-                    <p className="text-xl sm:text-2xl font-normal text-terracotta mt-1">
-                      {guideResult.bengaliName}
-                    </p>
-                  )}
 
                   <p
                     className="mt-2 text-xs sm:text-sm text-paper-muted max-w-2xl"
