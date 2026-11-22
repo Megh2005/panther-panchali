@@ -30,9 +30,17 @@ const instrumentSans = Instrument_Sans({
   display: "swap",
 });
 
+const BRAND_LOGO_URL =
+  "https://res.cloudinary.com/dlf6jkg3d/image/upload/v1795348826/Bengal_Heritage_Film_Emblem_lcbzbs.png";
+
 export const metadata: Metadata = {
   title: "Panther Panchali: The Living Canvas",
   description: "Feel Kolkata through a living story.",
+  icons: {
+    icon: BRAND_LOGO_URL,
+    shortcut: BRAND_LOGO_URL,
+    apple: BRAND_LOGO_URL,
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -41,6 +49,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       lang="en"
       className={`${fraunces.variable} ${newsreader.variable} ${instrumentSans.variable}`}
     >
+      <head>
+        <link rel="icon" href={BRAND_LOGO_URL} type="image/png" />
+        <link rel="apple-touch-icon" href={BRAND_LOGO_URL} sizes="180x180" />
+      </head>
       <body>
         <AuthProvider>
           {children}
