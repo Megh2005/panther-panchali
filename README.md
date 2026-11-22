@@ -54,15 +54,12 @@ Static photographs are awakened into living cinematic motion through Cloudinary 
 ### Personal Bengal Journey Archive and Public Expedition Sharing
 Every identified destination can be saved into a private travel journey archive stored securely in MongoDB. Displayed in an inviting mobile gallery format reminiscent of an art exhibition, travelers can revisit their personal collection of explored places whenever they desire. Each saved journey also features a dedicated public sharing capability, allowing travelers to copy a unique expedition link and share the wonder of Bengal with friends, families, and fellow wanderers across the world without requiring them to sign in.
 
+## Summary of Application Operations
 
----
----
+***Panther Panchali*** allows users to upload a photograph of any unknown location to instantly determine its geographical identity across West Bengal. Upon receiving the image, the platform verifies whether the site resides within the twenty three districts of the state, identifying the exact landmark, administrative district, and global positioning coordinates through **multimodal visual recognition**. The interface immediately launches an interactive **OpenStreetMap fly to flight sequence** that zooms directly into the pinpointed site, displaying an **overview memoir**, **spoken audio narration**, **architectural chronicles**, and a **predicted travel mood** alongside live **atmospheric weather telemetry** gathered from open meteorological services. Static images are further transformed into living motion via **generative video synthesis**, producing an eight second cinematic high definition video with ambient sound across two changeable visual styles. Each explored destination is automatically saved into a personal **journey gallery**, allowing travelers to inspect the site through a pure **satellite cartographic perspective** and share public expedition links globally.
 
 <div align="center">
 
 <em>"There is no end to the road that begins at your doorstep, for Bengal lives not merely in stone and soil, but in the quiet remembrance of stories that time could never wash away."</em>
 
 </div>
-
----
----
