@@ -6,6 +6,17 @@ export interface PredictedMood {
   bestTimeToVisit: string;
 }
 
+export interface VideoVariant {
+  variantId: "variant1" | "variant2";
+  name: string;
+  prompt: string;
+  videoUrl?: string;
+  jobId?: string;
+  status: "idle" | "generating" | "completed" | "failed";
+  error?: string;
+  updatedAt?: string | Date;
+}
+
 export interface BengalPlaceGuide {
   isWestBengal: boolean;
   placeName: string;
@@ -22,6 +33,8 @@ export interface BengalPlaceGuide {
   predictedMood: PredictedMood;
   nonBengalNotice?: string;
   imageUrl?: string;
+  imageAssetId?: string;
+  publicId?: string;
   extractedColors?: string[];
 }
 
@@ -38,10 +51,16 @@ export interface ExploredPlace {
     lng: number;
   };
   imageUrl: string;
+  imageAssetId?: string;
+  publicId?: string;
+  videos?: {
+    variant1?: VideoVariant;
+    variant2?: VideoVariant;
+  };
   plainTextSummary: string;
   scenicBeauty?: string;
   historicalSignificance?: string;
   predictedMood?: PredictedMood;
-  extractedColors: string[];
+  extractedColors?: string[];
   exploredAt: string | Date;
 }

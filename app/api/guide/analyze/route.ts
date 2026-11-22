@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/api/auth";
-import { uploadGuideImageWithColors } from "@/lib/services/cloudinary";
+import { uploadGuideImage } from "@/lib/services/cloudinary";
 import { analyzeWestBengalPlaceFromImage } from "@/lib/services/gemini";
 
 export async function POST(req: Request) {
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       ? imageBase64
       : `data:${mimeType};base64,${imageBase64}`;
 
-    const uploadResult = await uploadGuideImageWithColors(
+    const uploadResult = await uploadGuideImage(
       dataUri,
       "panther_panchali/guide",
     );
@@ -45,7 +45,8 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       imageUrl: uploadResult.url,
-      colors: uploadResult.colors,
+      publicId: uploadResult.publicId,
+      imageAssetId: uploadResult.assetId,
       guide,
     });
   } catch (error) {
