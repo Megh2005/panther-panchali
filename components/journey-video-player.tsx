@@ -15,6 +15,15 @@ import {
 } from "react-icons/fa6";
 import type { VideoVariant } from "@/lib/models/guide";
 
+/**
+ * BINARY FEATURE TRIGGER:
+ * 0 = "Coming Soon" preview mode
+ * 1 = "Live" generation & playback mode
+ *
+ * Simply change this value to 1 to activate live video generation and playback.
+ */
+export const VIDEO_FEATURE_TRIGGER: 0 | 1 = 0;
+
 interface JourneyVideoPlayerProps {
   placeId: string;
   placeName: string;
@@ -65,6 +74,10 @@ export default function JourneyVideoPlayer({
   imageUrl,
   initialVideos,
 }: JourneyVideoPlayerProps) {
+  const isLive =
+    VIDEO_FEATURE_TRIGGER === 1 ||
+    process.env.NEXT_PUBLIC_VIDEO_FEATURE_TRIGGER === "1";
+
   const [activeVariant, setActiveVariant] = useState<VariantKey>("variant1");
   const [videos, setVideos] = useState<{
     variant1?: VideoVariant;
@@ -254,8 +267,14 @@ export default function JourneyVideoPlayer({
               >
                 Living Motion Video
               </h3>
-              <span className="rounded-full bg-gold-glow/40 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-terracotta">
-                AI Synthesis
+              <span
+                className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                  isLive
+                    ? "bg-gold-glow/40 text-terracotta"
+                    : "bg-terracotta/15 text-terracotta border border-terracotta/25"
+                }`}
+              >
+                {isLive ? "AI Synthesis" : "Coming Soon"}
               </span>
             </div>
             <p className="text-xs text-paper-muted">
@@ -327,7 +346,47 @@ export default function JourneyVideoPlayer({
 
       {/* Video / Generation Area */}
       <div className="relative w-full overflow-hidden rounded-2xl border border-paper-muted/20 bg-black/90 aspect-video flex items-center justify-center shadow-inner group">
-        {hasVideo && videoUrl ? (
+        {!isLive ? (
+          /* Coming Soon Preview State (Trigger = 0) */
+          <div className="relative w-full h-full flex items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imageUrl}
+              alt={placeName}
+              className="w-full h-full object-cover opacity-75 group-hover:scale-102 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/45 to-transparent" />
+
+            {/* Centered Coming Soon Card */}
+            <div className="relative z-10 flex flex-col items-center text-center p-6 max-w-md">
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full bg-terracotta/20 backdrop-blur-md px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-gold-glow border border-gold-glow/30 mb-3"
+                style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+              >
+                <FaWandMagicSparkles size={11} />
+                <span>Feature Arriving Soon</span>
+              </span>
+              <h4
+                className="text-xl sm:text-2xl font-light text-white mb-2"
+                style={{ fontFamily: "var(--font-fraunces), serif" }}
+              >
+                {activeMeta.shortTitle} Motion
+              </h4>
+              <p
+                className="text-xs sm:text-sm text-white/90 mb-5 leading-relaxed italic"
+                style={{ fontFamily: "var(--font-newsreader), serif" }}
+              >
+                {activeMeta.description}
+              </p>
+
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/50 backdrop-blur-md px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg cursor-default">
+                <FaFilm size={12} className="text-gold-glow" />
+                <span>Coming Soon · 8s 1080p AI Video</span>
+              </div>
+            </div>
+          </div>
+        ) : hasVideo && videoUrl ? (
+          /* Live Video Playback State (Trigger = 1) */
           <>
             <video
               key={videoUrl}
@@ -442,8 +501,8 @@ export default function JourneyVideoPlayer({
         )}
       </div>
 
-      {/* Error Notice */}
-      {errorMessage && (
+      {/* Error Notice (shown only when live) */}
+      {isLive && errorMessage && (
         <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3.5 text-xs text-red-700 flex items-start gap-2.5">
           <FaCircleExclamation size={14} className="mt-0.5 shrink-0 text-red-600" />
           <div className="flex-1">
@@ -463,7 +522,15 @@ export default function JourneyVideoPlayer({
       {/* Footer Instructions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-paper-muted gap-2 pt-1 border-t border-paper-muted/10">
         <span>
-          Click between <strong>Serene Drift</strong> and <strong>Golden Hour</strong> above to view or switch motion styles.
+          {isLive ? (
+            <>
+              Click between <strong>Serene Drift</strong> and <strong>Golden Hour</strong> above to view or switch motion styles.
+            </>
+          ) : (
+            <>
+              Explore <strong>Serene Drift</strong> and <strong>Golden Hour</strong> above for a preview of the upcoming living motion variants.
+            </>
+          )}
         </span>
         <span className="font-mono text-[10px] text-terracotta">
           {placeName}, {district}
