@@ -39,7 +39,8 @@ export default function BengalGuide() {
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [guideResult, setGuideResult] = useState<BengalPlaceGuide | null>(null);
-  const [extractedColors, setExtractedColors] = useState<string[]>([]);
+  const [imageAssetId, setImageAssetId] = useState<string | null>(null);
+  const [publicId, setPublicId] = useState<string | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -62,11 +63,12 @@ export default function BengalGuide() {
           detailedAddress: guideResult.detailedAddress,
           coordinates: guideResult.coordinates,
           imageUrl: uploadedImageUrl || imagePreviewUrl || "",
+          imageAssetId: imageAssetId || undefined,
+          publicId: publicId || undefined,
           plainTextSummary: guideResult.plainTextSummary,
           scenicBeauty: guideResult.scenicBeauty,
           historicalSignificance: guideResult.historicalSignificance,
           predictedMood: guideResult.predictedMood,
-          extractedColors,
         }),
       });
       const data = await res.json();
@@ -153,7 +155,8 @@ export default function BengalGuide() {
       }
 
       setGuideResult(data.guide);
-      setExtractedColors(data.colors || []);
+      setImageAssetId(data.imageAssetId || null);
+      setPublicId(data.publicId || null);
       setUploadedImageUrl(data.imageUrl || imagePreviewUrl);
     } catch (err) {
       setErrorMessage(
@@ -172,7 +175,8 @@ export default function BengalGuide() {
     setImageBase64("");
     setUserNotes("");
     setGuideResult(null);
-    setExtractedColors([]);
+    setImageAssetId(null);
+    setPublicId(null);
     setUploadedImageUrl(null);
     setErrorMessage(null);
     setIsSaved(false);
@@ -750,47 +754,6 @@ export default function BengalGuide() {
                         guideResult.predictedMood.moodDescription ||
                         ""}
                     </ReactMarkdown>
-                  </div>
-                </div>
-              )}
-
-              {extractedColors.length > 0 && (
-                <div className="rounded-3xl border border-paper-muted/20 bg-paper-card p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta text-white shadow-xs">
-                      <FaImage size={14} />
-                    </div>
-                    <div>
-                      <h4
-                        className="text-base font-semibold text-paper-text"
-                        style={{ fontFamily: "var(--font-instrument), sans-serif" }}
-                      >
-                        Atmospheric 5-Color Palette
-                      </h4>
-                      <p className="text-xs text-paper-muted">
-                        Extracted directly from the landscape tones of this site
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {extractedColors.slice(0, 5).map((color) => (
-                      <button
-                        key={color}
-                        type="button"
-                        onClick={() => copyToClipboard(color, `color-${color}`)}
-                        className="group relative flex items-center justify-center cursor-pointer"
-                        title={`Copy ${color}`}
-                      >
-                        <div
-                          className="h-8 w-8 rounded-full border border-paper-text/20 shadow-xs hover:scale-115 transition-transform"
-                          style={{ backgroundColor: color }}
-                        />
-                        <span className="pointer-events-none absolute -bottom-7 rounded-md bg-paper-text px-1.5 py-0.5 text-[9px] font-mono text-paper-bg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                          {copiedSection === `color-${color}` ? "Copied" : color}
-                        </span>
-                      </button>
-                    ))}
                   </div>
                 </div>
               )}
