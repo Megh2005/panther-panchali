@@ -233,18 +233,20 @@ export async function generateImageToVideo(
     }
 
     const jobId =
+      data.data?.job_id ||
       data.jobId ||
       data.job_id ||
       data.id ||
-      data.data?.job_id ||
       data.data?.id;
 
-    const status = data.status || "processing";
+    const status = data.data?.status || data.status || "processing";
     const videoUrl =
+      data.data?.url ||
+      data.data?.secure_url ||
+      data.url ||
+      data.secure_url ||
       data.data?.output?.secure_url ||
       data.output?.secure_url ||
-      data.secure_url ||
-      data.data?.secure_url ||
       data.data?.output?.playback_url ||
       data.playback_url;
 
@@ -312,7 +314,7 @@ export async function checkImageToVideoStatus(
       };
     }
 
-    const rawStatus = String(data.status || "processing").toLowerCase();
+    const rawStatus = String(data.data?.status || data.status || "processing").toLowerCase();
     const isCompleted =
       rawStatus === "completed" ||
       rawStatus === "complete" ||
@@ -321,10 +323,12 @@ export async function checkImageToVideoStatus(
     const isFailed = rawStatus === "failed" || rawStatus === "error";
 
     const videoUrl =
+      data.data?.url ||
+      data.data?.secure_url ||
+      data.url ||
+      data.secure_url ||
       data.data?.output?.secure_url ||
       data.output?.secure_url ||
-      data.secure_url ||
-      data.data?.secure_url ||
       data.data?.output?.playback_url ||
       data.playback_url;
 

@@ -71,6 +71,15 @@ export default function JourneyVideoPlayer({
     variant2?: VideoVariant;
   }>(initialVideos || {});
 
+  useEffect(() => {
+    if (initialVideos) {
+      setVideos((prev) => ({
+        ...prev,
+        ...initialVideos,
+      }));
+    }
+  }, [initialVideos]);
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
@@ -226,7 +235,8 @@ export default function JourneyVideoPlayer({
     }
   };
 
-  const hasVideo = currentVideo?.status === "completed" && Boolean(currentVideo.videoUrl);
+  const videoUrl = currentVideo?.videoUrl;
+  const hasVideo = Boolean(videoUrl);
 
   return (
     <div className="rounded-3xl border border-paper-muted/20 bg-paper-card p-5 sm:p-7 shadow-[0_8px_30px_rgba(27,26,23,0.06)] flex flex-col space-y-5">
@@ -317,11 +327,12 @@ export default function JourneyVideoPlayer({
 
       {/* Video / Generation Area */}
       <div className="relative w-full overflow-hidden rounded-2xl border border-paper-muted/20 bg-black/90 aspect-video flex items-center justify-center shadow-inner group">
-        {hasVideo ? (
+        {hasVideo && videoUrl ? (
           <>
             <video
+              key={videoUrl}
               ref={videoRef}
-              src={currentVideo.videoUrl}
+              src={videoUrl}
               autoPlay
               loop
               muted={isMuted}
@@ -399,7 +410,7 @@ export default function JourneyVideoPlayer({
               alt={placeName}
               className="w-full h-full object-cover opacity-75 group-hover:scale-102 transition-transform duration-700"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/40 to-transparent" />
 
             {/* Centered Action */}
             <div className="relative z-10 flex flex-col items-center text-center p-6 max-w-md">
