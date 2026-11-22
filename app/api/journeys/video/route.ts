@@ -101,13 +101,21 @@ export async function POST(req: Request) {
       updatedAt: new Date(),
     };
 
-    // Update place in MongoDB with asset ID and video variant
+    // Build the updated videos map safely (handling place.videos being null or undefined)
+    const existingVideos =
+      place.videos && typeof place.videos === "object"
+        ? { ...place.videos }
+        : {};
+
+    existingVideos[variantId] = variantRecord;
+
+    // Update place in MongoDB with asset ID and the full videos object
     await collection.updateOne(
       { id: placeId },
       {
         $set: {
           imageAssetId: assetId,
-          [`videos.${variantId}`]: variantRecord,
+          videos: existingVideos,
         },
       },
     );
@@ -151,13 +159,28 @@ export async function GET(req: Request) {
       const statusRes = await checkImageToVideoStatus(jobId);
 
       if (statusRes.status === "completed" && statusRes.videoUrl) {
+        const place = await collection.findOne({ id: placeId });
+        const existingVideos =
+          place?.videos && typeof place.videos === "object"
+            ? { ...place.videos }
+            : {};
+
+        existingVideos[variantId] = {
+          ...(existingVideos[variantId] || {
+            variantId,
+            name: variantId === "variant1" ? "Serene Atmosphere" : "Golden Hour Sunset",
+            prompt: "",
+          }),
+          status: "completed",
+          videoUrl: statusRes.videoUrl,
+          updatedAt: new Date(),
+        };
+
         await collection.updateOne(
           { id: placeId },
           {
             $set: {
-              [`videos.${variantId}.status`]: "completed",
-              [`videos.${variantId}.videoUrl`]: statusRes.videoUrl,
-              [`videos.${variantId}.updatedAt`]: new Date(),
+              videos: existingVideos,
             },
           },
         );
@@ -170,14 +193,28 @@ export async function GET(req: Request) {
       }
 
       if (statusRes.status === "failed") {
+        const place = await collection.findOne({ id: placeId });
+        const existingVideos =
+          place?.videos && typeof place.videos === "object"
+            ? { ...place.videos }
+            : {};
+
+        existingVideos[variantId] = {
+          ...(existingVideos[variantId] || {
+            variantId,
+            name: variantId === "variant1" ? "Serene Atmosphere" : "Golden Hour Sunset",
+            prompt: "",
+          }),
+          status: "failed",
+          error: statusRes.error || "Generation failed",
+          updatedAt: new Date(),
+        };
+
         await collection.updateOne(
           { id: placeId },
           {
             $set: {
-              [`videos.${variantId}.status`]: "failed",
-              [`videos.${variantId}.error`]:
-                statusRes.error || "Generation failed",
-              [`videos.${variantId}.updatedAt`]: new Date(),
+              videos: existingVideos,
             },
           },
         );

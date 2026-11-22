@@ -9,7 +9,6 @@ function getGeminiClient(): GoogleGenAI {
 
   return new GoogleGenAI({
     apiKey,
-    apiVersion: "v1beta",
   });
 }
 
@@ -114,33 +113,67 @@ Respond ONLY with valid JSON conforming to this structure (strictly in English, 
   "nonBengalNotice": null
 }`;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: [
-      {
-        role: "user",
-        parts: [
-          {
-            inlineData: {
-              mimeType: mimeType || "image/jpeg",
-              data: cleanBase64,
+  let response;
+  try {
+    response = await ai.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              inlineData: {
+                mimeType: mimeType || "image/jpeg",
+                data: cleanBase64,
+              },
             },
-          },
-          {
-            text: prompt,
-          },
-        ],
+            {
+              text: prompt,
+            },
+          ],
+        },
+      ],
+      config: {
+        responseMimeType: "application/json",
+        temperature: 0.3,
+        thinkingConfig: {
+          thinkingBudget: 2048,
+        },
       },
-    ],
-    config: {
-      responseMimeType: "application/json",
-      temperature: 0.65,
-    },
-  });
+    });
+  } catch (primaryError) {
+    console.warn(
+      "Primary reasoning model (gemini-3.5-flash) failed, attempting fallback to gemini-2.5-flash:",
+      primaryError,
+    );
+    response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              inlineData: {
+                mimeType: mimeType || "image/jpeg",
+                data: cleanBase64,
+              },
+            },
+            {
+              text: prompt,
+            },
+          ],
+        },
+      ],
+      config: {
+        responseMimeType: "application/json",
+        temperature: 0.4,
+      },
+    });
+  }
 
   const text = response.text?.trim();
   if (!text) {
-    throw new Error("Empty response received from Gemini 2.5 Flash model.");
+    throw new Error("Empty response received from multimodal reasoning model.");
   }
 
   const cleaned = cleanJsonText(text);
