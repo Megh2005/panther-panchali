@@ -42,11 +42,16 @@ export async function POST(req: Request) {
       userNotes,
     });
 
+    if (uploadResult.colors && uploadResult.colors.length > 0) {
+      guide.extractedColors = uploadResult.colors;
+    }
+
     return NextResponse.json({
       success: true,
       imageUrl: uploadResult.url,
       publicId: uploadResult.publicId,
       imageAssetId: uploadResult.assetId,
+      colors: uploadResult.colors || [],
       guide,
     });
   } catch (error) {

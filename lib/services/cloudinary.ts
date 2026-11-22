@@ -7,6 +7,49 @@ export interface CloudinaryUploadResult {
   colors?: string[];
 }
 
+export const DEFAULT_BENGAL_PALETTE = [
+  "#B5532F",
+  "#EDE4D3",
+  "#1B1A17",
+  "#E3C27A",
+  "#6B6458",
+];
+
+export function normalizeHexColor(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const trimmed = raw.trim();
+
+  if (/^#[0-9a-fA-F]{6}$/.test(trimmed)) {
+    return trimmed.toUpperCase();
+  }
+
+  if (/^[0-9a-fA-F]{6}$/.test(trimmed)) {
+    return `#${trimmed.toUpperCase()}`;
+  }
+
+  if (/^#[0-9a-fA-F]{3}$/.test(trimmed)) {
+    const r = trimmed[1];
+    const g = trimmed[2];
+    const b = trimmed[3];
+    return `#${r}${r}${g}${g}${b}${b}`.toUpperCase();
+  }
+
+  return null;
+}
+
+/**
+ * Generates a Cloudinary monochrome (grayscale) transformation URL for any Cloudinary image.
+ */
+export function getMonochromeImageUrl(imageUrl: string): string {
+  if (!imageUrl) return "";
+  if (imageUrl.includes("/image/upload/")) {
+    // Avoid duplicate transformation if already present
+    if (imageUrl.includes("/image/upload/e_grayscale/")) return imageUrl;
+    return imageUrl.replace("/image/upload/", "/image/upload/e_grayscale/");
+  }
+  return imageUrl;
+}
+
 export function getCloudinaryConfig() {
   const cloudName =
     process.env.CLOUDINARY_CLOUD_NAME ||
@@ -66,18 +109,55 @@ export async function uploadGuideImage(
     const uploadRes = await cld.uploader.upload(imageSource, {
       folder,
       resource_type: "image",
+      colors: true,
+      predominant: true,
     });
+
+    const candidateColors: string[] = [];
+
+    if (Array.isArray(uploadRes.colors)) {
+      for (const item of uploadRes.colors) {
+        if (Array.isArray(item)) {
+          const hex = normalizeHexColor(item[0]);
+          if (hex && !candidateColors.includes(hex)) candidateColors.push(hex);
+        } else if (item && typeof item === "object") {
+          const raw = (item as { color?: unknown }).color;
+          const hex = normalizeHexColor(raw);
+          if (hex && !candidateColors.includes(hex)) candidateColors.push(hex);
+        }
+      }
+    }
+
+    const predominant = uploadRes.predominant as
+      | { cloudinary?: unknown[][]; google?: unknown[][] }
+      | undefined;
+
+    if (predominant?.cloudinary && Array.isArray(predominant.cloudinary)) {
+      for (const item of predominant.cloudinary) {
+        if (Array.isArray(item)) {
+          const hex = normalizeHexColor(item[0]);
+          if (hex && !candidateColors.includes(hex)) candidateColors.push(hex);
+        }
+      }
+    }
+
+    for (const fallback of DEFAULT_BENGAL_PALETTE) {
+      if (candidateColors.length >= 5) break;
+      if (!candidateColors.includes(fallback)) candidateColors.push(fallback);
+    }
 
     return {
       url: uploadRes.secure_url,
       publicId: uploadRes.public_id,
       assetId: uploadRes.asset_id,
+      colors: candidateColors.slice(0, 5),
     };
   } catch (error) {
     console.error("Cloudinary upload failed, falling back to original source:", error);
     return {
       url: imageSource,
       publicId: `fallback-${Date.now()}`,
+      colors: DEFAULT_BENGAL_PALETTE,
     };
   }
 }
@@ -89,11 +169,7 @@ export async function uploadGuideImageWithColors(
   imageSource: string,
   folder = "panther_panchali/guide",
 ): Promise<CloudinaryUploadResult> {
-  const result = await uploadGuideImage(imageSource, folder);
-  return {
-    ...result,
-    colors: [],
-  };
+  return uploadGuideImage(imageSource, folder);
 }
 
 export const uploadToCloudinary = async (
