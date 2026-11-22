@@ -17,11 +17,8 @@ import {
 import type { VideoVariant } from "@/lib/models/guide";
 
 /**
- * BINARY FEATURE TRIGGER:
  * 0 = "Coming Soon" preview mode
  * 1 = "Live" generation & playback mode
- *
- * Simply change this value to 1 to activate live video generation and playback.
  */
 export const VIDEO_FEATURE_TRIGGER: 0 | 1 = 0;
 
