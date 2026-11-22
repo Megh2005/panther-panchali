@@ -23,6 +23,7 @@ import {
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import AudioPlayerButton from "@/components/audio-player-button";
+import JourneyVideoPlayer from "@/components/journey-video-player";
 import SatelliteMapView from "@/components/satellite-map-view";
 import WeatherCard from "@/components/weather-card";
 import type { ExploredPlace } from "@/lib/models/guide";
@@ -348,6 +349,17 @@ function JourneyDetailsContent() {
               />
             </div>
           </div>
+        )}
+
+        {/* Living Motion Video Player with 2 Changeable Variants */}
+        {place.imageUrl && (
+          <JourneyVideoPlayer
+            placeId={place.id}
+            placeName={place.placeName}
+            district={place.district}
+            imageUrl={place.imageUrl}
+            initialVideos={place.videos}
+          />
         )}
 
         {/* Real-Time Live Atmospheric Weather Card */}
