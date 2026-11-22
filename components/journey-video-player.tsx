@@ -12,6 +12,7 @@ import {
   FaVolumeXmark,
   FaWandMagicSparkles,
   FaWind,
+  FaXmark,
 } from "react-icons/fa6";
 import type { VideoVariant } from "@/lib/models/guide";
 
@@ -41,6 +42,7 @@ interface VariantMeta {
   key: VariantKey;
   label: string;
   shortTitle: string;
+  fullName: string;
   icon: typeof FaWind;
   description: string;
   tagline: string;
@@ -51,6 +53,7 @@ const VARIANTS: VariantMeta[] = [
     key: "variant1",
     label: "Variant 1",
     shortTitle: "Serene Drift",
+    fullName: "Serene Drift Motion",
     icon: FaWind,
     description:
       "Gentle morning breeze, soft ambient lighting, and slow tranquil motion drifting across the landscape.",
@@ -60,6 +63,7 @@ const VARIANTS: VariantMeta[] = [
     key: "variant2",
     label: "Variant 2",
     shortTitle: "Golden Hour",
+    fullName: "Golden Hour Motion",
     icon: FaSun,
     description:
       "Warm sunset radiance, rich golden sun rays, and vibrant evening motion with cinematic depth.",
@@ -84,6 +88,14 @@ export default function JourneyVideoPlayer({
     variant2?: VideoVariant;
   }>(initialVideos || {});
 
+  const [isPlayerOpen, setIsPlayerOpen] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     if (initialVideos) {
       setVideos((prev) => ({
@@ -92,13 +104,6 @@ export default function JourneyVideoPlayer({
       }));
     }
   }, [initialVideos]);
-
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isMuted, setIsMuted] = useState(true);
-
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentVideo = videos[activeVariant];
   const activeMeta = VARIANTS.find((v) => v.key === activeVariant) || VARIANTS[0];
@@ -122,6 +127,7 @@ export default function JourneyVideoPlayer({
       clearPolling();
       setIsGenerating(true);
       setErrorMessage(null);
+      setIsPlayerOpen(true);
 
       pollTimerRef.current = setInterval(async () => {
         try {
@@ -186,6 +192,7 @@ export default function JourneyVideoPlayer({
   const handleGenerate = async (variantKey: VariantKey) => {
     setIsGenerating(true);
     setErrorMessage(null);
+    setIsPlayerOpen(true);
 
     try {
       const res = await fetch("/api/journeys/video", {
@@ -253,11 +260,11 @@ export default function JourneyVideoPlayer({
 
   return (
     <div className="rounded-3xl border border-paper-muted/20 bg-paper-card p-5 sm:p-7 shadow-[0_8px_30px_rgba(27,26,23,0.06)] flex flex-col space-y-5">
-      {/* Header & Variant Selector Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-paper-muted/15 pb-4">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-paper-muted/15 pb-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-terracotta text-white shadow-xs">
-            <FaFilm size={15} />
+          <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-terracotta text-white shadow-xs">
+            <FaFilm size={14} />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -283,225 +290,234 @@ export default function JourneyVideoPlayer({
           </div>
         </div>
 
-        {/* Changeable Variant Selector */}
-        <div className="flex items-center gap-1.5 rounded-2xl bg-paper-bg p-1 border border-paper-muted/20 self-start sm:self-auto shadow-xs">
-          {VARIANTS.map((v) => {
-            const Icon = v.icon;
-            const isSelected = activeVariant === v.key;
-            const isReady = videos[v.key]?.status === "completed";
-            const isProc = videos[v.key]?.status === "generating";
-
-            return (
-              <button
-                key={v.key}
-                type="button"
-                onClick={() => setActiveVariant(v.key)}
-                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  isSelected
-                    ? "bg-terracotta text-white shadow-xs"
-                    : "text-paper-muted hover:text-paper-text hover:bg-paper-card/70"
-                }`}
-                style={{ fontFamily: "var(--font-instrument), sans-serif" }}
-              >
-                <Icon size={12} className={isSelected ? "text-white" : "text-terracotta"} />
-                <span>{v.shortTitle}</span>
-                {isReady && (
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      isSelected ? "bg-gold-glow" : "bg-emerald-500"
-                    }`}
-                    title="Video Ready"
-                  />
-                )}
-                {isProc && (
-                  <FaSpinner
-                    size={10}
-                    className={`animate-spin ${isSelected ? "text-white" : "text-terracotta"}`}
-                  />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Variant Info Banner */}
-      <div className="flex items-center justify-between rounded-xl bg-paper-bg/60 border border-paper-muted/15 px-3.5 py-2 text-xs text-paper-muted">
-        <div className="flex items-center gap-2">
-          <span
-            className="font-semibold uppercase tracking-wider text-terracotta text-[10px]"
-            style={{ fontFamily: "var(--font-instrument), sans-serif" }}
-          >
-            {activeMeta.label}: {activeMeta.shortTitle}
-          </span>
-          <span className="hidden sm:inline text-paper-muted/50">•</span>
-          <span className="hidden sm:inline italic text-paper-text/80 text-[11px]">
-            {activeMeta.tagline}
-          </span>
-        </div>
-        <span className="text-[10px] font-mono text-paper-muted font-medium">
+        <span className="text-[11px] font-mono text-paper-muted font-medium self-start sm:self-auto">
           16:9 · 1080p · 8s Motion
         </span>
       </div>
 
-      {/* Video / Generation Area */}
-      <div className="relative w-full overflow-hidden rounded-2xl border border-paper-muted/20 bg-black/90 aspect-video flex items-center justify-center shadow-inner group">
-        {!isLive ? (
-          /* Coming Soon Preview State (Trigger = 0) */
-          <div className="relative w-full h-full flex items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imageUrl}
-              alt={placeName}
-              className="w-full h-full object-cover opacity-75 group-hover:scale-102 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/45 to-transparent" />
+      {/* Two Distinct Variant Cards with Dedicated Buttons */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {VARIANTS.map((v) => {
+          const Icon = v.icon;
+          const isSelected = activeVariant === v.key;
+          const readyVideoUrl = videos[v.key]?.videoUrl;
+          const isReady = Boolean(readyVideoUrl);
+          const isProc = videos[v.key]?.status === "generating";
 
-            {/* Centered Coming Soon Card */}
-            <div className="relative z-10 flex flex-col items-center text-center p-6 max-w-md">
-              <span
-                className="inline-flex items-center gap-1.5 rounded-full bg-terracotta/20 backdrop-blur-md px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-gold-glow border border-gold-glow/30 mb-3"
-                style={{ fontFamily: "var(--font-instrument), sans-serif" }}
-              >
-                <FaWandMagicSparkles size={11} />
-                <span>Feature Arriving Soon</span>
-              </span>
-              <h4
-                className="text-xl sm:text-2xl font-light text-white mb-2"
-                style={{ fontFamily: "var(--font-fraunces), serif" }}
-              >
-                {activeMeta.shortTitle} Motion
-              </h4>
-              <p
-                className="text-xs sm:text-sm text-white/90 mb-5 leading-relaxed italic"
-                style={{ fontFamily: "var(--font-newsreader), serif" }}
-              >
-                {activeMeta.description}
-              </p>
+          return (
+            <div
+              key={v.key}
+              onClick={() => {
+                setActiveVariant(v.key);
+                if (isLive && isReady) {
+                  setIsPlayerOpen(true);
+                }
+              }}
+              className={`group rounded-2xl border p-4 sm:p-5 transition-all flex flex-col justify-between cursor-pointer ${
+                isSelected
+                  ? "border-terracotta bg-paper-bg shadow-sm ring-1 ring-terracotta/30"
+                  : "border-paper-muted/20 bg-paper-bg/60 hover:border-terracotta/40 hover:bg-paper-bg"
+              }`}
+            >
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      className={`flex h-8 w-8 items-center justify-center rounded-xl transition-colors ${
+                        isSelected
+                          ? "bg-terracotta text-white shadow-xs"
+                          : "bg-paper-card text-terracotta border border-paper-muted/20"
+                      }`}
+                    >
+                      <Icon size={13} />
+                    </div>
+                    <div>
+                      <h4
+                        className="text-base sm:text-lg font-light text-paper-text"
+                        style={{ fontFamily: "var(--font-fraunces), serif" }}
+                      >
+                        {v.fullName}
+                      </h4>
+                      <span className="text-[10px] text-terracotta font-semibold uppercase tracking-wider block">
+                        {v.label}
+                      </span>
+                    </div>
+                  </div>
 
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/50 backdrop-blur-md px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg cursor-default">
-                <FaFilm size={12} className="text-gold-glow" />
-                <span>Coming Soon · 8s 1080p AI Video</span>
+                  {/* Status Badge */}
+                  {isLive ? (
+                    isReady ? (
+                      <span className="rounded-full bg-emerald-500/15 text-emerald-700 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                        Ready
+                      </span>
+                    ) : isProc ? (
+                      <span className="rounded-full bg-terracotta/15 text-terracotta px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                        <FaSpinner size={9} className="animate-spin" /> Rendering
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-paper-muted/15 text-paper-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider">
+                        Available
+                      </span>
+                    )
+                  ) : (
+                    <span className="rounded-full bg-gold-glow/40 text-terracotta px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border border-terracotta/20">
+                      Coming Soon
+                    </span>
+                  )}
+                </div>
+
+                <p
+                  className="text-xs text-paper-muted italic leading-relaxed"
+                  style={{ fontFamily: "var(--font-newsreader), serif" }}
+                >
+                  {v.description}
+                </p>
+              </div>
+
+              {/* Dedicated Card Action Button */}
+              <div className="mt-4 pt-3 border-t border-paper-muted/15 flex items-center justify-between">
+                <span className="text-[10px] font-mono text-paper-muted/80 uppercase tracking-wider">
+                  {v.tagline}
+                </span>
+
+                {isLive ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveVariant(v.key);
+                      if (isReady) {
+                        setIsPlayerOpen(true);
+                      } else {
+                        handleGenerate(v.key);
+                      }
+                    }}
+                    disabled={isProc}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-terracotta px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-xs hover:bg-terracotta/90 transition-all cursor-pointer"
+                    style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+                  >
+                    {isReady ? (
+                      <>
+                        <FaPlay size={10} />
+                        <span>Watch Video</span>
+                      </>
+                    ) : isProc ? (
+                      <>
+                        <FaSpinner size={10} className="animate-spin" />
+                        <span>Rendering...</span>
+                      </>
+                    ) : (
+                      <>
+                        <FaWandMagicSparkles size={10} />
+                        <span>Generate</span>
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  <div
+                    className="inline-flex items-center gap-1.5 rounded-full border border-paper-muted/30 bg-paper-card px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-paper-muted cursor-default"
+                    style={{ fontFamily: "var(--font-instrument), sans-serif" }}
+                  >
+                    <FaWandMagicSparkles size={10} className="text-terracotta" />
+                    <span>Coming Soon</span>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        ) : hasVideo && videoUrl ? (
-          /* Live Video Playback State (Trigger = 1) */
-          <>
-            <video
-              key={videoUrl}
-              ref={videoRef}
-              src={videoUrl}
-              autoPlay
-              loop
-              muted={isMuted}
-              playsInline
-              controls
-              className="w-full h-full object-cover"
-            />
-
-            {/* Audio Toggle Floating Overlay */}
-            <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
-              <button
-                type="button"
-                onClick={toggleMute}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white hover:bg-black/90 transition-colors shadow-xs cursor-pointer border border-white/20"
-                title={isMuted ? "Unmute audio" : "Mute audio"}
-              >
-                {isMuted ? <FaVolumeXmark size={13} /> : <FaVolumeHigh size={13} />}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleGenerate(activeVariant)}
-                disabled={isGenerating}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white hover:bg-black/90 transition-colors shadow-xs cursor-pointer border border-white/20"
-                title="Regenerate video for this variant"
-              >
-                <FaRotateRight size={12} className={isGenerating ? "animate-spin" : ""} />
-              </button>
-            </div>
-
-            {/* Style Badge */}
-            <div className="absolute bottom-3 left-3 z-20 pointer-events-none">
-              <span className="rounded-full bg-black/60 backdrop-blur-md px-3 py-1 text-[10px] font-semibold text-white/90 border border-white/15">
-                {activeMeta.shortTitle} · Living Video
-              </span>
-            </div>
-          </>
-        ) : isGenerating ? (
-          /* Generating State */
-          <div className="relative w-full h-full flex flex-col items-center justify-center p-6 text-center">
-            {/* Background Image Blurred Preview */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imageUrl}
-              alt={placeName}
-              className="absolute inset-0 w-full h-full object-cover opacity-25 filter blur-xs"
-            />
-            <div className="relative z-10 flex flex-col items-center space-y-3 max-w-sm">
-              <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-terracotta text-white shadow-lg animate-pulse">
-                <FaSpinner size={24} className="animate-spin text-white" />
-              </div>
-              <h4
-                className="text-lg font-light text-white"
-                style={{ fontFamily: "var(--font-fraunces), serif" }}
-              >
-                Synthesizing Living Motion...
-              </h4>
-              <p
-                className="text-xs text-white/80 leading-relaxed italic"
-                style={{ fontFamily: "var(--font-newsreader), serif" }}
-              >
-                Applying AI motion camera paths and atmospheric audio for {activeMeta.shortTitle}...
-              </p>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-gold-glow animate-pulse">
-                Processing video frames (approx. 10-30s)
-              </span>
-            </div>
-          </div>
-        ) : (
-          /* Idle / Not Yet Generated State */
-          <div className="relative w-full h-full flex items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imageUrl}
-              alt={placeName}
-              className="w-full h-full object-cover opacity-75 group-hover:scale-102 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/40 to-transparent" />
-
-            {/* Centered Action */}
-            <div className="relative z-10 flex flex-col items-center text-center p-6 max-w-md">
-              <span
-                className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold-glow mb-2"
-                style={{ fontFamily: "var(--font-instrument), sans-serif" }}
-              >
-                {activeMeta.label} · {activeMeta.shortTitle}
-              </span>
-              <p
-                className="text-xs sm:text-sm text-white/90 mb-4 line-clamp-2 italic"
-                style={{ fontFamily: "var(--font-newsreader), serif" }}
-              >
-                {activeMeta.description}
-              </p>
-
-              <button
-                type="button"
-                onClick={() => handleGenerate(activeVariant)}
-                disabled={isGenerating}
-                className="inline-flex items-center gap-2.5 rounded-full bg-terracotta px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg hover:bg-terracotta/90 hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                style={{ fontFamily: "var(--font-instrument), sans-serif" }}
-              >
-                <FaWandMagicSparkles size={13} />
-                <span>Generate {activeMeta.shortTitle} Video</span>
-              </button>
-            </div>
-          </div>
-        )}
+          );
+        })}
       </div>
 
-      {/* Error Notice (shown only when live) */}
+      {/* Expandable Live Video Player (Opens only when triggered in Live Mode) */}
+      {isLive && isPlayerOpen && (
+        <div className="relative w-full overflow-hidden rounded-2xl border border-paper-muted/20 bg-black/95 aspect-video flex items-center justify-center shadow-lg transition-all">
+          {hasVideo && videoUrl ? (
+            <>
+              <video
+                key={videoUrl}
+                ref={videoRef}
+                src={videoUrl}
+                autoPlay
+                loop
+                muted={isMuted}
+                playsInline
+                controls
+                className="w-full h-full object-cover"
+              />
+
+              {/* Floating Top Controls */}
+              <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={toggleMute}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white hover:bg-black/90 transition-colors shadow-xs cursor-pointer border border-white/20"
+                  title={isMuted ? "Unmute audio" : "Mute audio"}
+                >
+                  {isMuted ? <FaVolumeXmark size={13} /> : <FaVolumeHigh size={13} />}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleGenerate(activeVariant)}
+                  disabled={isGenerating}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white hover:bg-black/90 transition-colors shadow-xs cursor-pointer border border-white/20"
+                  title="Regenerate video for this variant"
+                >
+                  <FaRotateRight size={12} className={isGenerating ? "animate-spin" : ""} />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsPlayerOpen(false)}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white hover:bg-black/90 transition-colors shadow-xs cursor-pointer border border-white/20"
+                  title="Close video player"
+                >
+                  <FaXmark size={13} />
+                </button>
+              </div>
+
+              {/* Style Badge */}
+              <div className="absolute bottom-3 left-3 z-20 pointer-events-none">
+                <span className="rounded-full bg-black/60 backdrop-blur-md px-3 py-1 text-[10px] font-semibold text-white/90 border border-white/15">
+                  {activeMeta.fullName} · Living Video
+                </span>
+              </div>
+            </>
+          ) : isGenerating ? (
+            /* Generating State */
+            <div className="relative w-full h-full flex flex-col items-center justify-center p-6 text-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imageUrl}
+                alt={placeName}
+                className="absolute inset-0 w-full h-full object-cover opacity-25 filter blur-xs"
+              />
+              <div className="relative z-10 flex flex-col items-center space-y-3 max-w-sm">
+                <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-terracotta text-white shadow-lg animate-pulse">
+                  <FaSpinner size={24} className="animate-spin text-white" />
+                </div>
+                <h4
+                  className="text-lg font-light text-white"
+                  style={{ fontFamily: "var(--font-fraunces), serif" }}
+                >
+                  Synthesizing Living Motion...
+                </h4>
+                <p
+                  className="text-xs text-white/80 leading-relaxed italic"
+                  style={{ fontFamily: "var(--font-newsreader), serif" }}
+                >
+                  Applying AI camera paths and atmospheric audio for {activeMeta.shortTitle}...
+                </p>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-gold-glow animate-pulse">
+                  Processing video frames (approx. 10-30s)
+                </span>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      )}
+
+      {/* Error Notice */}
       {isLive && errorMessage && (
         <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3.5 text-xs text-red-700 flex items-start gap-2.5">
           <FaCircleExclamation size={14} className="mt-0.5 shrink-0 text-red-600" />
@@ -524,11 +540,11 @@ export default function JourneyVideoPlayer({
         <span>
           {isLive ? (
             <>
-              Click between <strong>Serene Drift</strong> and <strong>Golden Hour</strong> above to view or switch motion styles.
+              Click on <strong>Serene Drift Motion</strong> or <strong>Golden Hour Motion</strong> to generate or play videos.
             </>
           ) : (
             <>
-              Explore <strong>Serene Drift</strong> and <strong>Golden Hour</strong> above for a preview of the upcoming living motion variants.
+              Previewing <strong>Serene Drift Motion</strong> and <strong>Golden Hour Motion</strong> — full AI generation arriving soon.
             </>
           )}
         </span>
