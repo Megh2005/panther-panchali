@@ -24,6 +24,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import AudioPlayerButton from "@/components/audio-player-button";
 import JourneyVideoPlayer from "@/components/journey-video-player";
+import PhotoViewModes from "@/components/photo-view-modes";
 import SatelliteMapView from "@/components/satellite-map-view";
 import WeatherCard from "@/components/weather-card";
 import type { ExploredPlace } from "@/lib/models/guide";
@@ -318,37 +319,14 @@ function JourneyDetailsContent() {
           </div>
         </div>
 
-        {/* Captured Photograph Full View */}
+        {/* Captured Photograph with Dual Modes & Atmospheric Palette */}
         {place.imageUrl && (
-          <div className="rounded-3xl border border-paper-muted/20 bg-paper-card p-6 sm:p-8 shadow-sm space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-paper-muted/15">
-              <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta text-white shadow-xs">
-                  <FaImage size={14} />
-                </div>
-                <h3
-                  className="text-xl sm:text-2xl font-light text-paper-text"
-                  style={{ fontFamily: "var(--font-fraunces), serif" }}
-                >
-                  Captured Photograph
-                </h3>
-              </div>
-              <span
-                className="text-[11px] font-semibold uppercase tracking-wider text-paper-muted"
-                style={{ fontFamily: "var(--font-instrument), sans-serif" }}
-              >
-                Original View
-              </span>
-            </div>
-            <div className="relative max-w-full overflow-hidden rounded-2xl border border-paper-muted/20 bg-paper-bg p-2 flex items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={place.imageUrl}
-                alt={place.placeName}
-                className="max-h-96 sm:max-h-125 w-auto max-w-full rounded-xl object-contain block mx-auto shadow-xs"
-              />
-            </div>
-          </div>
+          <PhotoViewModes
+            imageUrl={place.imageUrl}
+            alt={place.placeName}
+            colors={place.extractedColors}
+            title="Captured Photograph"
+          />
         )}
 
         {/* Living Motion Video Player with 2 Changeable Variants */}
