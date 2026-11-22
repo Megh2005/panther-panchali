@@ -2,12 +2,10 @@
 
 import { useMemo, useState } from "react";
 import {
-  FaBrush,
   FaCheck,
   FaCircleHalfStroke,
   FaImage,
   FaPalette,
-  FaSun,
   FaWandMagicSparkles,
 } from "react-icons/fa6";
 
@@ -22,9 +20,7 @@ export const DEFAULT_BENGAL_PALETTE = [
 export type PhotoEffectId =
   | "normal"
   | "monochrome"
-  | "enhance"
-  | "golden_hour"
-  | "oil_canvas";
+  | "enhance";
 
 export interface EffectConfig {
   id: PhotoEffectId;
@@ -63,24 +59,6 @@ export const PHOTO_EFFECTS: EffectConfig[] = [
     description: "AI-enhanced clarity, balanced shadows, and revitalized natural foliage and architecture.",
     cloudinaryTransform: "e_improve,e_vibrance:30",
     cssFilter: "contrast-110 saturate-130 brightness-102",
-  },
-  {
-    id: "golden_hour",
-    label: "Golden Hour",
-    badge: "Bengal Sunset Radiance",
-    tagline: "Warm Amber Illumination",
-    description: "Warm golden sunlight evoking the tranquil late afternoon over Bengal's riverbanks and fields.",
-    cloudinaryTransform: "e_tint:50:FF9933,e_saturation:25",
-    cssFilter: "sepia-30 saturate-135 contrast-105 brightness-102",
-  },
-  {
-    id: "oil_canvas",
-    label: "Living Canvas",
-    badge: "Impasto Oil Canvas",
-    tagline: "Artistic Heritage Painting",
-    description: "Expressive artistic brushwork textures transforming the landscape into a living canvas masterpiece.",
-    cloudinaryTransform: "e_art:oil_paint:40",
-    cssFilter: "contrast-118 saturate-125",
   },
 ];
 
@@ -158,10 +136,6 @@ export default function PhotoViewModes({
         return <FaCircleHalfStroke size={11} />;
       case "enhance":
         return <FaWandMagicSparkles size={11} />;
-      case "golden_hour":
-        return <FaSun size={11} />;
-      case "oil_canvas":
-        return <FaBrush size={11} />;
     }
   };
 
@@ -183,7 +157,7 @@ export default function PhotoViewModes({
               {title}
             </h3>
             <p className="text-xs text-paper-muted">
-              Explore this landmark in authentic color, vintage monochrome, or living artistic impressions
+              Explore this landmark in authentic color, vintage monochrome film, or AI enhanced clarity
             </p>
           </div>
         </div>
